@@ -4,9 +4,18 @@ import Content from "@/components/Content.vue";
 </script>
 
 <template>
-  <Content></Content>
-  <Banner></Banner>
+  <div class="container">
+    <Content></Content>
+    <Banner></Banner>
+  </div>
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
 </style>
