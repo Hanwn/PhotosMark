@@ -1,0 +1,35 @@
+<html lang="">
+    <head>
+        <title></title>
+    </head>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            justify-content: center;
+        }
+        #innerDiv {
+            height: 800px;
+            width: 600px;
+        }
+        #myCvs {
+            border: 1px solid #000
+        }
+    </style>
+    <body>
+    <input type="file" id="upload">
+
+    <div class="container" id="outDiv">
+        <div class="container" id="innerDiv">
+            <canvas class="cvs" id="myCvs">
+
+            </canvas>
+        </div>
+    </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/piexifjs/1.0.6/piexif.js"></script>
+<!--    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>-->
+    <script type="application/javascript" src="main.js"></script>
+</html>
