@@ -169,9 +169,17 @@ function fitIcon() {
 
 function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
     const rectH = mainImg.height * factor
-    const iconFactor = {"H":3/2, "Y": 6}
+    const iconImgH = iconImg.width
+    const iconImgW = iconImg.height
+
+    const iconFactor = {"H":2/3, "Y": 6}
+    if (iconImgW/iconImgH >= 1.5 || iconImgH/iconImgW >= 1.5) {
+        iconFactor["H"] = 1/3
+        iconFactor["Y"] = 4
+    }
     const middle = getRectMiddle(mainImg, factor)
-    let iconHeight = rectH / iconFactor["H"]
+    let maxIconHeight = rectH * iconFactor["H"]
+    let iconHeight = maxIconHeight
     const scale = iconImg.width/iconImg.height
     let iconWidth = iconHeight * scale
     // const
@@ -180,7 +188,6 @@ function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
         iconWidth = maxIconWidth
         iconHeight = maxIconWidth / scale
     }
-    console.log(rectH, iconHeight)
     const iconPosX = verticalBarInfo["X"] - verticalBarInfo["W"] - iconWidth
     const iconPosY = middle - iconHeight/2
     ctx.drawImage(iconImg, iconPosX, iconPosY, iconWidth, iconHeight)
@@ -215,22 +222,24 @@ async function MarkPhoto(imgSrc, exifData) {
     // const iconImg = await loadImg("./Nikon.png")
     // const iconImg = await loadImg("./Nikon.svg")
     const device = exifData["M"]
+    const makeCompany = exifData["U"]
     const path = "./assets/logo/"
     let iconSrc = ""
     const deviceModel = device.toLowerCase()
-    if (deviceModel.includes("nikon")) {
+    const deviceMake = makeCompany.toLowerCase()
+    if (deviceModel.includes("nikon") || deviceMake.includes("nikon")) {
         iconSrc = "Nikon100.svg"
-    } else if (deviceModel.includes("sony")) {
-        iconSrc = "sony.svg"
-    } else if (deviceModel.includes("canon")) {
+    } else if (deviceModel.includes("sony") || deviceMake.includes("sony")) {
+        iconSrc = "sony.png"
+    } else if (deviceModel.includes("canon") || deviceMake.includes("canon")) {
 
-    } else if (deviceModel.includes("dji")) {
+    } else if (deviceModel.includes("dji") || deviceMake.includes("dji")) {
         iconSrc = "dji.svg"
     } else {
-        iconSrc = "dji.svg"
+        // iconSrc = "sony.png"
+        iconSrc = "hs.svg"
     }
 
-    console.log(iconSrc)
     const iconImg = await loadImg(path + iconSrc)
 
     // font
@@ -280,7 +289,8 @@ const getImageData = (file) => {
 
 const parseExifData = (exifData) => {
     if (!exifData) { return null }
-    const M = exifData['0th'][piexif.ImageIFD.Model]
+    const Model = exifData['0th'][piexif.ImageIFD.Model]
+    const Make = exifData['0th'][piexif.ImageIFD.Make]
     const F = exifData.Exif[piexif.ExifIFD.FNumber]
     const S = exifData.Exif[piexif.ExifIFD.ExposureTime]
     const ISO = exifData.Exif[piexif.ExifIFD.ISOSpeedRatings]
@@ -289,7 +299,8 @@ const parseExifData = (exifData) => {
     const T = exifData.Exif[piexif.ExifIFD.DateTimeOriginal]
     // const noneT = new Date().Format("")
     return {
-        M: M || "UNKNOWN Device",
+        M: Model || "UNKNOWN Device",
+        U: Make || "UNKNOWN Device",
         F: F && F[0] && F[1] ? F[0] / F[1] : "0.0",
         S: S && S[0] && S[1] ? S[1] : "0000",
         ISO: ISO || "000",
@@ -310,6 +321,7 @@ function upload() {
         getImageData(file).then((imgData) => {
             this.imgData = imgData
             const exif = getExifByPiExif(this.imgData)
+            console.log(exif)
             const exifData = parseExifData(exif)
             let src = URL.createObjectURL(file)
             MarkPhoto(src, exifData).then().catch((err) => {
