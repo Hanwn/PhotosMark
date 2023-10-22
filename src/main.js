@@ -176,10 +176,11 @@ function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
     let iconWidth = iconHeight * scale
     // const
     const maxIconWidth = mainImg.width / 6
-    while (iconWidth > maxIconWidth) {
+    if (iconWidth > maxIconWidth) {
         iconWidth = maxIconWidth
         iconHeight = maxIconWidth / scale
     }
+    console.log(rectH, iconHeight)
     const iconPosX = verticalBarInfo["X"] - verticalBarInfo["W"] - iconWidth
     const iconPosY = middle - iconHeight/2
     ctx.drawImage(iconImg, iconPosX, iconPosY, iconWidth, iconHeight)
@@ -213,13 +214,27 @@ async function MarkPhoto(imgSrc, exifData) {
     const mainImg = await loadImg(imgSrc)
     // const iconImg = await loadImg("./Nikon.png")
     // const iconImg = await loadImg("./Nikon.svg")
-    const iconImg = await loadImg("./Nikon100.svg")
-    // const iconImg = await loadImg("./hs.svg")
-    // getExif(mainImg)
-    // getExifByPiExif(mainImg)
+    const device = exifData["M"]
+    const path = "./assets/logo/"
+    let iconSrc = ""
+    const deviceModel = device.toLowerCase()
+    if (deviceModel.includes("nikon")) {
+        iconSrc = "Nikon100.svg"
+    } else if (deviceModel.includes("sony")) {
+        iconSrc = "sony.svg"
+    } else if (deviceModel.includes("canon")) {
+
+    } else if (deviceModel.includes("dji")) {
+        iconSrc = "dji.svg"
+    } else {
+        iconSrc = "dji.svg"
+    }
+
+    console.log(iconSrc)
+    const iconImg = await loadImg(path + iconSrc)
 
     // font
-    const myFont = new FontFace('alibaba', 'url(./alibaba.ttf)')
+    const myFont = new FontFace('alibaba', 'url(./assets/font/Alibaba.ttf)')
     const newFont = await myFont.load()
     fontFamily = "alibaba"
 
@@ -272,6 +287,7 @@ const parseExifData = (exifData) => {
     const L = exifData.Exif[piexif.ExifIFD.FocalLength]
     const LEN = exifData.Exif[piexif.ExifIFD.LensModel]
     const T = exifData.Exif[piexif.ExifIFD.DateTimeOriginal]
+    // const noneT = new Date().Format("")
     return {
         M: M || "UNKNOWN Device",
         F: F && F[0] && F[1] ? F[0] / F[1] : "0.0",
@@ -287,15 +303,20 @@ function upload() {
     const input = document.querySelector("#upload");
     input.addEventListener('change',function(){
         // 通过onchange事件获取files,函数要使用function定义,箭头函数this指向父级作用域
-        const files = this.files;
+        const files = this.files || [];
+        const file = files[0]
         // getExif(files[0])
-        getImageData(files[0]).then((imgData) => {
+        if (!file) { return }
+        getImageData(file).then((imgData) => {
             this.imgData = imgData
             const exif = getExifByPiExif(this.imgData)
             const exifData = parseExifData(exif)
-            console.log(exifData)
-            let src = URL.createObjectURL(files[0])
-            MarkPhoto(src, exifData).then()
+            let src = URL.createObjectURL(file)
+            MarkPhoto(src, exifData).then().catch((err) => {
+                console.log(err)
+            })
+        }).catch((err) => {
+            console.log(err)
         })
     },false);
 }
