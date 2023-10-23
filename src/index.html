@@ -16,20 +16,39 @@
         #myCvs {
             border: 1px solid #000
         }
+        #imgOutContainer {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            height: 8000px;
+            width: 1000px;
+        }
+        #imgInnerContainer {
+            display: flex;
+            height: 200px;
+            width: 300px;
+            padding: 10px;
+        }
     </style>
     <body>
-    <input type="file" id="upload">
+    <div id="app">
+        <input type="file" id="upload" multiple="multiple" @change="uploadFiles">
+        <div class="container" id="outDiv">
+            <div class="container" id="innerDiv">
+                <canvas class="cvs" id="myCvs">
 
-    <div class="container" id="outDiv">
-        <div class="container" id="innerDiv">
-            <canvas class="cvs" id="myCvs">
-
-            </canvas>
+                </canvas>
+            </div>
+        </div>
+        <div id="imgOutContainer">
+            <div id="imgInnerContainer" v-for="imgUrl in imgList">
+                <img :src="imgUrl" alt="" @click="render"/>
+            </div>
         </div>
     </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/piexifjs/1.0.6/piexif.js"></script>
-<!--    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>-->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script type="application/javascript" src="main.js"></script>
 </html>

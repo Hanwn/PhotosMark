@@ -1,5 +1,6 @@
 
 let fontFamily = "Arial"
+let fontItalic = ""
 
 function loadImg(imgSrc) {
     return new Promise((resolve, reject) => {
@@ -56,7 +57,7 @@ function modifyFont(ctx, img, factor, fontSize, text, fontFactor, bold) {
     while ((fontInfo.width > maxWidth || fontInfo.height > maxHeight) && fontSize > 0) {
         fontSize = fontSize - 1
         fontBkp = ctx.font
-        ctx.font = `${bolding} italic ${fontSize}px ${fontFamily}`
+        ctx.font = `${bolding} ${fontItalic} ${fontSize}px ${fontFamily}`
         fontInfo = calcFontWidth(ctx, text, fontSize)
     }
 
@@ -65,7 +66,7 @@ function modifyFont(ctx, img, factor, fontSize, text, fontFactor, bold) {
         fontSize = fontSize + 1
         ret = fontInfo
         fontBkp = ctx.font
-        ctx.font = `${bolding} italic ${fontSize}px ${fontFamily}`
+        ctx.font = `${bolding} ${fontItalic} ${fontSize}px ${fontFamily}`
         fontInfo = calcFontWidth(ctx, text, fontSize)
     }
     ctx.font = fontBkp
@@ -75,7 +76,7 @@ function modifyFont(ctx, img, factor, fontSize, text, fontFactor, bold) {
 function drawCameraText(ctx, factor, img, text) {
     ctx.fillStyle="#000000"
     let fontSize = 100
-    ctx.font = `italic ${fontSize}px ${fontFamily}`
+    ctx.font = `${fontItalic} ${fontSize}px ${fontFamily}`
     ctx.textAlign = "start"
     ctx.textBaseline = "middle"
     const middle = getRectMiddle(img, factor)
@@ -87,7 +88,7 @@ function drawCameraText(ctx, factor, img, text) {
 
 function drawLensText(ctx, factor, img, text, cameraFontInfo) {
     let fontSize = 100
-    ctx.font = `italic ${fontSize}px ${fontFamily}`;
+    ctx.font = `${fontItalic} ${fontSize}px ${fontFamily}`;
     ctx.textAlign = "start"
     ctx.textBaseline = "top"
     ctx.fillStyle="gray"
@@ -105,7 +106,7 @@ function drawParameterText(ctx, factor, img, exifData) {
     }
     let text = [exifData["L"] + "mm",  exifData["S"] + "s", "f/" + exifData["F"],  "ISO" + exifData["ISO"]].join(" ")
     let fontSize = 100
-    ctx.font = `italic ${fontSize}px ${fontFamily}`
+    ctx.font = `${fontItalic} ${fontSize}px ${fontFamily}`
     ctx.textAlign = "start"
     ctx.textBaseline = "middle"
     ctx.fillStyle = "#000000"
@@ -124,7 +125,7 @@ function drawParameterText(ctx, factor, img, exifData) {
     // console.log(fontInfo["fontSize"], dateFontSize)
 
     ctx.fillStyle = "#4a4444"
-    ctx.font = `italic ${dateFontSize}px ${fontFamily}`
+    ctx.font = `${fontItalic} ${dateFontSize}px ${fontFamily}`
     ctx.fillText(exifData['T'], dateParameterX, dateParameterY)
 
     return {"X": parameterX, "Y": parameterY}
@@ -232,7 +233,9 @@ async function MarkPhoto(imgSrc, exifData) {
     } else if (deviceModel.includes("sony") || deviceMake.includes("sony")) {
         iconSrc = "sony.png"
     } else if (deviceModel.includes("canon") || deviceMake.includes("canon")) {
-
+        iconSrc = "canon.svg"
+    }else if (deviceModel.includes("fujifilm") || deviceMake.includes("fujifilm")) {
+        iconSrc = "fujifilm.svg"
     } else if (deviceModel.includes("dji") || deviceMake.includes("dji")) {
         iconSrc = "dji.svg"
     } else {
@@ -257,7 +260,7 @@ async function MarkPhoto(imgSrc, exifData) {
     cvs.width = mainImg.width
 
     ctx.drawImage(mainImg, 0, 0)
-    console.log(mainImg.width, mainImg.height)
+    // console.log(mainImg.width, mainImg.height)
     drawRect(ctx, factor, mainImg)
 
     debug(ctx, 0, 0)
@@ -310,31 +313,51 @@ const parseExifData = (exifData) => {
     }
 }
 
-function upload() {
-    const input = document.querySelector("#upload");
-    input.addEventListener('change',function(){
-        // 通过onchange事件获取files,函数要使用function定义,箭头函数this指向父级作用域
-        const files = this.files || [];
-        const file = files[0]
-        // getExif(files[0])
-        if (!file) { return }
-        getImageData(file).then((imgData) => {
-            this.imgData = imgData
-            const exif = getExifByPiExif(this.imgData)
-            console.log(exif)
-            const exifData = parseExifData(exif)
-            let src = URL.createObjectURL(file)
-            MarkPhoto(src, exifData).then().catch((err) => {
-                console.log(err)
-            })
-        }).catch((err) => {
-            console.log(err)
-        })
-    },false);
-}
-
 function main() {
-    upload()
+    const { createApp, ref, reactive } = Vue
+    createApp({
+        setup() {
+            const message = ref('Hello vue!')
+            const rendered = ref(false)
+            const imgList = reactive([])
+            const metaDataMap = reactive(new Map())
+            const uploadFiles = function(e) {
+                // console.log(e.target.files)
+                const files = e.target.files
+                if (!files.length) {
+                    return
+                }
+
+                console.log(files)
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i]
+                    getImageData(file).then((imgData) => {
+                        const exif = getExifByPiExif(imgData)
+                        const exifData = parseExifData(exif)
+                        let src = URL.createObjectURL(file)
+                        metaDataMap.set(src, exifData)
+                        if (i === 0 && rendered.value === false) {
+                            MarkPhoto(src, metaDataMap.get(src)).then()
+                            rendered.value = true
+                        }
+                        imgList.push(src)
+                    }).catch((err) => {
+                        console.log(err)
+                    })
+                }
+            }
+
+            function render(e) {
+                MarkPhoto(e.target.src, metaDataMap.get(e.target.src)).then(()=>{})
+            }
+            return {
+                imgList,
+                message,
+                uploadFiles,
+                render
+            }
+        }
+    }).mount('#app')
 }
 
 window.onload =main
