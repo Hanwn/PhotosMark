@@ -11,7 +11,7 @@ import Content from "@/components/Content.vue";
 <style scoped>
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
