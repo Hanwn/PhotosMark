@@ -1,7 +1,31 @@
 <template>
   <div id="cvsContainer">
     <div id="innerContainer">
-    <v-stage :config="configKonva" ref="stage" @click="download">
+      <v-stage :config="previewKonvaConfig" ref="stage" id="previewStage">
+        <v-layer>
+          <v-image :config="configImg"></v-image>
+          <v-group :config="iconGroupConfig">
+            <v-rect :config="iconRectConfig"></v-rect>
+            <v-text :config="deviceInfoConfig"></v-text>
+            <v-text :config="lensInfoConfig"></v-text>
+            <v-image :config="iconInfoConfig"></v-image>
+            <v-rect :config="verticalBarInfoConfig"></v-rect>
+            <v-text :config="parameterInfoConfig"></v-text>
+            <v-text :config="timeInfoConfig"></v-text>
+          </v-group>
+        </v-layer>
+      </v-stage>
+    </div>
+  </div>
+
+  <div id="imgOutContainer">
+    <div class="imgInnerContainer" v-for="imgUrl in imgSrcList">
+      <img :src="imgUrl" alt="" @click="click"/>
+    </div>
+  </div>
+
+  <div class="downloadDiv">
+    <v-stage :config="downloadKonvaConfig" ref="downloadStage" id="downloadStage">
       <v-layer>
         <v-image :config="configImg"></v-image>
         <v-group :config="iconGroupConfig">
@@ -15,16 +39,11 @@
         </v-group>
       </v-layer>
     </v-stage>
-
-      <div id="imgOutContainer">
-        <div class="imgInnerContainer" v-for="imgUrl in imgSrcList">
-          <img :src="imgUrl" alt="" @click="click"/>
-        </div>
-      </div>
-    </div>
   </div>
-  <input type="file" id="upload" multiple="multiple" @change="uploadFiles">
-  <input type="button" @click="download" value="下载">
+  <div>
+    <input type="file" id="upload" multiple="multiple" @change="uploadFiles">
+    <input type="button" @click="download" value="下载">
+  </div>
 </template>
 
 <script setup>
@@ -36,32 +55,36 @@
   import {loadImg} from "@/utils/loadImg"
 
   const click = function (e) {
-    render(e.target.src, metaDataMap.get(e.target.src))
+    previewRender(e.target.src, metaDataMap.get(e.target.src))
   }
 
-  const stage = ref()
-  function download(evt) {
-    for (let i = 0; i < imgSrcList.length; i++) {
-      console.log(imgSrcList[i])
-      render(imgSrcList[i], metaDataMap.get(imgSrcList[i])).then(() => {
-        let href = stage.value.getNode().toDataURL()
-        const a = document.createElement("a")
-        a.href = href
-        a.download = "xx" + i
-        a.click()
-      })
+  let stage = ref()
+  let downloadStage = ref()
+  async function  download (evt) {
+    downloadKonvaConfig.visible = true
+    const outputConfig = {
+      "mimeType":"image/jpeg"
     }
+
+
+    for (let i = 0; i < imgSrcList.length; i++) {
+      await downloadRender(imgSrcList[i], metaDataMap.get(imgSrcList[i]))
+      let node = stage.value.getNode()
+      node.attrs.width = previewKonvaConfig.width
+      node.attrs.height = previewKonvaConfig.height
+
+      let href = node.toDataURL(outputConfig)
+      console.log(node)
+      let a = document.createElement("a")
+      a.href = href
+      a.download = "xx" + i
+      a.click()
+    }
+
+    downloadKonvaConfig.visible = false
   }
 
-  const render = async function (src, exifData) {
-    const img = await loadImg(src)
-    // iconImg.src = ""
-    const iconSrc = ""
-    const iconImg = await loadImg(iconSrc)
-
-    configImg.image = img
-    configKonva.width = img.width
-    configKonva.height = img.height * (1 + factor.value)
+  const render = async function(img, exifData) {
 
     iconRectConfig.height = img.height * factor.value
     iconRectConfig.width = img.width
@@ -78,9 +101,6 @@
     deviceInfoConfig.fontSize = fontSize
     deviceInfoConfig.offsetY = textSize.height/2
 
-    console.log(textSize.height/iconRectConfig.height)
-
-
     fontInfo = calcDeviceFontSize(exifData.LEN, 45, iconRectConfig.height, false)
     fontSize = fontInfo.fontSize
     textSize = fontInfo.textSize
@@ -88,8 +108,6 @@
     lensInfoConfig.y = middle + iconRectConfig.height/3
     lensInfoConfig.offsetY = textSize.height/2
     lensInfoConfig.fontSize = fontSize
-
-    console.log(textSize.height/iconRectConfig.height)
 
     const parameterText = exifData.L +  "mm f/" + exifData.F + " 1/" + exifData.S + " ISO" + exifData.ISO
     const parameterTextSize = 60
@@ -123,6 +141,9 @@
     verticalBarInfoConfig.y = img.height + iconRectConfig.height / 6
     verticalBarInfoConfig.height = iconRectConfig.height * 2 / 3
 
+    // const iconSrc = "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon.svg"
+    const iconSrc = "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/nikon-11.svg"
+    const iconImg = await loadImg(iconSrc)
 
     const calcIconData = calcIconSize(iconImg.width, iconImg.height, iconRectConfig.height, iconRectConfig.width)
     iconInfoConfig.image = iconImg
@@ -131,16 +152,51 @@
     iconInfoConfig.height = calcIconData.iconImgHeight
     iconInfoConfig.width = calcIconData.iconImgWidth
   }
+  const downloadRender = async function(src, exifData) {
+    const img = await loadImg(src)
+    configImg.image = img
+    downloadKonvaConfig.width = img.width
+    downloadKonvaConfig.height = (img.height * (1 + factor.value))
+    // non-reactive
+    // downloadStage.value.getNode().attrs.width = downloadKonvaConfig.width
+    // downloadStage.value.getNode().attrs.height = downloadKonvaConfig.height
+
+    previewKonvaConfig.width = img.width/10
+    previewKonvaConfig.height = (img.height * (1 + factor.value))/10
+    previewKonvaConfig.scaleX=0.1
+    previewKonvaConfig.scaleY=0.1
+
+    await render(img, exifData)
+  }
+
+  const previewRender = async function (src, exifData) {
+    const img = await loadImg(src)
+    // const img = imgData
+
+    configImg.image = img
+    previewKonvaConfig.width = img.width/10
+    previewKonvaConfig.height = (img.height * (1 + factor.value))/10
+    previewKonvaConfig.scaleX=0.1
+    previewKonvaConfig.scaleY=0.1
+
+    await render(img, exifData)
+  }
 
   const readImgData = async function(file) {
-    const imgData = await getImageData(file)
+    let imgData = ""
+    try {
+      imgData = await getImageData(file)
+    } catch (e) {
+      console.log(e)
+      return
+    }
     const exifData = getExifData(imgData)
     exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
     let src = URL.createObjectURL(file)
     imgSrcList.push(src)
     metaDataMap.set(src, exifData)
     if (rendered.value === false) {
-      await render(src, exifData)
+      await previewRender(src, exifData)
       rendered.value = true
     }
   }
@@ -164,10 +220,6 @@
     image:null,
   })
   const iconGroupConfig = reactive({
-    x: 0,
-    y: 0,
-    width:0,
-    height:0
   })
   const iconRectConfig = reactive({
     x: 0,
@@ -247,11 +299,19 @@
   })
 
 
-  const factor = ref(0.08)
+  const factor = ref(0.1)
 
-  const configKonva = reactive({
-    width: 200,
-    height: 200
+  const previewKonvaConfig = reactive({
+    width: 800,
+    height: 600,
+    scaleX:1,
+    scaleY:1
+  })
+
+  const downloadKonvaConfig = reactive({
+    width: 800,
+    height: 600,
+    visible: false
   })
 
 </script>
@@ -269,14 +329,22 @@
 #imgOutContainer {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: center;
   height: 400px;
-  width: 600px;
+  width: 1000px;
+  overflow-x: scroll;
 }
 .imgInnerContainer {
   display: flex;
   height: 200px;
   width: 300px;
   padding: 10px;
+}
+
+.downloadDiv{
+  height: 1px;
+  width: 1px;
+  overflow-x: auto;
 }
 </style>
