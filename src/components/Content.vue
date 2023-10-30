@@ -62,19 +62,17 @@
   let downloadStage = ref()
   async function  download (evt) {
     downloadKonvaConfig.visible = true
-    const outputConfig = {
-      "mimeType":"image/jpeg"
-    }
 
 
     for (let i = 0; i < imgSrcList.length; i++) {
       await downloadRender(imgSrcList[i], metaDataMap.get(imgSrcList[i]))
-      let node = stage.value.getNode()
-      node.attrs.width = previewKonvaConfig.width
-      node.attrs.height = previewKonvaConfig.height
-
+      const outputConfig = {
+        "mimeType":"image/jpeg",
+        "width": downloadStage.value.width,
+        "height": downloadStage.value.height
+      }
+      let node = downloadStage.value.getNode()
       let href = node.toDataURL(outputConfig)
-      console.log(node)
       let a = document.createElement("a")
       a.href = href
       a.download = "xx" + i
