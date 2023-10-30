@@ -30,7 +30,7 @@ function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
 
 function calcIconSize(iconWidth, iconHeight, rectH, rectW) {
     const iconFactor = {"H":1/2}
-    if (iconWidth/iconHeight >= 1.5 || iconHeight/iconWidth >= 1.5) {
+    if (iconWidth/iconHeight >= 1.25 || iconHeight/iconWidth >= 1.25) {
         iconFactor["H"] = 1/3
     }
 

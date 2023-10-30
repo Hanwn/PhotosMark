@@ -85,6 +85,8 @@
 
   const render = async function(img, exifData) {
 
+    const padding = 100
+
     iconRectConfig.height = img.height * factor.value
     iconRectConfig.width = img.width
     iconRectConfig.y = img.height
@@ -96,6 +98,7 @@
     let fontSize = fontInfo.fontSize
     let textSize = fontInfo.textSize
     deviceInfoConfig.text = exifData.Model
+    deviceInfoConfig.x = padding
     deviceInfoConfig.y = middle
     deviceInfoConfig.fontSize = fontSize
     deviceInfoConfig.offsetY = textSize.height/2
@@ -104,6 +107,7 @@
     fontSize = fontInfo.fontSize
     textSize = fontInfo.textSize
     lensInfoConfig.text = exifData.LEN
+    lensInfoConfig.x = padding
     lensInfoConfig.y = middle + iconRectConfig.height/3
     lensInfoConfig.offsetY = textSize.height/2
     lensInfoConfig.fontSize = fontSize
@@ -114,7 +118,7 @@
     fontSize = fontInfo.fontSize
     textSize = fontInfo.textSize
     parameterInfoConfig.text = parameterText
-    parameterInfoConfig.x = img.width - textSize.width - 100
+    parameterInfoConfig.x = img.width - textSize.width - padding
     parameterInfoConfig.y = middle
     parameterInfoConfig.offsetY = textSize.height/2
     parameterInfoConfig.fontSize = fontSize
