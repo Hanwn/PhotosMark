@@ -53,6 +53,7 @@
   import {calcDeviceFontSize} from "@/utils/calcFontSize";
   import {calcIconSize} from "@/utils/calcIconSize";
   import {loadImg} from "@/utils/loadImg"
+  import {getIconSrc} from "@/utils/getIcon";
 
   const click = function (e) {
     previewRender(e.target.src, metaDataMap.get(e.target.src))
@@ -91,10 +92,10 @@
 
     const middle = img.height + iconRectConfig.height/3
 
-    let fontInfo = calcDeviceFontSize(exifData.M, 60, iconRectConfig.height, true)
+    let fontInfo = calcDeviceFontSize(exifData.Model, 60, iconRectConfig.height, true)
     let fontSize = fontInfo.fontSize
     let textSize = fontInfo.textSize
-    deviceInfoConfig.text = exifData.M
+    deviceInfoConfig.text = exifData.Model
     deviceInfoConfig.y = middle
     deviceInfoConfig.fontSize = fontSize
     deviceInfoConfig.offsetY = textSize.height/2
@@ -107,7 +108,7 @@
     lensInfoConfig.offsetY = textSize.height/2
     lensInfoConfig.fontSize = fontSize
 
-    const parameterText = exifData.L +  "mm f/" + exifData.F + " 1/" + exifData.S + " ISO" + exifData.ISO
+    const parameterText = exifData.FocalLength +  "mm f/" + exifData.F + " 1/" + exifData.S + " ISO" + exifData.ISO
     const parameterTextSize = 60
     fontInfo = calcDeviceFontSize(parameterText, parameterTextSize, iconRectConfig.height, true)
     fontSize = fontInfo.fontSize
@@ -122,10 +123,10 @@
     debugConfig.y = middle
 
     const timeTextSize = 45
-    fontInfo = calcDeviceFontSize(exifData.T, timeTextSize, iconRectConfig.height, false)
+    fontInfo = calcDeviceFontSize(exifData.Time, timeTextSize, iconRectConfig.height, false)
     fontSize = fontInfo.fontSize
     textSize = fontInfo.textSize
-    timeInfoConfig.text = exifData.T
+    timeInfoConfig.text = exifData.Time
     timeInfoConfig.x = parameterInfoConfig.x
     timeInfoConfig.y = lensInfoConfig.y
     timeInfoConfig.offsetY = textSize.height/2
@@ -140,7 +141,8 @@
     verticalBarInfoConfig.height = iconRectConfig.height * 2 / 3
 
     // const iconSrc = "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon.svg"
-    const iconSrc = "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/nikon-11.svg"
+    const iconName = getIconSrc(exifData)
+    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
     const iconImg = await loadImg(iconSrc)
 
     const calcIconData = calcIconSize(iconImg.width, iconImg.height, iconRectConfig.height, iconRectConfig.width)
