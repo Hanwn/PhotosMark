@@ -1,3 +1,4 @@
+import {calcIconSize} from "@/utils/calcIconSize";
 
 const getIconSrc = function (exifData) {
     const model = exifData.Model
@@ -7,11 +8,8 @@ const getIconSrc = function (exifData) {
     const deviceMake = make.toLowerCase()
     let iconSrc = ""
 
-    console.log(deviceModel, deviceMake)
-
     if (deviceModel.includes("nikon") || deviceMake.includes("nikon")) {
         iconSrc = "Nikon2.svg"
-        iconSrc = "Lumix.svg"
     } else if (deviceModel.includes("sony") || deviceMake.includes("sony")) {
         iconSrc = "Sony.svg"
     } else if (deviceModel.includes("canon") || deviceMake.includes("canon")) {
@@ -28,9 +26,10 @@ const getIconSrc = function (exifData) {
         iconSrc = "Sony.svg"
     }
 
-    console.log(iconSrc)
-
     return iconSrc
+}
+
+function getIconInfoConfig(iconImg, rectW, rectH) {
 }
 
 export {getIconSrc}

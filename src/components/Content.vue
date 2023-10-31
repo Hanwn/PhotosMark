@@ -1,17 +1,19 @@
 <template>
   <div id="cvsContainer">
     <div id="innerContainer">
-      <v-stage :config="previewKonvaConfig" ref="stage" id="previewStage">
+      {{renderIdx}}
+      {{renderList[renderIdx].previewKonvaConfig.width}}
+      <v-stage :config="renderList[renderIdx].previewKonvaConfig" ref="stage" id="previewStage">
         <v-layer>
-          <v-image :config="configImg"></v-image>
-          <v-group :config="iconGroupConfig">
-            <v-rect :config="iconRectConfig"></v-rect>
-            <v-text :config="deviceInfoConfig"></v-text>
-            <v-text :config="lensInfoConfig"></v-text>
-            <v-image :config="iconInfoConfig"></v-image>
-            <v-rect :config="verticalBarInfoConfig"></v-rect>
-            <v-text :config="parameterInfoConfig"></v-text>
-            <v-text :config="timeInfoConfig"></v-text>
+          <v-image :config="renderList[renderIdx].configImg"></v-image>
+          <v-group :config="renderList[renderIdx].iconGroupConfig">
+            <v-rect :config="renderList[renderIdx].iconRectConfig"></v-rect>
+            <v-text :config="renderList[renderIdx].deviceInfoConfig"></v-text>
+            <v-text :config="renderList[renderIdx].lensInfoConfig"></v-text>
+            <v-image :config="renderList[renderIdx].iconInfoConfig"></v-image>
+            <v-rect :config="renderList[renderIdx].verticalBarInfoConfig"></v-rect>
+            <v-text :config="renderList[renderIdx].parameterInfoConfig"></v-text>
+            <v-text :config="renderList[renderIdx].timeInfoConfig"></v-text>
           </v-group>
         </v-layer>
       </v-stage>
@@ -19,23 +21,23 @@
   </div>
 
   <div id="imgOutContainer">
-    <div class="imgInnerContainer" v-for="imgUrl in imgSrcList">
-      <img :src="imgUrl" alt="" @click="click"/>
+    <div class="imgInnerContainer" v-for="(imgUrl, idx) in imgSrcList">
+      <img :src="imgUrl" alt="" @click="click(idx)"/>
     </div>
   </div>
 
   <div class="downloadDiv">
-    <v-stage :config="downloadKonvaConfig" ref="downloadStage" id="downloadStage">
+    <v-stage :config="renderList[renderIdx].downloadKonvaConfig" ref="downloadStage" id="downloadStage">
       <v-layer>
-        <v-image :config="configImg"></v-image>
-        <v-group :config="iconGroupConfig">
-          <v-rect :config="iconRectConfig"></v-rect>
-          <v-text :config="deviceInfoConfig"></v-text>
-          <v-text :config="lensInfoConfig"></v-text>
-          <v-image :config="iconInfoConfig"></v-image>
-          <v-rect :config="verticalBarInfoConfig"></v-rect>
-          <v-text :config="parameterInfoConfig"></v-text>
-          <v-text :config="timeInfoConfig"></v-text>
+        <v-image :config="renderList[renderIdx].configImg"></v-image>
+        <v-group :config="renderList[renderIdx].iconGroupConfig">
+          <v-rect :config="renderList[renderIdx].iconRectConfig"></v-rect>
+          <v-text :config="renderList[renderIdx].deviceInfoConfig"></v-text>
+          <v-text :config="renderList[renderIdx].lensInfoConfig"></v-text>
+          <v-image :config="renderList[renderIdx].iconInfoConfig"></v-image>
+          <v-rect :config="renderList[renderIdx].verticalBarInfoConfig"></v-rect>
+          <v-text :config="renderList[renderIdx].parameterInfoConfig"></v-text>
+          <v-text :config="renderList[renderIdx].timeInfoConfig"></v-text>
         </v-group>
       </v-layer>
     </v-stage>
@@ -47,26 +49,28 @@
 </template>
 
 <script setup>
-  import {ref, reactive, getCurrentInstance} from "vue";
+  import {ref, reactive} from "vue";
   import {getImageData} from "@/utils/readFile";
   import {getExifData} from "@/utils/readExif";
-  import {calcDeviceFontSize} from "@/utils/calcFontSize";
-  import {calcIconSize} from "@/utils/calcIconSize";
   import {loadImg} from "@/utils/loadImg"
   import {getIconSrc} from "@/utils/getIcon";
+  import {getMarkInfo} from "@/utils/parameterInfoConfig";
 
-  const click = function (e) {
-    previewRender(e.target.src, metaDataMap.get(e.target.src))
+  const click = function (idx) {
+    renderIdx.value = idx + 1
+    // previewRender(e.target.src, metaDataMap.get(e.target.src))
   }
 
   let stage = ref()
   let downloadStage = ref()
-  async function  download (evt) {
-    downloadKonvaConfig.visible = true
-
-
+  function  download (evt) {
+    renderIdx.value = 1
     for (let i = 0; i < imgSrcList.length; i++) {
-      await downloadRender(imgSrcList[i], metaDataMap.get(imgSrcList[i]))
+      // await downloadRender(imgSrcList[i], metaDataMap.get(imgSrcList[i]))
+      // console.log(renderList[renderIdx.value].downloadKonvaConfig.visible)
+      const idx = renderIdx.value
+      renderList[idx].downloadKonvaConfig.visible = true
+      // renderList[renderIdx.value].downloadKonvaConfig.visible = true
       const outputConfig = {
         "mimeType":"image/jpeg",
         "width": downloadStage.value.width,
@@ -78,88 +82,16 @@
       a.href = href
       a.download = "xx" + i
       a.click()
+      if (renderIdx.value === renderList.length) {
+        break
+      }
+      renderIdx.value = idx +1
     }
 
     downloadKonvaConfig.visible = false
   }
 
   const render = async function(img, exifData) {
-
-    const padding = 100
-
-    iconRectConfig.height = img.height * factor.value
-    iconRectConfig.width = img.width
-    iconRectConfig.y = img.height
-    iconRectConfig.fill = "white"
-
-    const middle = img.height + iconRectConfig.height/3
-
-    let fontInfo = calcDeviceFontSize(exifData.Model, 60, iconRectConfig.height, true)
-    let fontSize = fontInfo.fontSize
-    let textSize = fontInfo.textSize
-    deviceInfoConfig.text = exifData.Model
-    deviceInfoConfig.x = padding
-    deviceInfoConfig.y = middle
-    deviceInfoConfig.fontSize = fontSize
-    deviceInfoConfig.offsetY = textSize.height/2
-    const deviceInfoEndPos = deviceInfoConfig.x + textSize.width
-
-    fontInfo = calcDeviceFontSize(exifData.LEN, 45, iconRectConfig.height, false)
-    fontSize = fontInfo.fontSize
-    textSize = fontInfo.textSize
-    lensInfoConfig.text = exifData.LEN
-    lensInfoConfig.x = padding
-    lensInfoConfig.y = middle + iconRectConfig.height/3
-    lensInfoConfig.offsetY = textSize.height/2
-    lensInfoConfig.fontSize = fontSize
-    const lensInfoEndPos = lensInfoConfig.x + textSize.width
-
-    const maxLensEndPos = (deviceInfoEndPos > lensInfoEndPos ? deviceInfoEndPos : lensInfoEndPos) + 30
-
-    const parameterText = exifData.FocalLength +  "mm f/" + exifData.F + " 1/" + exifData.S + " ISO" + exifData.ISO
-    const parameterTextSize = 60
-    fontInfo = calcDeviceFontSize(parameterText, parameterTextSize, iconRectConfig.height, true)
-    fontSize = fontInfo.fontSize
-    textSize = fontInfo.textSize
-    parameterInfoConfig.text = parameterText
-    parameterInfoConfig.x = img.width - textSize.width - padding
-    parameterInfoConfig.y = middle
-    parameterInfoConfig.offsetY = textSize.height/2
-    parameterInfoConfig.fontSize = fontSize
-
-    debugConfig.x = deviceInfoConfig.x
-    debugConfig.y = middle
-
-    const timeTextSize = 45
-    fontInfo = calcDeviceFontSize(exifData.Time, timeTextSize, iconRectConfig.height, false)
-    fontSize = fontInfo.fontSize
-    textSize = fontInfo.textSize
-    timeInfoConfig.text = exifData.Time
-    timeInfoConfig.x = parameterInfoConfig.x
-    timeInfoConfig.y = lensInfoConfig.y
-    timeInfoConfig.offsetY = textSize.height/2
-    timeInfoConfig.fontSize = fontSize
-
-    // debugConfig.x = parameterInfoConfig.x
-    // debugConfig.y = middle
-
-    const dist = 50
-    verticalBarInfoConfig.x = parameterInfoConfig.x - verticalBarInfoConfig.width - dist
-    verticalBarInfoConfig.y = img.height + iconRectConfig.height / 6
-    verticalBarInfoConfig.height = iconRectConfig.height * 2 / 3
-
-    // const iconSrc = "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon.svg"
-    const iconName = getIconSrc(exifData)
-    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
-    const iconImg = await loadImg(iconSrc)
-
-    const iconMaxLen = verticalBarInfoConfig.x - dist - maxLensEndPos
-    const calcIconData = calcIconSize(iconImg.width, iconImg.height, iconRectConfig.height, iconRectConfig.width, iconMaxLen)
-    iconInfoConfig.x = verticalBarInfoConfig.x - dist - calcIconData.iconImgWidth
-    iconInfoConfig.image = iconImg
-    iconInfoConfig.y = iconRectConfig.y + (iconRectConfig.height - calcIconData.iconImgHeight)/2
-    iconInfoConfig.height = calcIconData.iconImgHeight
-    iconInfoConfig.width = calcIconData.iconImgWidth
   }
   const downloadRender = async function(src, exifData) {
     const img = await loadImg(src)
@@ -184,6 +116,7 @@
 
     configImg.image = img
     previewKonvaConfig.width = img.width/10
+
     previewKonvaConfig.height = (img.height * (1 + factor.value))/10
     previewKonvaConfig.scaleX=0.1
     previewKonvaConfig.scaleY=0.1
@@ -204,6 +137,55 @@
     let src = URL.createObjectURL(file)
     imgSrcList.push(src)
     metaDataMap.set(src, exifData)
+
+    const iconName = getIconSrc(exifData)
+    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
+    const iconImg = await loadImg(iconSrc)
+
+
+    const img = await loadImg(src)
+
+
+    const padding = 100
+    const rectH = img.height * factor.value
+    const middle = img.height + rectH/3
+    const rectW = img.width
+    const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
+
+    renderList.push({
+      previewKonvaConfig:{
+        width : img.width/10,
+        height : (img.height * (1 + factor.value))/10,
+        scaleX:0.1,
+        scaleY:0.1,
+      },
+      downloadKonvaConfig:{
+        width : img.width,
+        height : (img.height * (1 + factor.value)),
+        visible: true
+      },
+      configImg: {
+        image: img,
+      },
+      iconGroupConfig: {},
+      iconRectConfig: {
+        height : img.height * factor.value,
+        width : img.width,
+        y : img.height,
+        fill : "white"
+      },
+      deviceInfoConfig: genMarkInfo["left"]["deviceInfoConfig"],
+      lensInfoConfig: genMarkInfo["left"]["lensInfoConfig"],
+      iconInfoConfig: genMarkInfo["right"]["iconInfoConfig"],
+      verticalBarInfoConfig: genMarkInfo["right"]["verticalBarInfoConfig"],
+      parameterInfoConfig: genMarkInfo["right"]["parameterInfoConfig"],
+      timeInfoConfig: genMarkInfo["right"]["timeInfoConfig"]
+    })
+
+    if (renderIdx.value === 0) {
+      renderIdx.value = 1
+    }
+
     if (rendered.value === false) {
       await previewRender(src, exifData)
       rendered.value = true
@@ -224,6 +206,15 @@
   const imgSrcList = reactive([])
   const metaDataMap = reactive(new Map())
   const rendered = ref(false)
+  const renderList = reactive([{
+    previewKonvaConfig:{
+      width: 800,
+      height: 600,
+      scaleX:1,
+      scaleY:1
+    }
+  }])
+  const renderIdx = ref(0)
 
   const configImg = reactive({
     image:null,
@@ -354,6 +345,6 @@
 .downloadDiv{
   height: 1px;
   width: 1px;
-  overflow-x: auto;
+  overflow: auto;
 }
 </style>
