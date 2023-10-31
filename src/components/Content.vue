@@ -70,7 +70,6 @@
 
   const click = function (idx) {
     renderIdx.value = idx + 1
-    // previewRender(e.target.src, metaDataMap.get(e.target.src))
   }
 
   let stage = ref()
@@ -97,41 +96,6 @@
       }
       renderIdx.value = idx +1
     }
-
-    downloadKonvaConfig.visible = false
-  }
-
-  const render = async function(img, exifData) {
-  }
-  const downloadRender = async function(src, exifData) {
-    const img = await loadImg(src)
-    configImg.image = img
-    downloadKonvaConfig.width = img.width
-    downloadKonvaConfig.height = (img.height * (1 + factor.value))
-    // non-reactive
-    // downloadStage.value.getNode().attrs.width = downloadKonvaConfig.width
-    // downloadStage.value.getNode().attrs.height = downloadKonvaConfig.height
-
-    previewKonvaConfig.width = img.width/10
-    previewKonvaConfig.height = (img.height * (1 + factor.value))/10
-    previewKonvaConfig.scaleX=0.1
-    previewKonvaConfig.scaleY=0.1
-
-    await render(img, exifData)
-  }
-
-  const previewRender = async function (src, exifData) {
-    const img = await loadImg(src)
-    // const img = imgData
-
-    configImg.image = img
-    previewKonvaConfig.width = img.width/10
-
-    previewKonvaConfig.height = (img.height * (1 + factor.value))/10
-    previewKonvaConfig.scaleX=0.1
-    previewKonvaConfig.scaleY=0.1
-
-    await render(img, exifData)
   }
 
   const readImgData = async function(file) {
@@ -152,9 +116,7 @@
     const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
     const iconImg = await loadImg(iconSrc)
 
-
     const img = await loadImg(src)
-
 
     const padding = 100
     const rectH = img.height * factor.value
@@ -195,11 +157,6 @@
     if (renderIdx.value === 0) {
       renderIdx.value = 1
     }
-
-    if (rendered.value === false) {
-      await previewRender(src, exifData)
-      rendered.value = true
-    }
   }
 
   function uploadFiles(e) {
@@ -225,105 +182,7 @@
     }
   }])
   const renderIdx = ref(0)
-
-  const configImg = reactive({
-    image:null,
-  })
-  const iconGroupConfig = reactive({
-  })
-  const iconRectConfig = reactive({
-    x: 0,
-    y: 0,
-    width:0,
-    height:0,
-    fill:"",
-    stroke: "black",
-  })
-
-  const deviceInfoConfig = reactive({
-    x:100,
-    y:0,
-    text:"",
-    fontSize:0,
-    fontStyle:"bold",
-    offsetY:0,
-    fill:"black",
-    draggable:true,
-  })
-
-  const lensInfoConfig = reactive({
-    x:100,
-    y:0,
-    text:"",
-    fontSize:0,
-    offsetY:0,
-    fontStyle:"normal",
-    align:"center",
-    fill:"gray",
-    draggable:true,
-  })
-  const iconInfoConfig = reactive({
-    image: null,
-    x: 0,
-    y:0,
-    height:0,
-    width:0,
-  })
-  const verticalBarInfoConfig = reactive({
-    x: 0,
-    y: 0,
-    width:5,
-    height:0,
-    fill: "gray",
-  })
-  const parameterInfoConfig = reactive({
-    x:100,
-    y:0,
-    text:"",
-    fontSize:0,
-    fontStyle:"bold",
-    align:"center",
-    offsetY:0,
-    verticalAlign:"middle",
-    fill:"black",
-    draggable:true,
-  })
-  const timeInfoConfig = reactive({
-    x:100,
-    y:0,
-    text:"",
-    fontSize:0,
-    fontStyle:"normal",
-    align:"center",
-    verticalAlign:"middle",
-    offsetY:0,
-    fill:"gray",
-    draggable:true,
-
-  })
-  const debugConfig = reactive({
-    x:100,
-    y:100,
-    radius: 10,
-    fill: "red",
-  })
-
-
   const factor = ref(0.1)
-
-  const previewKonvaConfig = reactive({
-    width: 800,
-    height: 600,
-    scaleX:1,
-    scaleY:1
-  })
-
-  const downloadKonvaConfig = reactive({
-    width: 800,
-    height: 600,
-    visible: false
-  })
-
 </script>
 
 <style>
