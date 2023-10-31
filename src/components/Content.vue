@@ -102,6 +102,7 @@
     deviceInfoConfig.y = middle
     deviceInfoConfig.fontSize = fontSize
     deviceInfoConfig.offsetY = textSize.height/2
+    const deviceInfoEndPos = deviceInfoConfig.x + textSize.width
 
     fontInfo = calcDeviceFontSize(exifData.LEN, 45, iconRectConfig.height, false)
     fontSize = fontInfo.fontSize
@@ -111,6 +112,9 @@
     lensInfoConfig.y = middle + iconRectConfig.height/3
     lensInfoConfig.offsetY = textSize.height/2
     lensInfoConfig.fontSize = fontSize
+    const lensInfoEndPos = lensInfoConfig.x + textSize.width
+
+    const maxLensEndPos = (deviceInfoEndPos > lensInfoEndPos ? deviceInfoEndPos : lensInfoEndPos) + 30
 
     const parameterText = exifData.FocalLength +  "mm f/" + exifData.F + " 1/" + exifData.S + " ISO" + exifData.ISO
     const parameterTextSize = 60
@@ -149,9 +153,10 @@
     const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
     const iconImg = await loadImg(iconSrc)
 
-    const calcIconData = calcIconSize(iconImg.width, iconImg.height, iconRectConfig.height, iconRectConfig.width)
-    iconInfoConfig.image = iconImg
+    const iconMaxLen = verticalBarInfoConfig.x - dist - maxLensEndPos
+    const calcIconData = calcIconSize(iconImg.width, iconImg.height, iconRectConfig.height, iconRectConfig.width, iconMaxLen)
     iconInfoConfig.x = verticalBarInfoConfig.x - dist - calcIconData.iconImgWidth
+    iconInfoConfig.image = iconImg
     iconInfoConfig.y = iconRectConfig.y + (iconRectConfig.height - calcIconData.iconImgHeight)/2
     iconInfoConfig.height = calcIconData.iconImgHeight
     iconInfoConfig.width = calcIconData.iconImgWidth

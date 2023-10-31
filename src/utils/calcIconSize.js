@@ -28,7 +28,7 @@ function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
     // debug(ctx, iconPosX, iconPosY)
 }*/
 
-function calcIconSize(iconWidth, iconHeight, rectH, rectW) {
+function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
     const iconFactor = {"H":1/2}
     if (iconWidth/iconHeight >= 1.25 || iconHeight/iconWidth >= 1.25) {
         iconFactor["H"] = 1/3
@@ -37,7 +37,7 @@ function calcIconSize(iconWidth, iconHeight, rectH, rectW) {
     let iconImgHeight = rectH * iconFactor["H"]
     const scale = iconWidth/iconHeight
     let iconImgWidth = iconImgHeight * scale
-    const maxIconWidth =  rectW / 6
+    const maxIconWidth =  maxLen > rectW / 6 ? rectW/6 : maxLen
     if (iconImgWidth > maxIconWidth) {
         iconImgWidth = maxIconWidth
         iconImgHeight = maxIconWidth / scale

@@ -11,7 +11,7 @@ const getIconSrc = function (exifData) {
 
     if (deviceModel.includes("nikon") || deviceMake.includes("nikon")) {
         iconSrc = "Nikon2.svg"
-        iconSrc = "Sony.svg"
+        iconSrc = "Lumix.svg"
     } else if (deviceModel.includes("sony") || deviceMake.includes("sony")) {
         iconSrc = "Sony.svg"
     } else if (deviceModel.includes("canon") || deviceMake.includes("canon")) {
