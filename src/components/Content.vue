@@ -34,7 +34,7 @@
           <v-rect :config="renderList[renderIdx].iconRectConfig"></v-rect>
           <v-text :config="renderList[renderIdx].deviceInfoConfig"></v-text>
           <v-text :config="renderList[renderIdx].lensInfoConfig"></v-text>
-          <v-image :config="renderList[renderIdx].iconInfoConfig"></v-image>
+          <v-image :config="renderList[renderIdx].iconInfoConfig" @dragEnd="dragIconEnd"></v-image>
           <v-rect :config="renderList[renderIdx].verticalBarInfoConfig"></v-rect>
           <v-text :config="renderList[renderIdx].parameterInfoConfig"></v-text>
           <v-text :config="renderList[renderIdx].timeInfoConfig"></v-text>
@@ -45,6 +45,7 @@
   <div>
     <input type="file" id="upload" multiple="multiple" @change="uploadFiles">
     <input type="button" @click="download" value="下载">
+    <input type="button" @click="add" value="add">
   </div>
 </template>
 
@@ -56,6 +57,17 @@
   import {getIconSrc} from "@/utils/getIcon";
   import {getMarkInfo} from "@/utils/parameterInfoConfig";
 
+  const v = ref(0)
+  const add = function() {
+    v.value+=1
+    renderList[1].deviceInfoConfig.text = v.value
+  }
+
+  const dragIconEnd = function (e) {
+    // renderList[1].iconInfoConfig.x = e.target.
+    console.log(e)
+  }
+
   const click = function (idx) {
     renderIdx.value = idx + 1
     // previewRender(e.target.src, metaDataMap.get(e.target.src))
@@ -63,20 +75,18 @@
 
   let stage = ref()
   let downloadStage = ref()
-  function  download (evt) {
+  const download = async function(evt) {
     renderIdx.value = 1
     for (let i = 0; i < imgSrcList.length; i++) {
-      // await downloadRender(imgSrcList[i], metaDataMap.get(imgSrcList[i]))
-      // console.log(renderList[renderIdx.value].downloadKonvaConfig.visible)
       const idx = renderIdx.value
+      console.log(idx)
       renderList[idx].downloadKonvaConfig.visible = true
-      // renderList[renderIdx.value].downloadKonvaConfig.visible = true
       const outputConfig = {
         "mimeType":"image/jpeg",
         "width": downloadStage.value.width,
         "height": downloadStage.value.height
       }
-      let node = downloadStage.value.getNode()
+      let node = await downloadStage.value.getNode()
       let href = node.toDataURL(outputConfig)
       let a = document.createElement("a")
       a.href = href
