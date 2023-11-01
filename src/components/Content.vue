@@ -45,7 +45,7 @@
   <div>
     <input type="file" id="upload" multiple="multiple" @change="uploadFiles">
     <input type="button" @click="download" value="下载">
-    <input type="button" @click="add" value="add">
+    <input v-model="renderList[renderIdx].deviceInfoConfig.text"/>
   </div>
 </template>
 
@@ -56,6 +56,7 @@
   import {loadImg} from "@/utils/loadImg"
   import {getIconSrc} from "@/utils/getIcon";
   import {getMarkInfo} from "@/utils/parameterInfoConfig";
+  import {getInitData} from "@/utils/constInfo";
 
   const v = ref(0)
   const add = function() {
@@ -143,6 +144,7 @@
       iconRectConfig: {
         height : img.height * factor.value,
         width : img.width,
+        x: 0,
         y : img.height,
         fill : "white"
       },
@@ -153,7 +155,7 @@
       parameterInfoConfig: genMarkInfo["right"]["parameterInfoConfig"],
       timeInfoConfig: genMarkInfo["right"]["timeInfoConfig"]
     })
-
+    console.log(genMarkInfo["left"]["deviceInfoConfig"])
     if (renderIdx.value === 0) {
       renderIdx.value = 1
     }
@@ -173,14 +175,8 @@
   const imgSrcList = reactive([])
   const metaDataMap = reactive(new Map())
   const rendered = ref(false)
-  const renderList = reactive([{
-    previewKonvaConfig:{
-      width: 800,
-      height: 600,
-      scaleX:1,
-      scaleY:1
-    }
-  }])
+  const initData = getInitData()
+  const renderList = reactive([initData])
   const renderIdx = ref(0)
   const factor = ref(0.1)
 </script>
