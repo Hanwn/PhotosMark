@@ -1,10 +1,16 @@
 <script setup>
-import Content from "@/components/Content.vue";
+import PreviewCard from "@/components/PreviewCard.vue";
+import PhotoSlide from "@/components/PhotoSlide.vue";
+import ParameterArea from "@/components/ParameterArea.vue";
+import Download from "@/components/Download.vue";
 </script>
 
 <template>
   <div class="container">
-    <Content></Content>
+    <preview-card></preview-card>
+    <parameter-area></parameter-area>
+    <PhotoSlide></PhotoSlide>
+    <download></download>
   </div>
 </template>
 
