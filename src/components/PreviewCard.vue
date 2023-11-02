@@ -27,6 +27,8 @@
 <style>
 #cvsContainer{
   display: flex;
+  width: 800px;
+  height: 600px;
   flex-direction: row;
   align-content: center;
   justify-content: center;

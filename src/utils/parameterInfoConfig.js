@@ -148,12 +148,24 @@ function getMarkInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg) {
 
 function genRenderItem(img, genMarkInfo) {
     const {factor} = defineFactor()
+    let imgH = img.height * ( 1 + factor.value)
+    let imgW = img.width
+    const scale = imgH/imgW
+    if (imgH > imgW) {
+        imgH = 600
+        imgW = imgH/scale
+    } else {
+       imgW = 800
+       imgH =  imgW * scale
+    }
+    const scaleX = imgW/img.width
+    const scaleY = imgH/(img.height * (1 + factor.value))
     return {
         previewKonvaConfig:{
-            width : img.width/10,
-            height : (img.height * (1 + factor.value))/10,
-            scaleX:0.1,
-            scaleY:0.1,
+            width : imgW,
+            height : imgH,
+            scaleX: scaleX,
+            scaleY:scaleY,
         },
         downloadKonvaConfig:{
             width : img.width,

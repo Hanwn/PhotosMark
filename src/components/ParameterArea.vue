@@ -102,17 +102,25 @@ async function reset() {
 </script>
 
 <template>
-  <div>
+  <div class="inputContainer">
+    <input class="inputArea" v-model="renderList[renderIdx].deviceInfoConfig.text"/>
+    <input class="inputArea" v-model="renderList[renderIdx].lensInfoConfig.text"/>
+    <input class="inputArea" v-model="renderList[renderIdx].timeInfoConfig.text"/>
+    <input class="inputArea" v-model="renderList[renderIdx].parameterInfoConfig.text"/>
     <input type="file" id="upload" multiple="multiple" @change="uploadFiles"/>
     <input type="button" value="reset" @click="reset">
-    <input v-model="renderList[renderIdx].deviceInfoConfig.text"/>
-    <input v-model="renderList[renderIdx].lensInfoConfig.text"/>
-    <input v-model="renderList[renderIdx].timeInfoConfig.text"/>
-    <input v-model="renderList[renderIdx].parameterInfoConfig.text"/>
   </div>
 
 </template>
 
 <style scoped>
-
+.inputContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  margin: 20px;
+}
+.inputArea{
+  padding: 5px;
+}
 </style>
