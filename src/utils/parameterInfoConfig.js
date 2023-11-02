@@ -1,5 +1,6 @@
 import {calcDeviceFontSize} from "@/utils/calcFontSize";
 import {calcIconSize} from "@/utils/calcIconSize";
+import {defineFactor} from "@/store/defineFactor";
 
 
 function getTimeInfoConfig(exifData, middle, rectH, parameterInfoConfig) {
@@ -145,4 +146,38 @@ function getMarkInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg) {
     }
 }
 
-export {getMarkInfo}
+function genRenderItem(img, genMarkInfo) {
+    const {factor} = defineFactor()
+    return {
+        previewKonvaConfig:{
+            width : img.width/10,
+            height : (img.height * (1 + factor.value))/10,
+            scaleX:0.1,
+            scaleY:0.1,
+        },
+        downloadKonvaConfig:{
+            width : img.width,
+            height : (img.height * (1 + factor.value)),
+            visible: true
+        },
+        configImg: {
+            image: img,
+        },
+        iconGroupConfig: {},
+        iconRectConfig: {
+            height : img.height * factor.value,
+            width : img.width,
+            x: 0,
+            y : img.height,
+            fill : "white"
+        },
+        deviceInfoConfig: genMarkInfo["left"]["deviceInfoConfig"],
+        lensInfoConfig: genMarkInfo["left"]["lensInfoConfig"],
+        iconInfoConfig: genMarkInfo["right"]["iconInfoConfig"],
+        verticalBarInfoConfig: genMarkInfo["right"]["verticalBarInfoConfig"],
+        parameterInfoConfig: genMarkInfo["right"]["parameterInfoConfig"],
+        timeInfoConfig: genMarkInfo["right"]["timeInfoConfig"]
+    }
+}
+
+export {getMarkInfo, genRenderItem}
