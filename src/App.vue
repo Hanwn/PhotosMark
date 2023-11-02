@@ -7,8 +7,10 @@ import Download from "@/components/Download.vue";
 
 <template>
   <div class="container">
-    <preview-card></preview-card>
-    <parameter-area></parameter-area>
+    <div id="combinedContainer">
+      <preview-card></preview-card>
+      <parameter-area></parameter-area>
+    </div>
     <PhotoSlide></PhotoSlide>
     <download></download>
   </div>
@@ -20,5 +22,9 @@ import Download from "@/components/Download.vue";
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+#combinedContainer {
+  display: flex;
+  flex-direction: row;
 }
 </style>
