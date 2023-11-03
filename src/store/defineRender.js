@@ -8,6 +8,9 @@ const renderIdx = ref(0)
 
 function pushToRenderList(obj) {
     renderList.push(obj)
+    if (renderIdx.value === 0) {
+        renderIdx.value = 1
+    }
 }
 
 function setRenderIdx(idx) {

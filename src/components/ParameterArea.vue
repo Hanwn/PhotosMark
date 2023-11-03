@@ -55,7 +55,7 @@ const readImgData = async function(file) {
   const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
   const renderItem = genRenderItem(img, genMarkInfo)
   pushToRenderList(renderItem)
-  setRenderIdx(renderIdx.value + 1)
+  // setRenderIdx(renderIdx.value + 1)
   pushToID2Src(renderIdx.value, src)
 }
 
@@ -107,8 +107,8 @@ async function reset() {
     <input class="inputArea" v-model="renderList[renderIdx].lensInfoConfig.text"/>
     <input class="inputArea" v-model="renderList[renderIdx].timeInfoConfig.text"/>
     <input class="inputArea" v-model="renderList[renderIdx].parameterInfoConfig.text"/>
-    <input type="file" id="upload" multiple="multiple" @change="uploadFiles"/>
     <input type="button" value="reset" @click="reset">
+    <input type="file" id="upload" multiple="multiple" @change="uploadFiles"/>
   </div>
 
 </template>
@@ -117,7 +117,8 @@ async function reset() {
 .inputContainer{
   display: flex;
   flex-direction: column;
-  align-items: baseline;
+  justify-content: center;
+  align-items: stretch;
   margin: 20px;
 }
 .inputArea{

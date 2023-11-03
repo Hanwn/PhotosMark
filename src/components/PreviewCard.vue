@@ -28,12 +28,16 @@
 #cvsContainer{
   display: flex;
   width: 800px;
-  height: 600px;
+  height: 601px;
   flex-direction: row;
   align-content: center;
   justify-content: center;
+  margin: 2rem;
 }
+
 #innerContainer {
+  border: 1px solid black;
+  display: inline;
 }
 
 </style>
