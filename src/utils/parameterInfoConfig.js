@@ -22,10 +22,12 @@ function getTimeInfoConfig(exifData, middle, rectH, parameterInfoConfig) {
 function getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH) {
     const dist = 50
     const verticalBarWidth = 5
+    const radio = 0.5
+    const offset = (rectH * (1 - radio))/2
     return {
         x : parameterInfoConfig.x - verticalBarWidth - dist,
-        y : imgH + rectH / 6,
-        height : rectH * 2 / 3,
+        y : imgH + offset,
+        height : rectH * radio,
         width: verticalBarWidth,
         fill: "gray",
         draggable:true,
