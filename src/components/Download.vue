@@ -1,17 +1,33 @@
 <script setup>
-import {ref} from "vue";
+import {computed, ref, render, watch} from "vue";
 import {defineRender} from "@/store/defineRender";
 import {Download } from '@element-plus/icons-vue'
+import { h } from 'vue'
+import { ElNotification } from 'element-plus'
+import {defineImgList} from "@/store/defineImg";
+import {notify} from "@/utils/notify";
+
 const {renderCache, currentRenderUid} = defineRender()
-
-
 const downloadStage = ref()
+const disable = ref(true)
+
+const notifyDownloadSuccess = () => {
+  ElNotification({
+    title: '下载完成',
+    position: 'bottom-right',
+  })
+}
 
 async function download() {
+  if (renderCache.size === 1) {
+    notify("请上传图片")
+    return
+  }
   for (let item of renderCache) {
-    if (item[0] !== 0) {
-      currentRenderUid.value = item[0]
+    if (item[0] === 0) {
+      continue
     }
+    currentRenderUid.value = item[0]
     const outputConfig = {
       "mimeType": "image/jpeg",
       "width": downloadStage.value.width,
@@ -24,19 +40,8 @@ async function download() {
     a.download = "xx"
     a.click()
   }
-  // for (let i = 1; i < renderList.length; i++) {
-  //   const outputConfig = {
-  //     "mimeType": "image/jpeg",
-  //     "width": downloadStage.value.width,
-  //     "height": downloadStage.value.height
-  //   }
-  //   let node = await downloadStage.value.getNode()
-  //   let href = node.toDataURL(outputConfig)
-  //   let a = document.createElement("a")
-  //   a.href = href
-  //   a.download = "xx" + i
-  //   a.click()
-  // }
+  // notifyDownloadSuccess()
+  notify("下载成功")
 }
 </script>
 

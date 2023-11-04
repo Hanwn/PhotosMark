@@ -1,7 +1,11 @@
 <template>
   <div id="cvsContainer">
-    <div id="innerContainer">
-
+    <div id="innerContainer"
+          class="inline-flex"
+          :style="{
+            boxShadow: '0px 0px 10px #000'
+          }"
+    >
       <v-stage :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).previewKonvaConfig : {}" ref="stage" id="previewStage">
         <v-layer>
           <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).configImg : {}"></v-image>
@@ -29,7 +33,6 @@
 #cvsContainer{
   display: flex;
   width: 800px;
-  height: 601px;
   flex-direction: row;
   align-content: center;
   justify-content: center;
@@ -37,7 +40,6 @@
 }
 
 #innerContainer {
-  border: 1px solid black;
   display: inline;
 }
 

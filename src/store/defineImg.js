@@ -4,13 +4,18 @@ import {defineRender} from "@/store/defineRender";
 const imgSrcList = ref([])
 const iconCache = reactive(new Map())
 const exifCache = reactive(new Map())
-// const uid2Src = reactive(new Map())
+const uid2Src = reactive(new Map())
 
-// watch(imgSrcList, ()=>{
-//     for (let i in imgSrcList) {
-//         console.log(i)
-//     }
-// })
+watch(imgSrcList, ()=>{
+    console.log(imgSrcList.value)
+    for (let imgItem of imgSrcList.value) {
+        const uid = imgItem.uid
+        const src= imgItem.url
+        if (!uid2Src.has(uid)) {
+            uid2Src.set(uid, src)
+        }
+    }
+})
 
 
 function pushToImgList(src) {
@@ -52,4 +57,4 @@ function defineExifCache() {
 }
 
 
-export {defineImgList, defineIcon, defineExifCache, pushToImgList, pushToIconCache, pushToExifCache}
+export {defineImgList, defineIcon, defineExifCache, pushToImgList, pushToIconCache, pushToExifCache, uid2Src}
