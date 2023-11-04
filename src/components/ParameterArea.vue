@@ -18,7 +18,7 @@ const {renderCache, currentRenderUid} = defineRender()
 
 async function reset() {
   if (renderCache.has(currentRenderUid.value) && currentRenderUid.value !== 0) {
-    const src = uid2Src.get(currentRenderUid.value)
+    const src = uid2Src.get(currentRenderUid.value).src
     // TODO: mi.js
     const img = await loadImg(src)
     const exifData = exifCache.get(src)

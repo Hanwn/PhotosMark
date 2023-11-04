@@ -4,7 +4,7 @@ import {defineRender} from "@/store/defineRender";
 import {Download } from '@element-plus/icons-vue'
 import { h } from 'vue'
 import { ElNotification } from 'element-plus'
-import {defineImgList} from "@/store/defineImg";
+import {defineImgList, uid2Src} from "@/store/defineImg";
 import {notify} from "@/utils/notify";
 
 const {renderCache, currentRenderUid} = defineRender()
@@ -37,7 +37,7 @@ async function download() {
     let href = node.toDataURL(outputConfig)
     let a = document.createElement("a")
     a.href = href
-    a.download = "xx"
+    a.download = uid2Src.get(currentRenderUid.value).name
     a.click()
   }
   // notifyDownloadSuccess()
