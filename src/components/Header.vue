@@ -5,11 +5,7 @@
 <template>
 <div id="headerContainer">
   <div class="container">
-    PhotoMark
-  </div>
-
-  <div class="container">
-    <a href="https://www.buymeacoffee.com/hanwn7721n" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+    <img src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/logo.svg" alt="" style="height: 60px !important;width: 217px !important;" >
   </div>
 </div>
 </template>

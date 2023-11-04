@@ -33,6 +33,7 @@ const handleRemove = (uploadFile, uploadFiles) => {
   const uid = uploadFile.uid
   if (renderCache.has(uid)) {
     renderCache.delete(uid)
+    currentRenderUid.value = 0
   }
 }
 
