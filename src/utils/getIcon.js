@@ -26,7 +26,7 @@ const getIconSrc = function (exifData) {
     if (deviceMap.has(deviceModel)) {
         return deviceMap.get(deviceModel)
     }
-    if (deviceMake.hash(deviceMake)) {
+    if (deviceMap.has(deviceMake)) {
         return deviceMap.get(deviceMake)
     }
 
