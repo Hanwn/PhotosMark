@@ -10,14 +10,11 @@
   >
     <el-icon><Plus /></el-icon>
   </el-upload>
-  <div>
-    {{imgSrcList}}
-  </div>
 </template>
 
 <script setup>
 import { Plus } from '@element-plus/icons-vue'
-import {defineIcon, defineImgList, pushToIconCache} from "@/store/defineImg"
+import {defineIcon, defineImgList, pushToExifCache, pushToIconCache, uid2Src} from "@/store/defineImg"
 import {defineRender} from "@/store/defineRender";
 import {genRenderItem, getMarkInfo} from "@/utils/parameterInfoConfig";
 import {loadImg} from "@/utils/loadImg";
@@ -45,6 +42,7 @@ const handlePreview = async (uploadFile) => {
     const src = uploadFile.url
     const img = await loadImg(src)
     const iconName = getIconSrc(exifData)
+    pushToExifCache(src, exifData)
     const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
     let iconImg = ""
     if (iconCache.has(iconSrc)) {
