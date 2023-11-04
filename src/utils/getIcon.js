@@ -4,8 +4,6 @@ const getIconSrc = function (exifData) {
     const model = exifData.Model
     const make = exifData.Make
 
-    console.log(model,make)
-
     const deviceModel = model.toLowerCase()
     const deviceMake = make.toLowerCase()
     let iconSrc = "Nikon100.svg"
@@ -23,11 +21,10 @@ const getIconSrc = function (exifData) {
         ["ricoh", "ricoh.svg"]
     ])
 
-    if (deviceMap.has(deviceModel)) {
-        return deviceMap.get(deviceModel)
-    }
-    if (deviceMap.has(deviceMake)) {
-        return deviceMap.get(deviceMake)
+    for (let key of deviceMap.keys()) {
+        if (deviceMake.includes(key) || deviceModel.includes(key)) {
+            return deviceMap.get(key)
+        }
     }
 
     return iconSrc
