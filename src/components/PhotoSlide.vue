@@ -6,6 +6,7 @@
       :on-remove="handleRemove"
       :on-preview="handlePreview"
       :auto-upload="false"
+      :on-change="renderPreview"
       :multiple="true"
   >
     <el-icon><Plus /></el-icon>
@@ -29,11 +30,13 @@ const {factor} = defineFactor()
 const {iconCache} = defineIcon()
 
 const handleRemove = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
+  const uid = uploadFile.uid
+  if (renderCache.has(uid)) {
+    renderCache.delete(uid)
+  }
 }
 
-
-const handlePreview = async (uploadFile) => {
+const renderPreview = async function(uploadFile) {
   const uid = uploadFile.uid
   if (!renderCache.has(uid)) {
     const imgData = await getImageData(uploadFile.raw)
@@ -54,12 +57,45 @@ const handlePreview = async (uploadFile) => {
 
     const padding = 100
     const rectH = img.height * factor.value
-    const middle = img.height + rectH/3
+    const middle = img.height + rectH / 3
     const rectW = img.width
     const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
     const renderItem = genRenderItem(img, genMarkInfo)
     renderCache.set(uid, renderItem)
   }
-  currentRenderUid.value = uploadFile.uid
+  if (currentRenderUid.value === 0) {
+    currentRenderUid.value = uid
+  }
 }
+
+
+  const handlePreview = async function (uploadFile) {
+    const uid = uploadFile.uid
+    if (!renderCache.has(uid)) {
+      const imgData = await getImageData(uploadFile.raw)
+      const exifData = getExifData(imgData)
+      exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
+      const src = uploadFile.url
+      const img = await loadImg(src)
+      const iconName = getIconSrc(exifData)
+      pushToExifCache(src, exifData)
+      const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
+      let iconImg = ""
+      if (iconCache.has(iconSrc)) {
+        iconImg = iconCache.get(iconSrc)
+      } else {
+        iconImg = await loadImg(iconSrc)
+        pushToIconCache(src)
+      }
+
+      const padding = 100
+      const rectH = img.height * factor.value
+      const middle = img.height + rectH / 3
+      const rectW = img.width
+      const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
+      const renderItem = genRenderItem(img, genMarkInfo)
+      renderCache.set(uid, renderItem)
+    }
+    currentRenderUid.value = uploadFile.uid
+  }
 </script>
