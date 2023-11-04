@@ -29,15 +29,20 @@ function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
 }*/
 
 function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
-    const iconFactor = {"H":1/2}
+    let verticalMaxRadio = 1/2
+    const horizonMaxRadio = 1/6
+    console.log(iconWidth/iconHeight)
+    console.log(iconHeight/iconWidth)
+
     if (iconWidth/iconHeight >= 1.25 || iconHeight/iconWidth >= 1.25) {
-        iconFactor["H"] = 1/3
+        verticalMaxRadio = 1/4
     }
 
-    let iconImgHeight = rectH * iconFactor["H"]
+
+    let iconImgHeight = rectH * verticalMaxRadio
     const scale = iconWidth/iconHeight
     let iconImgWidth = iconImgHeight * scale
-    const maxIconWidth =  maxLen > rectW / 6 ? rectW/6 : maxLen
+    const maxIconWidth =  maxLen > (rectW * horizonMaxRadio)? (rectW * horizonMaxRadio) : maxLen
     if (iconImgWidth > maxIconWidth) {
         iconImgWidth = maxIconWidth
         iconImgHeight = maxIconWidth / scale

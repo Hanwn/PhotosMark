@@ -7,7 +7,6 @@ const exifCache = reactive(new Map())
 const uid2Src = reactive(new Map())
 
 watch(imgSrcList, ()=>{
-    console.log(imgSrcList.value)
     for (let imgItem of imgSrcList.value) {
         const uid = imgItem.uid
         const src= imgItem.url
