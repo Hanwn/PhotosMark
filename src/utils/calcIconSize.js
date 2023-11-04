@@ -31,8 +31,6 @@ function drawIcon(ctx, factor, mainImg, iconImg, verticalBarInfo) {
 function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
     let verticalMaxRadio = 1/2
     const horizonMaxRadio = 1/6
-    console.log(iconWidth/iconHeight)
-    console.log(iconHeight/iconWidth)
 
     if (iconWidth/iconHeight >= 1.25 || iconHeight/iconWidth >= 1.25) {
         verticalMaxRadio = 1/4
