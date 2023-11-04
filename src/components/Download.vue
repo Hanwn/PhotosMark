@@ -1,14 +1,17 @@
 <script setup>
 import {ref} from "vue";
 import {defineRender} from "@/store/defineRender";
-const {renderList, renderIdx} = defineRender()
+import {Download } from '@element-plus/icons-vue'
+const {renderCache, currentRenderUid} = defineRender()
+
 
 const downloadStage = ref()
 
 async function download() {
-  renderIdx.value = 1
-  for (let i = 1; i < renderList.length; i++) {
-    const idx = renderIdx.value
+  for (let item of renderCache) {
+    if (item[0] !== 0) {
+      currentRenderUid.value = item[0]
+    }
     const outputConfig = {
       "mimeType": "image/jpeg",
       "width": downloadStage.value.width,
@@ -18,28 +21,46 @@ async function download() {
     let href = node.toDataURL(outputConfig)
     let a = document.createElement("a")
     a.href = href
-    a.download = "xx" + i
+    a.download = "xx"
     a.click()
-    renderIdx.value = idx + 1
   }
+  // for (let i = 1; i < renderList.length; i++) {
+  //   const outputConfig = {
+  //     "mimeType": "image/jpeg",
+  //     "width": downloadStage.value.width,
+  //     "height": downloadStage.value.height
+  //   }
+  //   let node = await downloadStage.value.getNode()
+  //   let href = node.toDataURL(outputConfig)
+  //   let a = document.createElement("a")
+  //   a.href = href
+  //   a.download = "xx" + i
+  //   a.click()
+  // }
 }
 </script>
 
 <template>
-  <input type="button" @click="download" value="下载">
+  <el-button type="primary" @click="download">
+    Download
+    <el-icon class="el-icon--left">
+      <Download/>
+    </el-icon>
+  </el-button>
 
   <div class="downloadDiv">
-    <v-stage :config="renderList[renderIdx].downloadKonvaConfig" ref="downloadStage" id="downloadStage">
+
+    <v-stage :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).downloadKonvaConfig : {}" ref="downloadStage" id="downloadStage">
       <v-layer>
-        <v-image :config="renderList[renderIdx].configImg"></v-image>
-        <v-group :config="renderList[renderIdx].iconGroupConfig">
-          <v-rect :config="renderList[renderIdx].iconRectConfig"></v-rect>
-          <v-text :config="renderList[renderIdx].deviceInfoConfig"></v-text>
-          <v-text :config="renderList[renderIdx].lensInfoConfig"></v-text>
-          <v-image :config="renderList[renderIdx].iconInfoConfig"></v-image>
-          <v-rect :config="renderList[renderIdx].verticalBarInfoConfig"></v-rect>
-          <v-text :config="renderList[renderIdx].parameterInfoConfig"></v-text>
-          <v-text :config="renderList[renderIdx].timeInfoConfig"></v-text>
+        <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).configImg : {}"></v-image>
+        <v-group :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconGroupConfig : {}">
+          <v-rect :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconRectConfig : {}"></v-rect>
+          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).deviceInfoConfig : {}"></v-text>
+          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).lensInfoConfig : {}"></v-text>
+          <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconInfoConfig : {}"></v-image>
+          <v-rect :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).verticalBarInfoConfig : {}"></v-rect>
+          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).parameterInfoConfig : {}"></v-text>
+          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).timeInfoConfig : {}"></v-text>
         </v-group>
       </v-layer>
     </v-stage>

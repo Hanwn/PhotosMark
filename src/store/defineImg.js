@@ -1,18 +1,22 @@
-import {reactive} from "vue";
+import {ref, reactive, computed, watch} from "vue";
 import {defineRender} from "@/store/defineRender";
 
-const imgSrcList = reactive([])
+const imgSrcList = ref([])
 const iconCache = reactive(new Map())
 const exifCache = reactive(new Map())
-const id2Src = reactive(new Map())
+// const uid2Src = reactive(new Map())
+
+// watch(imgSrcList, ()=>{
+//     for (let i in imgSrcList) {
+//         console.log(i)
+//     }
+// })
+
 
 function pushToImgList(src) {
-    imgSrcList.push(src)
+    imgSrcList.value.push({name:src, URL:src})
 }
 
-function pushToID2Src(id, src) {
-    id2Src.set(id, src)
-}
 
 function pushToExifCache(src, exifData) {
     exifCache.set(src, exifData)
@@ -47,10 +51,5 @@ function defineExifCache() {
     }
 }
 
-function defineId2Src() {
-    return {
-        id2Src
-    }
-}
 
-export {defineImgList, defineIcon, defineExifCache, id2Src, pushToImgList, pushToIconCache, pushToExifCache, pushToID2Src}
+export {defineImgList, defineIcon, defineExifCache, pushToImgList, pushToIconCache, pushToExifCache}
