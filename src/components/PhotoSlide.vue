@@ -8,6 +8,7 @@
       :auto-upload="false"
       :on-change="cacheRenderData"
       :multiple="true"
+      accept="image"
   >
     <el-icon><Plus /></el-icon>
   </el-upload>
