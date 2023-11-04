@@ -2,7 +2,16 @@
 import piexifjs, { piexif } from 'piexifjs'
 
 const parseExifData = (exifData) => {
-    if (!exifData) { return null }
+    if (!exifData) { return {
+        Model:"UNKNOWN Device",
+        Make: "UNKNOWN Device",
+        F:  "0.0",
+        S: "0000",
+        ISO:  "000",
+        FocalLength: "00",
+        LEN: "UNKNOWN LENS",
+        Time: "No time Info"
+    } }
     const Model = exifData['0th'][piexif.ImageIFD.Model]
     const Make = exifData['0th'][piexif.ImageIFD.Make]
     const F = exifData.Exif[piexif.ExifIFD.FNumber]
@@ -29,4 +38,4 @@ const getExifData = function getExifByPiExif(img) {
     return parseExifData(exif)
 }
 
-export {getExifData}
+export {getExifData, parseExifData}

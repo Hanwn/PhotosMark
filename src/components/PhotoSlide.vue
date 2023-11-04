@@ -8,7 +8,7 @@
       :auto-upload="false"
       :on-change="cacheRenderData"
       :multiple="true"
-      accept="image"
+      accept="image/jpg, image/ipeg"
   >
     <el-icon><Plus /></el-icon>
   </el-upload>
@@ -22,7 +22,7 @@ import {genRenderItem, getMarkInfo} from "@/utils/parameterInfoConfig";
 import {loadImg} from "@/utils/loadImg";
 import {getIconSrc} from "@/utils/getIcon";
 import {defineFactor} from "@/store/defineFactor";
-import {getExifData} from "@/utils/readExif";
+import {getExifData, parseExifData} from "@/utils/readExif";
 import {getImageData} from "@/utils/readFile";
 
 const {imgSrcList} = defineImgList()
@@ -42,10 +42,20 @@ const cacheRenderData = async function(uploadFile) {
   const uid = uploadFile.uid
   if (!renderCache.has(uid)) {
     const imgData = await getImageData(uploadFile.raw)
-    const exifData = getExifData(imgData)
+    let exifData = null
+    try {
+      exifData = getExifData(imgData)
+    } catch (e) {
+      exifData = parseExifData(null)
+    }
     exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
     const src = uploadFile.url
-    const img = await loadImg(src)
+    let img = null
+    try {
+      img = await loadImg(src)
+    } catch (e) {
+      return
+    }
     const iconName = getIconSrc(exifData)
     pushToExifCache(src, exifData)
     const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
@@ -75,10 +85,20 @@ const cacheRenderData = async function(uploadFile) {
     const uid = uploadFile.uid
     if (!renderCache.has(uid)) {
       const imgData = await getImageData(uploadFile.raw)
-      const exifData = getExifData(imgData)
+      let exifData = null
+      try {
+        exifData = getExifData(imgData)
+      } catch (e) {
+        exifData = parseExifData(null)
+      }
       exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
       const src = uploadFile.url
-      const img = await loadImg(src)
+      let img = null
+      try {
+        img = await loadImg(src)
+      } catch (e) {
+        return
+      }
       const iconName = getIconSrc(exifData)
       pushToExifCache(src, exifData)
       const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
