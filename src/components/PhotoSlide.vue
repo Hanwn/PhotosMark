@@ -6,7 +6,7 @@
       :on-remove="handleRemove"
       :on-preview="handlePreview"
       :auto-upload="false"
-      :on-change="renderPreview"
+      :on-change="cacheRenderData"
       :multiple="true"
   >
     <el-icon><Plus /></el-icon>
@@ -37,7 +37,7 @@ const handleRemove = (uploadFile, uploadFiles) => {
   }
 }
 
-const renderPreview = async function(uploadFile) {
+const cacheRenderData = async function(uploadFile) {
   const uid = uploadFile.uid
   if (!renderCache.has(uid)) {
     const imgData = await getImageData(uploadFile.raw)
