@@ -32,7 +32,7 @@ function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
     let verticalMaxRadio = 1/2
     const horizonMaxRadio = 1/6
 
-    if (iconWidth/iconHeight >= 1.25 || iconHeight/iconWidth >= 1.25) {
+    if (iconWidth/iconHeight >= 3 || iconHeight/iconWidth >= 3) {
         verticalMaxRadio = 1/4
     }
 

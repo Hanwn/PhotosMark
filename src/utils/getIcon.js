@@ -12,7 +12,7 @@ const getIconSrc = function (exifData) {
         ["sony", "Sony.svg"],
         ["canon", "Canon.svg"],
         ["fujifilm", "Fujifilm.svg"],
-        ["dij", "Dji.svg"],
+        ["dji", "Dji.svg"],
         ["hasselblad", "hasselblad.svg"],
         ["lumix", "lumix.svg"],
         ["gopro", "gopro.svg"],
