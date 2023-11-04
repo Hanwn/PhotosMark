@@ -1,37 +1,67 @@
-<script setup>
-
-import {defineImgList} from "@/store/defineImg";
-import {ref} from "vue";
-const {imgSrcList, clickImg} = defineImgList()
-const border = ref("#3AAACF solid 2px")
-
-</script>
-
 <template>
-  <div id="imgOutContainer">
-    <div class="imgInnerContainer" v-for="(imgUrl, idx) in imgSrcList">
-      <img :src="imgUrl" alt="" @click="clickImg(idx)"  :style="{}"/>
-    </div>
+  <el-upload
+      v-model:file-list="imgSrcList"
+      action="#"
+      list-type="picture-card"
+      :on-remove="handleRemove"
+      :on-preview="handlePreview"
+      :auto-upload="false"
+      :multiple="true"
+  >
+    <el-icon><Plus /></el-icon>
+  </el-upload>
+  <div>
+    {{imgSrcList}}
   </div>
 </template>
 
-<style scoped>
+<script setup>
+import { Plus } from '@element-plus/icons-vue'
+import {defineIcon, defineImgList, pushToIconCache} from "@/store/defineImg"
+import {defineRender} from "@/store/defineRender";
+import {genRenderItem, getMarkInfo} from "@/utils/parameterInfoConfig";
+import {loadImg} from "@/utils/loadImg";
+import {getIconSrc} from "@/utils/getIcon";
+import {defineFactor} from "@/store/defineFactor";
+import {getExifData} from "@/utils/readExif";
+import {getImageData} from "@/utils/readFile";
 
-#imgOutContainer {
-  display: flex;
-  height: 400px;
-  width: 1100px;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  overflow: auto;
-  border: black 1px solid;
+const {imgSrcList} = defineImgList()
+const {currentRenderUid, renderCache} = defineRender()
+const {factor} = defineFactor()
+const {iconCache} = defineIcon()
+
+const handleRemove = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
 }
-.imgInnerContainer {
-  display: flex;
-  height: 200px;
-  width: 300px;
-  justify-content: center;
-  margin: 10px;
+
+
+const handlePreview = async (uploadFile) => {
+  const uid = uploadFile.uid
+  if (!renderCache.has(uid)) {
+    const imgData = await getImageData(uploadFile.raw)
+    const exifData = getExifData(imgData)
+    exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
+    const src = uploadFile.url
+    const img = await loadImg(src)
+    const iconName = getIconSrc(exifData)
+    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
+    let iconImg = ""
+    if (iconCache.has(iconSrc)) {
+      iconImg = iconCache.get(iconSrc)
+    } else {
+      iconImg = await loadImg(iconSrc)
+      pushToIconCache(src)
+    }
+
+    const padding = 100
+    const rectH = img.height * factor.value
+    const middle = img.height + rectH/3
+    const rectW = img.width
+    const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
+    const renderItem = genRenderItem(img, genMarkInfo)
+    renderCache.set(uid, renderItem)
+  }
+  currentRenderUid.value = uploadFile.uid
 }
-</style>
+</script>
