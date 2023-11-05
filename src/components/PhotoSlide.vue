@@ -107,7 +107,7 @@ const cacheRenderData = async function(uploadFile) {
         iconImg = iconCache.get(iconSrc)
       } else {
         iconImg = await loadImg(iconSrc)
-        pushToIconCache(src)
+        pushToIconCache(iconSrc, iconImg)
       }
 
       const padding = 100
