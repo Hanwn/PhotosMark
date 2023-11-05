@@ -36,7 +36,6 @@ function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
         verticalMaxRadio = 1/4
     }
 
-
     let iconImgHeight = rectH * verticalMaxRadio
     const scale = iconWidth/iconHeight
     let iconImgWidth = iconImgHeight * scale

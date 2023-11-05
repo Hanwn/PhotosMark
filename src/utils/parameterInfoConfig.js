@@ -130,7 +130,6 @@ function getRightInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg, ma
     const timeInfoConfig = getTimeInfoConfig(exifData, middle, rectH, parameterInfoConfig)
     const verticalBarInfoConfig = getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH)
     const iconInfoConfig = getIconInfoConfig(verticalBarInfoConfig, maxLensEndPos, iconImg, rectH, rectW, imgH)
-
     return {
         "parameterInfoConfig": parameterInfoConfig,
         "timeInfoConfig": timeInfoConfig,
@@ -194,4 +193,4 @@ function genRenderItem(img, genMarkInfo) {
     }
 }
 
-export {getMarkInfo, genRenderItem}
+export {getMarkInfo, genRenderItem, getIconInfoConfig}

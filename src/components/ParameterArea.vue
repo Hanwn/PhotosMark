@@ -7,14 +7,21 @@ import {
 import {defineFactor} from "@/store/defineFactor";
 import {loadImg} from "@/utils/loadImg";
 import {getIconSrc} from "@/utils/getIcon";
-import {genRenderItem, getMarkInfo} from "@/utils/parameterInfoConfig";
+import {genRenderItem, getIconInfoConfig, getMarkInfo} from "@/utils/parameterInfoConfig";
 import {Aim, Calendar, Camera, Clock, InfoFilled, Refresh} from "@element-plus/icons-vue";
-import Download from "@/components/Download.vue";
+import {ref, watch} from 'vue'
+import {getImageData} from "@/utils/readFile";
+import {getExifData, parseExifData} from "@/utils/readExif";
 
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
 const {factor} = defineFactor()
 const {renderCache, currentRenderUid} = defineRender()
+
+const disable = ref(true)
+watch(currentRenderUid, ()=>{
+  disable.value = currentRenderUid.value === 0;
+})
 
 async function reset() {
   if (renderCache.has(currentRenderUid.value) && currentRenderUid.value !== 0) {
@@ -43,6 +50,107 @@ async function reset() {
     renderCache.set(currentRenderUid.value, renderItem)
   }
 }
+
+const value = ref('')
+
+watch(value, async () => {
+  console.log(value.value)
+  const uid = currentRenderUid.value
+  const uploadFile = uid2Src.get(currentRenderUid.value)
+  const imgData = await getImageData(uploadFile.raw)
+  let exifData = null
+  try {
+    exifData = getExifData(imgData)
+  } catch (e) {
+    exifData = parseExifData(null)
+  }
+  exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
+  const src = uid2Src.get(currentRenderUid.value).src
+  let img = null
+  try {
+    img = await loadImg(src)
+  } catch (e) {
+    return
+  }
+  const iconName = getIconSrc(exifData)
+  pushToExifCache(src, exifData)
+  const iconSrc = value.value
+  let iconImg = ""
+  if (iconCache.has(iconSrc)) {
+    iconImg = iconCache.get(iconSrc)
+  } else {
+    iconImg = await loadImg(iconSrc)
+    pushToIconCache(iconSrc, iconImg)
+  }
+  const padding = 100
+  const rectH = img.height * factor.value
+  const middle = img.height + rectH / 3
+  const rectW = img.width
+  console.log(img.height, rectW, rectH, middle)
+  const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
+  const renderItem = genRenderItem(img, genMarkInfo)
+  renderCache.set(uid, renderItem)
+  console.log("aaa")
+})
+
+const cities = ref([
+  {
+    value: 'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon2.svg',
+    label: 'Nikon',
+  },
+  {
+    value: 'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon100.svg',
+    label: 'Nikon',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon11.svg',
+    label: 'Nikon',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Sony.svg',
+    label: 'Sony',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Canon.svg',
+    label: 'Canon',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Lumix.svg',
+    label: 'Lumix',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Fujifilm.svg',
+    label: 'Fujifilm',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Zeiss.svg',
+    label: 'Zeiss',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/gopro.svg',
+    label: 'GoPro',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/pentax.svg',
+    label: 'Pentax',
+  },
+  {
+    value:'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Dji.svg',
+    label: 'Dji',
+  },
+  {
+    value: 'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Hasselblad.svg',
+    label: 'Hasselblad'
+  },
+  {
+    value: 'https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Leica.svg',
+    label: 'Leica'
+  }
+
+])
+
+
+
 </script>
 
 <template>
@@ -73,7 +181,18 @@ async function reset() {
         :prefix-icon="Calendar"
     />
 
-    <el-button type="danger" @click="reset">
+    <el-select v-model="value" placeholder="Select" :disabled="disable">
+      <el-option
+          v-for="item in cities"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+      >
+        <el-image style="float:right; display: inline-block; width: 20px; height: 20px" :src="item.value" fit="contain" />
+      </el-option>
+    </el-select>
+
+    <el-button type="danger" @click="reset" :disabled="disable">
       Reset
       <el-icon class="el-icon--left">
         <Refresh/>
@@ -90,7 +209,6 @@ async function reset() {
   width: 800px;
   flex-direction: column;
   justify-content: center;
-  align-items: stretch;
   margin: 20px;
 }
 .inputArea{
