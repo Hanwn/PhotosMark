@@ -5,7 +5,9 @@
 <template>
 <div id="headerContainer">
   <div class="container">
-    <img src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/logo.svg" alt="" style="height: 60px !important;width: 217px !important;" >
+    <a href="https://github.com/Hanwn/PhotoMark" target="_blank">
+      <img src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/logo.svg" alt="" style="height: 60px !important;width: 217px !important;" >
+    </a>
   </div>
 </div>
 </template>
