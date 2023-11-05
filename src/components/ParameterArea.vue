@@ -87,6 +87,7 @@ async function reset() {
 <style scoped>
 .inputContainer{
   display: flex;
+  width: 800px;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;

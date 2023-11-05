@@ -11,10 +11,8 @@ import Footer from "@/components/Footer.vue";
 <template>
   <div class="container">
     <Header></Header>
-    <div id="combinedContainer">
-      <preview-card></preview-card>
-      <parameter-area></parameter-area>
-    </div>
+    <preview-card></preview-card>
+    <parameter-area></parameter-area>
     <PhotoSlide></PhotoSlide>
     <download></download>
     <Footer></Footer>
@@ -27,9 +25,5 @@ import Footer from "@/components/Footer.vue";
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-#combinedContainer {
-  display: flex;
-  flex-direction: row;
 }
 </style>
