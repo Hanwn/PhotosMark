@@ -12,19 +12,30 @@ import {Aim, Calendar, Camera, Clock, InfoFilled, Refresh} from "@element-plus/i
 import {ref, watch} from 'vue'
 import {getImageData} from "@/utils/readFile";
 import {getExifData, parseExifData} from "@/utils/readExif";
+import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig";
 
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
 const {factor} = defineFactor()
-const {renderCache, currentRenderUid} = defineRender()
+const {currentRenderUid} = defineRender()
 
-const disable = ref(true)
+const disable = ref(false)
 watch(currentRenderUid, ()=>{
-  disable.value = currentRenderUid.value === 0;
+  // disable.value = currentRenderUid.value === 0;
 })
 
+// const {deviceText , parameterText, timeText, lensText} = defineInputData()
+
+const {
+  deviceInfoConfig,
+  parameterInfoConfig,
+  timeInfoConfig,
+  lensInfoConfig
+} = defineCanvasConfig()
+
+
 async function reset() {
-  if (renderCache.has(currentRenderUid.value) && currentRenderUid.value !== 0) {
+  if (allCanvasConfigMap.has(currentRenderUid.value) && currentRenderUid.value !== 0) {
     const src = uid2Src.get(currentRenderUid.value).src
     // TODO: mi.js
     const img = await loadImg(src)
@@ -39,15 +50,6 @@ async function reset() {
       iconImg = await loadImg(iconSrc)
       pushToIconCache(src)
     }
-
-    const padding = 100
-    const rectH = img.height * factor.value
-    const middle = img.height + rectH/3
-    const rectW = img.width
-    const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
-    const renderItem = genRenderItem(img, genMarkInfo)
-
-    renderCache.set(currentRenderUid.value, renderItem)
   }
 }
 
@@ -89,7 +91,6 @@ watch(value, async () => {
   console.log(img.height, rectW, rectH, middle)
   const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
   const renderItem = genRenderItem(img, genMarkInfo)
-  renderCache.set(uid, renderItem)
   console.log("aaa")
 })
 
@@ -156,26 +157,26 @@ const cities = ref([
 <template>
   <div class="inputContainer">
       <el-input
-        v-model="renderCache.get(currentRenderUid).deviceInfoConfig.text"
+        v-model="deviceInfoConfig.text"
         class="w-50 m-2"
         placeholder="Device info"
         :prefix-icon="Camera"
       />
 
     <el-input
-        v-model="renderCache.get(currentRenderUid).lensInfoConfig.text"
+        v-model="lensInfoConfig.text"
         class="w-50 m-2"
         placeholder="Lens Info"
         :prefix-icon="Aim"
     />
     <el-input
-        v-model="renderCache.get(currentRenderUid).parameterInfoConfig.text"
+        v-model="parameterInfoConfig.text"
         class="w-50 m-2"
         placeholder="parameter Info"
         :prefix-icon="InfoFilled"
     />
     <el-input
-        v-model="renderCache.get(currentRenderUid).timeInfoConfig.text"
+        v-model="timeInfoConfig.text"
         class="w-50 m-2"
         placeholder="time info"
         :prefix-icon="Calendar"

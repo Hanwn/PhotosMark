@@ -24,23 +24,25 @@ import {getIconSrc} from "@/utils/getIcon";
 import {defineFactor} from "@/store/defineFactor";
 import {getExifData, parseExifData} from "@/utils/readExif";
 import {getImageData} from "@/utils/readFile";
+import {allCanvasConfigMap} from "@/store/defineCanvasConfig";
+import {PreviewRender} from "@/themes/mi/mi";
 
 const {imgSrcList} = defineImgList()
-const {currentRenderUid, renderCache} = defineRender()
+const {currentRenderUid} = defineRender()
 const {factor} = defineFactor()
 const {iconCache} = defineIcon()
 
 const handleRemove = (uploadFile, uploadFiles) => {
   const uid = uploadFile.uid
-  if (renderCache.has(uid)) {
-    renderCache.delete(uid)
-    currentRenderUid.value = 0
+  if (allCanvasConfigMap.has(uid)) {
+    allCanvasConfigMap.delete(uid)
+    // currentRenderUid.value = 0
   }
 }
 
 const cacheRenderData = async function(uploadFile) {
   const uid = uploadFile.uid
-  if (!renderCache.has(uid)) {
+  if (!allCanvasConfigMap.has(uid)) {
     const imgData = await getImageData(uploadFile.raw)
     let exifData = null
     try {
@@ -66,14 +68,7 @@ const cacheRenderData = async function(uploadFile) {
       iconImg = await loadImg(iconSrc)
       pushToIconCache(src)
     }
-
-    const padding = 100
-    const rectH = img.height * factor.value
-    const middle = img.height + rectH / 3
-    const rectW = img.width
-    const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
-    const renderItem = genRenderItem(img, genMarkInfo)
-    renderCache.set(uid, renderItem)
+    PreviewRender(uid, img, exifData, iconImg)
   }
   if (currentRenderUid.value === 0) {
     currentRenderUid.value = uid
@@ -83,7 +78,7 @@ const cacheRenderData = async function(uploadFile) {
 
   const handlePreview = async function (uploadFile) {
     const uid = uploadFile.uid
-    if (!renderCache.has(uid)) {
+    if (!allCanvasConfigMap.has(uid)) {
       const imgData = await getImageData(uploadFile.raw)
       let exifData = null
       try {
@@ -110,13 +105,7 @@ const cacheRenderData = async function(uploadFile) {
         pushToIconCache(iconSrc, iconImg)
       }
 
-      const padding = 100
-      const rectH = img.height * factor.value
-      const middle = img.height + rectH / 3
-      const rectW = img.width
-      const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
-      const renderItem = genRenderItem(img, genMarkInfo)
-      renderCache.set(uid, renderItem)
+      PreviewRender(uid, img, exifData, iconImg)
     }
     currentRenderUid.value = uploadFile.uid
   }
