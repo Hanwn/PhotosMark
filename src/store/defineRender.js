@@ -5,6 +5,7 @@ const currentRenderUid = ref(0)
 
 const {
     previewStageConfig,
+    downloadStageConfig,
     mainImgConfig,
     deviceInfoConfig,
     parameterInfoConfig,
@@ -31,6 +32,9 @@ watch(currentRenderUid, (newVal,oldVal)=>{
     const currentRenderCanvasConfig = allCanvasConfigMap.get(newVal)
     const scaleX = currentRenderCanvasConfig.previewStageConfig.scaleX
     const scaleY = currentRenderCanvasConfig.previewStageConfig.scaleY
+
+    downloadStageConfig.width = currentRenderCanvasConfig.downloadStageConfig.width
+    downloadStageConfig.height = currentRenderCanvasConfig.downloadStageConfig.height
 
     previewStageConfig.scaleX = currentRenderCanvasConfig.previewStageConfig.scaleX
     previewStageConfig.scaleY = currentRenderCanvasConfig.previewStageConfig.scaleY
