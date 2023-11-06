@@ -6,17 +6,17 @@
             boxShadow: '0px 0px 10px #000'
           }"
     >
-      <v-stage :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).previewKonvaConfig : {}" ref="stage" id="previewStage">
+      <v-stage :config="previewStageConfig" ref="stage" id="previewStage">
         <v-layer>
-          <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).configImg : {}"></v-image>
-          <v-group :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconGroupConfig : {}">
-            <v-rect :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconRectConfig : {}"></v-rect>
-            <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).deviceInfoConfig : {}"></v-text>
-            <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).lensInfoConfig : {}"></v-text>
-            <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconInfoConfig : {}"></v-image>
-            <v-rect :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).verticalBarInfoConfig : {}"></v-rect>
-            <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).parameterInfoConfig : {}"></v-text>
-            <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).timeInfoConfig : {}"></v-text>
+          <v-image :config="mainImgConfig"></v-image>
+          <v-group :config="{}">
+            <v-rect :config="bannerRectConfig"></v-rect>
+            <v-text :config="deviceInfoConfig"></v-text>
+            <v-text :config="lensInfoConfig"></v-text>
+            <v-image :config="iconInfoConfig"></v-image>
+            <v-rect :config="verticalBarInfoConfig"></v-rect>
+            <v-text :config="parameterInfoConfig"></v-text>
+            <v-text :config="timeInfoConfig"></v-text>
           </v-group>
         </v-layer>
       </v-stage>
@@ -26,7 +26,21 @@
 
 <script setup>
   import {defineRender} from "@/store/defineRender";
-  const {renderCache, currentRenderUid}= defineRender()
+  import {defineCanvasConfig} from "@/store/defineCanvasConfig";
+  const {currentRenderUid}= defineRender()
+
+  const {
+    previewStageConfig,
+    mainImgConfig,
+    deviceInfoConfig,
+    parameterInfoConfig,
+    lensInfoConfig,
+    timeInfoConfig,
+    verticalBarInfoConfig,
+    iconInfoConfig,
+    bannerRectConfig,
+  } = defineCanvasConfig()
+
 </script>
 
 <style>

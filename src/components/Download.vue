@@ -1,29 +1,32 @@
 <script setup>
-import {computed, ref, render, watch} from "vue";
+import {ref} from "vue";
 import {defineRender} from "@/store/defineRender";
 import {Download } from '@element-plus/icons-vue'
-import { h } from 'vue'
-import { ElNotification } from 'element-plus'
-import {defineImgList, uid2Src} from "@/store/defineImg";
+import {uid2Src} from "@/store/defineImg";
 import {notify} from "@/utils/notify";
-
-const {renderCache, currentRenderUid} = defineRender()
+import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig";
 const downloadStage = ref()
 const disable = ref(true)
+const {currentRenderUid}= defineRender()
 
-const notifyDownloadSuccess = () => {
-  ElNotification({
-    title: '下载完成',
-    position: 'bottom-right',
-  })
-}
+const {
+  downloadStageConfig,
+  mainImgConfig,
+  deviceInfoConfig,
+  parameterInfoConfig,
+  lensInfoConfig,
+  timeInfoConfig,
+  verticalBarInfoConfig,
+  iconInfoConfig,
+  bannerRectConfig,
+} = defineCanvasConfig()
 
 async function download() {
-  if (renderCache.size === 1) {
+  if (allCanvasConfigMap.size === 1) {
     notify("请上传图片")
     return
   }
-  for (let item of renderCache) {
+  for (let item of allCanvasConfigMap) {
     if (item[0] === 0) {
       continue
     }
@@ -33,6 +36,7 @@ async function download() {
       "width": downloadStage.value.width,
       "height": downloadStage.value.height
     }
+    console.log(outputConfig)
     let node = await downloadStage.value.getNode()
     let href = node.toDataURL(outputConfig)
     let a = document.createElement("a")
@@ -54,18 +58,17 @@ async function download() {
   </el-button>
 
   <div class="downloadDiv">
-
-    <v-stage :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).downloadKonvaConfig : {}" ref="downloadStage" id="downloadStage">
+    <v-stage :config="downloadStageConfig" ref="downloadStage" id="previewStage">
       <v-layer>
-        <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).configImg : {}"></v-image>
-        <v-group :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconGroupConfig : {}">
-          <v-rect :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconRectConfig : {}"></v-rect>
-          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).deviceInfoConfig : {}"></v-text>
-          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).lensInfoConfig : {}"></v-text>
-          <v-image :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).iconInfoConfig : {}"></v-image>
-          <v-rect :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).verticalBarInfoConfig : {}"></v-rect>
-          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).parameterInfoConfig : {}"></v-text>
-          <v-text :config="renderCache.has(currentRenderUid) ? renderCache.get(currentRenderUid).timeInfoConfig : {}"></v-text>
+        <v-image :config="mainImgConfig"></v-image>
+        <v-group :config="{}">
+          <v-rect :config="bannerRectConfig"></v-rect>
+          <v-text :config="deviceInfoConfig"></v-text>
+          <v-text :config="lensInfoConfig"></v-text>
+          <v-image :config="iconInfoConfig"></v-image>
+          <v-rect :config="verticalBarInfoConfig"></v-rect>
+          <v-text :config="parameterInfoConfig"></v-text>
+          <v-text :config="timeInfoConfig"></v-text>
         </v-group>
       </v-layer>
     </v-stage>

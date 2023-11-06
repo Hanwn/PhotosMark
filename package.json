@@ -10,6 +10,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
     "element-plus": "^2.4.2",
+    "eslint": "^8.53.0",
     "konva": "^9.2.2",
     "piexifjs": "^1.0.6",
     "vue": "^3.3.4",
