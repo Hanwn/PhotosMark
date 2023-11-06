@@ -31,8 +31,7 @@ async function download() {
       continue
     }
     currentRenderUid.value = item[0]
-    setTimeout(async ()=>{
-      const outputConfig = {
+    const outputConfig = {
         "mimeType": "image/jpeg",
         "width": downloadStage.value.width,
         "height": downloadStage.value.height
@@ -44,8 +43,7 @@ async function download() {
       a.href = href
       a.download = uid2Src.get(currentRenderUid.value).name
       a.click()
-    }, 1)
-  }
+    }
   // notifyDownloadSuccess()
   notify("下载成功")
 }
