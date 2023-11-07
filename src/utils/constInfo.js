@@ -1,22 +1,22 @@
 
 function getInitData() {
     return {
-        previewKonvaConfig:{
+        previewStageConfig:{
             width: 800,
             height: 600,
             scaleX:1,
             scaleY:1
         },
-        downloadKonvaConfig:{
+        downloadStageConfig:{
             width : 100,
             height : 200,
             visible: true
         },
-        configImg: {
+        mainImgConfig: {
             image: null,
         },
         iconGroupConfig: {},
-        iconRectConfig: {
+        bannerRectConfig: {
             height : 100,
             width : 100,
             y : 100,

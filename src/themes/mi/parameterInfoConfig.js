@@ -71,17 +71,21 @@ function getLensInfo(exifData, padding, middle, rectH) {
 
     const fontInfo = calcDeviceFontSize(exifData.LEN, 45, rectH, false)
     const fontSize = fontInfo.fontSize
-    const textSize = fontInfo.textSize
+    const lensTextSize = fontInfo.textSize
 
-    return [{
+    const lensInfoConfig = {
         text : exifData.LEN,
         x : padding,
         y : middle + rectH/3,
-        offsetY : textSize.height/2,
+        offsetY : lensTextSize.height/2,
         fontSize : fontSize,
         fill:"gray",
         draggable:true,
-    }, textSize]
+    }
+    return {
+        lensInfoConfig,
+        lensTextSize
+    }
 }
 
 
@@ -91,7 +95,7 @@ function getDeviceInfoConfig(padding, middle, exifData, rectH) {
     let fontSize = fontInfo.fontSize
     let textSize = fontInfo.textSize
 
-    const ret = {
+    const deviceInfoConfig = {
         text : exifData.Model,
         x : padding,
         y : middle,
@@ -101,7 +105,7 @@ function getDeviceInfoConfig(padding, middle, exifData, rectH) {
         offsetY : textSize.height/2,
         draggable:true,
     }
-    return [ret, textSize]
+    return {deviceInfoConfig, textSize }
 }
 
 function calcMaxLensEndPos() {
@@ -110,17 +114,17 @@ function calcMaxLensEndPos() {
 
 
 function getLeftInfo(padding, middle, exifData, rectH) {
-    const deviceInfoConfigList = getDeviceInfoConfig(padding,middle, exifData, rectH)
-    const deviceInfoEndPos = deviceInfoConfigList[0].x + deviceInfoConfigList[1].width
+    const {deviceInfoConfig, textSize} = getDeviceInfoConfig(padding,middle, exifData, rectH)
+    const deviceInfoEndPos = deviceInfoConfig.x + textSize.width
 
-    const lensInfoConfigList = getLensInfo(exifData, padding, middle, rectH)
-    const lensInfoEndPos = lensInfoConfigList[0].x + lensInfoConfigList[1].width
+    const {lensInfoConfig, lensTextSize} = getLensInfo(exifData, padding, middle, rectH)
+    const lensInfoEndPos = lensInfoConfig.x + lensTextSize.width
 
     const maxLensEndPos = (deviceInfoEndPos > lensInfoEndPos ? deviceInfoEndPos : lensInfoEndPos) + 30
 
     return {
-        "deviceInfoConfig":deviceInfoConfigList[0],
-        "lensInfoConfig": lensInfoConfigList[0],
+        "deviceInfoConfig":deviceInfoConfig,
+        "lensInfoConfig": lensInfoConfig,
         "maxLensEndPos": maxLensEndPos
     }
 }

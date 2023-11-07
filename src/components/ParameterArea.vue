@@ -7,24 +7,19 @@ import {
 import {defineFactor} from "@/store/defineFactor";
 import {loadImg} from "@/utils/loadImg";
 import {getIconSrc} from "@/utils/getIcon";
-import {genRenderItem, getIconInfoConfig, getMarkInfo} from "@/utils/parameterInfoConfig";
-import {Aim, Calendar, Camera, Clock, InfoFilled, Refresh} from "@element-plus/icons-vue";
+import {Aim, Calendar, Camera, InfoFilled, Refresh} from "@element-plus/icons-vue";
 import {ref, watch} from 'vue'
 import {getImageData} from "@/utils/readFile";
 import {getExifData, parseExifData} from "@/utils/readExif";
 import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig";
+import {PreviewRender} from "@/themes/mi/mi";
 
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
 const {factor} = defineFactor()
-const {currentRenderUid} = defineRender()
+const {currentRenderUid, resetBtn} = defineRender()
 
 const disable = ref(false)
-watch(currentRenderUid, ()=>{
-  // disable.value = currentRenderUid.value === 0;
-})
-
-// const {deviceText , parameterText, timeText, lensText} = defineInputData()
 
 const {
   deviceInfoConfig,
@@ -36,8 +31,8 @@ const {
 
 async function reset() {
   if (allCanvasConfigMap.has(currentRenderUid.value) && currentRenderUid.value !== 0) {
+    const uid = currentRenderUid.value
     const src = uid2Src.get(currentRenderUid.value).src
-    // TODO: mi.js
     const img = await loadImg(src)
     const exifData = exifCache.get(src)
     pushToExifCache(src, exifData)
@@ -50,6 +45,8 @@ async function reset() {
       iconImg = await loadImg(iconSrc)
       pushToIconCache(src)
     }
+    // TODO: fix
+    PreviewRender(uid, img, exifData, iconImg)
   }
 }
 
@@ -84,14 +81,8 @@ watch(value, async () => {
     iconImg = await loadImg(iconSrc)
     pushToIconCache(iconSrc, iconImg)
   }
-  const padding = 100
-  const rectH = img.height * factor.value
-  const middle = img.height + rectH / 3
-  const rectW = img.width
-  console.log(img.height, rectW, rectH, middle)
-  const genMarkInfo = getMarkInfo(exifData, padding, middle, rectW, rectH, img.height, iconImg)
-  const renderItem = genRenderItem(img, genMarkInfo)
-  console.log("aaa")
+
+  PreviewRender(uid, img, exifData, iconImg)
 })
 
 const cities = ref([
