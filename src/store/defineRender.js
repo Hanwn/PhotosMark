@@ -61,7 +61,7 @@ watch(currentRenderUid, (newVal,oldVal)=>{
 })
 
 function defineRender() {
-    return {currentRenderUid, resetBtn}
+    return {currentRenderUid, unMarshal}
 }
 
 export {defineRender}

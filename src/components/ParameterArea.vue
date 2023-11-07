@@ -17,7 +17,7 @@ import {PreviewRender} from "@/themes/mi/mi";
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
 const {factor} = defineFactor()
-const {currentRenderUid, resetBtn} = defineRender()
+const {currentRenderUid, unMarshal} = defineRender()
 
 const disable = ref(false)
 
@@ -45,8 +45,9 @@ async function reset() {
       iconImg = await loadImg(iconSrc)
       pushToIconCache(src)
     }
-    // TODO: fix
     PreviewRender(uid, img, exifData, iconImg)
+    // not best practise
+    unMarshal(uid)
   }
 }
 
@@ -83,6 +84,8 @@ watch(value, async () => {
   }
 
   PreviewRender(uid, img, exifData, iconImg)
+  // not best practise
+  unMarshal(uid)
 })
 
 const cities = ref([
