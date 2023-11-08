@@ -18,7 +18,6 @@
 import { Plus } from '@element-plus/icons-vue'
 import {defineIcon, defineImgList, pushToExifCache, pushToIconCache, uid2Src} from "@/store/defineImg"
 import {defineRender} from "@/store/defineRender";
-import {genRenderItem, getMarkInfo} from "@/utils/parameterInfoConfig";
 import {loadImg} from "@/utils/loadImg";
 import {getIconSrc} from "@/utils/getIcon";
 import {defineFactor} from "@/store/defineFactor";
@@ -28,19 +27,36 @@ import {allCanvasConfigMap} from "@/store/defineCanvasConfig";
 import {PreviewRender} from "@/themes/mi/mi";
 
 const {imgSrcList} = defineImgList()
-const {currentRenderUid} = defineRender()
+const {currentRenderUid, marshal,parameterDisable, unMarshal} = defineRender()
 const {factor} = defineFactor()
 const {iconCache} = defineIcon()
+
+let lastUid = 0
+let currentUid = 0
 
 const handleRemove = (uploadFile, uploadFiles) => {
   const uid = uploadFile.uid
   if (allCanvasConfigMap.has(uid)) {
     allCanvasConfigMap.delete(uid)
-    // currentRenderUid.value = 0
+    if (allCanvasConfigMap.size === 1) {
+    }
   }
 }
 
-const cacheRenderData = async function(uploadFile) {
+const cacheRenderData = async function(uploadFile, uploadFiles) {
+  for (let item of uploadFiles) {
+    const uid = item.uid
+    const src= item.url
+    const name = item.name
+    const raw = item.raw
+    if (!uid2Src.has(uid)) {
+      uid2Src.set(uid, {
+        name: name,
+        src: src,
+        raw: raw,
+      })
+    }
+  }
   const uid = uploadFile.uid
   if (!allCanvasConfigMap.has(uid)) {
     const imgData = await getImageData(uploadFile.raw)
@@ -72,6 +88,8 @@ const cacheRenderData = async function(uploadFile) {
   }
   if (currentRenderUid.value === 0) {
     currentRenderUid.value = uid
+    parameterDisable.value = false
+    unMarshal(uid)
   }
 }
 
@@ -108,5 +126,9 @@ const cacheRenderData = async function(uploadFile) {
       PreviewRender(uid, img, exifData, iconImg)
     }
     currentRenderUid.value = uploadFile.uid
+    lastUid = currentUid
+    currentUid = uid
+    marshal(lastUid)
+    unMarshal(currentUid)
   }
 </script>

@@ -8,24 +8,6 @@ const uid2Src = reactive(new Map())
 
 const uid2Img = reactive(new Map)
 
-// {img: Img, src: src, name: Name}
-
-watch(imgSrcList, ()=>{
-    for (let imgItem of imgSrcList.value) {
-        const uid = imgItem.uid
-        const src= imgItem.url
-        const name = imgItem.name
-        const raw = imgItem.raw
-        if (!uid2Src.has(uid)) {
-            uid2Src.set(uid, {
-                name: name,
-                src: src,
-                raw: raw,
-            })
-        }
-    }
-})
-
 
 function pushToImgList(src) {
     imgSrcList.value.push({name:src, URL:src})

@@ -22,12 +22,15 @@
       </v-stage>
     </div>
   </div>
+  <div>
+    <el-pagination background layout="prev, pager, next" :total="30" @current-change="sizeChange" :disabled="parameterDisable"/>
+  </div>
 </template>
 
 <script setup>
   import {defineRender} from "@/store/defineRender";
   import {defineCanvasConfig} from "@/store/defineCanvasConfig";
-  const {currentRenderUid}= defineRender()
+  const {currentRenderUid, parameterDisable}= defineRender()
 
   const {
     previewStageConfig,
@@ -40,6 +43,10 @@
     iconInfoConfig,
     bannerRectConfig,
   } = defineCanvasConfig()
+
+  function sizeChange(e) {
+    console.log(e)
+  }
 
 </script>
 

@@ -3,6 +3,7 @@ import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig
 
 const currentRenderUid = ref(0)
 const resetBtn = ref(false)
+const parameterDisable = ref(true)
 
 const {
     previewStageConfig,
@@ -24,6 +25,7 @@ function marshal(oldVal) {
 
 
     Object.assign(currentRenderCanvasConfig.previewStageConfig, previewStageConfig)
+    Object.assign(currentRenderCanvasConfig.downloadStageConfig, downloadStageConfig)
     Object.assign(currentRenderCanvasConfig.mainImgConfig, mainImgConfig)
     Object.assign(currentRenderCanvasConfig.deviceInfoConfig, deviceInfoConfig)
     Object.assign(currentRenderCanvasConfig.iconInfoConfig, iconInfoConfig)
@@ -42,6 +44,7 @@ function unMarshal(newVal) {
     const scaleY = currentRenderCanvasConfig.previewStageConfig.scaleY
 
     Object.assign(previewStageConfig, currentRenderCanvasConfig.previewStageConfig)
+    Object.assign(downloadStageConfig, currentRenderCanvasConfig.downloadStageConfig)
     Object.assign(mainImgConfig, currentRenderCanvasConfig.mainImgConfig)
     Object.assign(deviceInfoConfig, currentRenderCanvasConfig.deviceInfoConfig)
     Object.assign(iconInfoConfig, currentRenderCanvasConfig.iconInfoConfig)
@@ -52,16 +55,9 @@ function unMarshal(newVal) {
     Object.assign(bannerRectConfig, currentRenderCanvasConfig.bannerRectConfig)
 }
 
-watch(currentRenderUid, (newVal,oldVal)=>{
-    if (!allCanvasConfigMap.has(newVal)) {
-        return
-    }
-    marshal(oldVal)
-    unMarshal(newVal)
-})
 
 function defineRender() {
-    return {currentRenderUid, unMarshal}
+    return {currentRenderUid, unMarshal, marshal, parameterDisable}
 }
 
 export {defineRender}
