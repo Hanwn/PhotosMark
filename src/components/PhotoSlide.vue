@@ -24,7 +24,8 @@ import {defineFactor} from "@/store/defineFactor";
 import {getExifData, parseExifData} from "@/utils/readExif";
 import {getImageData} from "@/utils/readFile";
 import {allCanvasConfigMap} from "@/store/defineCanvasConfig";
-import {PreviewRender} from "@/themes/mi/mi";
+import {PreviewRender} from "@/themes/renderReouter";
+import {themeIdx} from "@/store/defineThemes";
 
 const {imgSrcList} = defineImgList()
 const {currentRenderUid, marshal,parameterDisable, unMarshal} = defineRender()
@@ -54,6 +55,7 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
         name: name,
         src: src,
         raw: raw,
+        renderThemeIdx: 1,
       })
     }
   }
@@ -130,5 +132,6 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
     currentUid = uid
     marshal(lastUid)
     unMarshal(currentUid)
+    themeIdx.value = uid2Src.get(uid).renderThemeIdx
   }
 </script>

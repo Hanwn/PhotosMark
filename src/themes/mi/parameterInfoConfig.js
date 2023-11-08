@@ -1,6 +1,31 @@
 import {calcDeviceFontSize} from "@/utils/calcFontSize";
-import {calcIconSize} from "@/utils/calcIconSize";
 import {defineFactor} from "@/store/defineFactor";
+
+function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
+    let verticalMaxRadio = 1/2
+    const horizonMaxRadio = 1/6
+
+    if (iconWidth/iconHeight >= 3 || iconHeight/iconWidth >= 3) {
+        verticalMaxRadio = 1/4
+    }
+
+    let iconImgHeight = rectH * verticalMaxRadio
+    const scale = iconWidth/iconHeight
+    let iconImgWidth = iconImgHeight * scale
+    const maxIconWidth =  maxLen > (rectW * horizonMaxRadio)? (rectW * horizonMaxRadio) : maxLen
+    if (iconImgWidth > maxIconWidth) {
+        iconImgWidth = maxIconWidth
+        iconImgHeight = maxIconWidth / scale
+    }
+
+    return {
+        "iconImgWidth": iconImgWidth,
+        "iconImgHeight":iconImgHeight,
+        "scaleX":iconImgWidth/iconWidth,
+        "scaleY":iconImgHeight/iconHeight
+    }
+
+}
 
 
 function getTimeInfoConfig(exifData, middle, rectH, parameterInfoConfig) {

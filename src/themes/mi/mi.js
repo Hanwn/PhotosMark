@@ -5,7 +5,7 @@ import {ref} from 'vue'
 const padding = 100
 const factor = ref(0.1)
 
-function PreviewRender(uid, img, exifData, iconImg) {
+function PreviewRenderMi(uid, img, exifData, iconImg) {
     const rectH = img.height * factor.value
     const rectW = img.width
     const middle = img.height + rectH / 3
@@ -14,4 +14,4 @@ function PreviewRender(uid, img, exifData, iconImg) {
     allCanvasConfigMap.set(uid, renderItem)
 }
 
-export {PreviewRender}
+export {PreviewRenderMi}

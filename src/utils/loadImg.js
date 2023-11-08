@@ -8,8 +8,3 @@ export function loadImg(imgSrc) {
         img.crossOrigin = "anonymous"
     })
 }
-
-
-async function getImg(src) {
-    const img = await loadImg(src)
-}
