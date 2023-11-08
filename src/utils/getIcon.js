@@ -1,4 +1,3 @@
-import {calcIconSize} from "@/utils/calcIconSize";
 
 const getIconSrc = function (exifData) {
     const model = exifData.Model

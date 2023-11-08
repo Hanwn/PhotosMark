@@ -23,14 +23,16 @@
     </div>
   </div>
   <div>
-    <el-pagination background layout="prev, pager, next" :total="30" @current-change="sizeChange" :disabled="parameterDisable"/>
+    <el-pagination background layout="prev, pager, next" :total="30" @current-change="sizeChange" :disabled="parameterDisable" :current-page="themeIdx"/>
   </div>
 </template>
 
 <script setup>
   import {defineRender} from "@/store/defineRender";
   import {defineCanvasConfig} from "@/store/defineCanvasConfig";
-  const {currentRenderUid, parameterDisable}= defineRender()
+  import {themeIdx} from "@/store/defineThemes";
+  import {uid2Src} from "@/store/defineImg";
+  const {currentRenderUid, parameterDisable, unMarshal}= defineRender()
 
   const {
     previewStageConfig,
@@ -45,7 +47,14 @@
   } = defineCanvasConfig()
 
   function sizeChange(e) {
-    console.log(e)
+    const uid = currentRenderUid.value
+    if (!uid2Src.has(uid)) {
+      return
+    }
+    uid2Src.get(uid).renderThemeIdx = e
+    themeIdx.value = e
+
+    unMarshal(uid)
   }
 
 </script>

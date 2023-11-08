@@ -12,7 +12,7 @@ import {ref, watch} from 'vue'
 import {getImageData} from "@/utils/readFile";
 import {getExifData, parseExifData} from "@/utils/readExif";
 import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig";
-import {PreviewRender} from "@/themes/mi/mi";
+import {PreviewRender} from "@/themes/renderReouter";
 
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
