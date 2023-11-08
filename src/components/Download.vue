@@ -23,29 +23,30 @@ const {
 
 async function download() {
   if (allCanvasConfigMap.size === 1) {
-    notify("请上传图片")
+    notify("请上传图片", "error")
     return
   }
+
   for (let item of allCanvasConfigMap) {
     if (item[0] === 0) {
       continue
     }
-    currentRenderUid.value = item[0]
+    // currentRenderUid.value = item[0]
+    const uid = item[0]
     const outputConfig = {
         "mimeType": "image/jpeg",
         "width": downloadStage.value.width,
         "height": downloadStage.value.height
       }
-      console.log(outputConfig)
       let node = await downloadStage.value.getNode()
       let href = node.toDataURL(outputConfig)
       let a = document.createElement("a")
       a.href = href
-      a.download = uid2Src.get(currentRenderUid.value).name
+      a.download = uid2Src.get(uid).name
       a.click()
     }
   // notifyDownloadSuccess()
-  notify("下载成功")
+  notify("下载成功", "success")
 }
 </script>
 

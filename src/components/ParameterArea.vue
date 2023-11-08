@@ -17,9 +17,8 @@ import {PreviewRender} from "@/themes/mi/mi";
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
 const {factor} = defineFactor()
-const {currentRenderUid, unMarshal} = defineRender()
+const {currentRenderUid, unMarshal,marshal, parameterDisable} = defineRender()
 
-const disable = ref(false)
 
 const {
   deviceInfoConfig,
@@ -53,7 +52,7 @@ async function reset() {
 
 const value = ref('')
 
-watch(value, async () => {
+async function select() {
   console.log(value.value)
   const uid = currentRenderUid.value
   const uploadFile = uid2Src.get(currentRenderUid.value)
@@ -86,7 +85,7 @@ watch(value, async () => {
   PreviewRender(uid, img, exifData, iconImg)
   // not best practise
   unMarshal(uid)
-})
+}
 
 const cities = ref([
   {
@@ -155,6 +154,7 @@ const cities = ref([
         class="w-50 m-2"
         placeholder="Device info"
         :prefix-icon="Camera"
+        :disabled="parameterDisable"
       />
 
     <el-input
@@ -162,21 +162,24 @@ const cities = ref([
         class="w-50 m-2"
         placeholder="Lens Info"
         :prefix-icon="Aim"
+        :disabled="parameterDisable"
     />
     <el-input
         v-model="parameterInfoConfig.text"
         class="w-50 m-2"
         placeholder="parameter Info"
         :prefix-icon="InfoFilled"
+        :disabled="parameterDisable"
     />
     <el-input
         v-model="timeInfoConfig.text"
         class="w-50 m-2"
         placeholder="time info"
         :prefix-icon="Calendar"
+        :disabled="parameterDisable"
     />
 
-    <el-select v-model="value" placeholder="Select" :disabled="disable">
+    <el-select v-model="value" placeholder="Select" :disabled="parameterDisable" @change="select">
       <el-option
           v-for="item in cities"
           :key="item.value"
@@ -187,7 +190,7 @@ const cities = ref([
       </el-option>
     </el-select>
 
-    <el-button type="danger" @click="reset" :disabled="disable">
+    <el-button type="danger" @click="reset" :disabled="parameterDisable">
       Reset
       <el-icon class="el-icon--left">
         <Refresh/>
