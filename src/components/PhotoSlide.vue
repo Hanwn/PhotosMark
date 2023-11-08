@@ -130,6 +130,7 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
     currentRenderUid.value = uploadFile.uid
     lastUid = currentUid
     currentUid = uid
+    console.log(lastUid, currentUid)
     marshal(lastUid)
     unMarshal(currentUid)
     themeIdx.value = uid2Src.get(uid).renderThemeIdx

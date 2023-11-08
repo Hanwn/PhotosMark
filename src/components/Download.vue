@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {createCommentVNode, ref} from "vue";
 import {defineRender} from "@/store/defineRender";
 import {Download } from '@element-plus/icons-vue'
 import {uid2Src} from "@/store/defineImg";
@@ -38,12 +38,20 @@ async function download() {
         "width": downloadStage.value.width,
         "height": downloadStage.value.height
       }
-      let node = await downloadStage.value.getNode()
-      let href = node.toDataURL(outputConfig)
-      let a = document.createElement("a")
-      a.href = href
-      a.download = uid2Src.get(uid).name
-      a.click()
+    let node = await downloadStage.value.getNode()
+    let href = node.toDataURL(outputConfig)
+    let a = document.createElement("a")
+    a.href = href
+    let picName = "default"
+    if (uid2Src.has(uid)) {
+      picName = uid2Src.get(uid).name
+    }
+    if (!uid2Src.has(uid)) {
+      console.log(uid2Src)
+      console.log(allCanvasConfigMap)
+    }
+    a.download =  picName
+    a.click()
     }
   // notifyDownloadSuccess()
   notify("下载成功", "success")
