@@ -20,10 +20,10 @@ const {
 
 // dump
 function marshal(oldVal) {
-
+    if (!allCanvasConfigMap.has(oldVal)) {
+        return
+    }
     const currentRenderCanvasConfig = allCanvasConfigMap.get(oldVal)
-
-
     Object.assign(currentRenderCanvasConfig.previewStageConfig, previewStageConfig)
     Object.assign(currentRenderCanvasConfig.downloadStageConfig, downloadStageConfig)
     Object.assign(currentRenderCanvasConfig.mainImgConfig, mainImgConfig)
@@ -38,7 +38,9 @@ function marshal(oldVal) {
 
 // load
 function unMarshal(newVal) {
-
+    if (!allCanvasConfigMap.has(newVal)){
+        return
+    }
     const currentRenderCanvasConfig = allCanvasConfigMap.get(newVal)
     const scaleX = currentRenderCanvasConfig.previewStageConfig.scaleX
     const scaleY = currentRenderCanvasConfig.previewStageConfig.scaleY
