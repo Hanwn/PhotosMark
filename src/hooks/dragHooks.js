@@ -17,39 +17,44 @@ const {
 } = defineCanvasConfig()
 
 function dragVerticalBarHook(e) {
-    verticalBarInfoConfig.x = e.target.attrs.x
-    verticalBarInfoConfig.Y = e.target.attrs.y
+    for (let key in verticalBarInfoConfig) {
+        verticalBarInfoConfig[key] = e.target.attrs[key]
+    }
     marshal(currentRenderUid.value)
 }
 function dragDeviceInfoHook(e) {
-    deviceInfoConfig.x = e.target.attrs.x
-    deviceInfoConfig.Y = e.target.attrs.y
+    for (let key in deviceInfoConfig) {
+        deviceInfoConfig[key] = e.target.attrs[key]
+    }
     marshal(currentRenderUid.value)
 }
 
 function dragLensInfoHook(e) {
-
-    lensInfoConfig.x = e.target.attrs.x
-    lensInfoConfig.Y = e.target.attrs.y
+    for (let key in lensInfoConfig) {
+        lensInfoConfig[key] = e.target.attrs[key]
+    }
     marshal(currentRenderUid.value)
 
 }
 
 function dragTimeInfoHook(e) {
-    timeInfoConfig.x = e.target.attrs.x
-    timeInfoConfig.Y = e.target.attrs.y
+    for (let key in timeInfoConfig) {
+        timeInfoConfig[key] = e.target.attrs[key]
+    }
     marshal(currentRenderUid.value)
 
 }
 function dragParameterInfoHook(e) {
-    parameterInfoConfig.x = e.target.attrs.x
-    parameterInfoConfig.Y = e.target.attrs.y
+    for (let key in parameterInfoConfig) {
+        parameterInfoConfig[key] = e.target.attrs[key]
+    }
     marshal(currentRenderUid.value)
 }
 
 function dragIconInfoHook(e) {
-    iconInfoConfig.x = e.target.attrs.x
-    iconInfoConfig.y = e.target.attrs.y
+    for (let key in iconInfoConfig) {
+        iconInfoConfig[key] = e.target.attrs[key]
+    }
     marshal(currentRenderUid.value)
 }
 
