@@ -7,7 +7,7 @@ import {notify} from "@/utils/notify";
 import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig";
 const downloadStage = ref()
 const disable = ref(true)
-const {currentRenderUid}= defineRender()
+const {currentRenderUid, unMarshal}= defineRender()
 
 const {
   downloadStageConfig,
@@ -37,7 +37,8 @@ async function download() {
         "mimeType": "image/jpeg",
         "width": downloadStage.value.width,
         "height": downloadStage.value.height
-      }
+    }
+    unMarshal(uid)
     let node = await downloadStage.value.getNode()
     let href = node.toDataURL(outputConfig)
     let a = document.createElement("a")
