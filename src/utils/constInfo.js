@@ -5,22 +5,26 @@ function getInitData() {
             width: 800,
             height: 600,
             scaleX:1,
-            scaleY:1
+            scaleY:1,
+            name:"previewStage",
         },
         downloadStageConfig:{
             width : 100,
             height : 200,
-            visible: true
+            visible: true,
+            name:"downloadStage",
         },
         mainImgConfig: {
             image: null,
+            name:"mainImg",
         },
         iconGroupConfig: {},
         bannerRectConfig: {
             height : 100,
             width : 100,
             y : 100,
-            fill : "white"
+            fill : "white",
+            name:"bannerRect",
         },
         deviceInfoConfig: {
             x:100,
@@ -31,6 +35,7 @@ function getInitData() {
             offsetY:0,
             fill:"black",
             draggable:true,
+            name:"deviceInfo",
         },
         lensInfoConfig: {
             x:100,
@@ -42,6 +47,7 @@ function getInitData() {
             align:"center",
             fill:"gray",
             draggable:true,
+            name:"lensInfo",
         },
         iconInfoConfig: {
             image: null,
@@ -49,6 +55,8 @@ function getInitData() {
             y:0,
             height:0,
             width:0,
+            draggable:true,
+            name:"iconInfo"
         },
         verticalBarInfoConfig: {
             x: 0,
@@ -56,6 +64,8 @@ function getInitData() {
             width:5,
             height:0,
             fill: "gray",
+            draggable:true,
+            name:"verticalBarInfo"
         },
         parameterInfoConfig: {
             x:100,
@@ -68,6 +78,7 @@ function getInitData() {
             verticalAlign:"middle",
             fill:"black",
             draggable:true,
+            name:"parameterInfo"
         },
         timeInfoConfig: {
             x:100,
@@ -80,6 +91,7 @@ function getInitData() {
             offsetY:0,
             fill:"gray",
             draggable:true,
+            name:"timeInfo",
         },
     }
 }

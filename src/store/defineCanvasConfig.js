@@ -62,14 +62,16 @@ const iconInfoConfig = reactive({
     height:0,
     width:0,
     scaleX:1,
-    scaleY:1
+    scaleY:1,
+    draggable:true,
 })
 const verticalBarInfoConfig = reactive({
     x: 0,
     y: 0,
     width:5,
-    height:0,
+    height:1,
     fill: "gray",
+    draggable:true,
     scaleX:1,
     scaleY:1
 })
@@ -103,6 +105,20 @@ const timeInfoConfig = reactive({
     scaleY:1
 })
 
+const transformerConfig = reactive({
+    rotateEnabled: false,
+    keepRadio: true,
+    enabledAnchors: [
+        'top-left',
+        'top-right',
+        'bottom-left',
+        'bottom-right'
+    ],
+    anchorStyleFunc: (anchor) => {
+        anchor.cornerRadius(10);
+    }
+})
+
 const initData = getInitData()
 const allCanvasConfigMap = new Map()
 allCanvasConfigMap.set(0, initData)
@@ -120,6 +136,7 @@ function defineCanvasConfig() {
         verticalBarInfoConfig,
         iconInfoConfig,
         bannerRectConfig,
+        transformerConfig,
     }
 }
 
