@@ -4,7 +4,6 @@ import {
   defineExifCache,
   defineIcon, pushToExifCache, pushToIconCache, uid2Src,
 } from "@/store/defineImg";
-import {defineFactor} from "@/store/defineFactor";
 import {loadImg} from "@/utils/loadImg";
 import {getIconSrc} from "@/utils/getIcon";
 import {Aim, Calendar, Camera, InfoFilled, Refresh} from "@element-plus/icons-vue";
@@ -16,7 +15,6 @@ import {PreviewRender} from "@/themes/renderReouter";
 
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
-const {factor} = defineFactor()
 const {currentRenderUid, unMarshal,marshal, parameterDisable} = defineRender()
 
 

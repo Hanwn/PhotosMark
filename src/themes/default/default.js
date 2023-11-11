@@ -2,7 +2,6 @@
 import {ref} from 'vue'
 import {allCanvasConfigMap} from "@/store/defineCanvasConfig";
 
-const factor = ref(0.15)
 
 function PreviewRenderDefault(uid, img, exifData, iconImg) {
     const rectH = img.height * factor.value

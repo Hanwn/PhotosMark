@@ -20,7 +20,6 @@ import {defineIcon, defineImgList, pushToExifCache, pushToIconCache, uid2Src} fr
 import {defineRender} from "@/store/defineRender";
 import {loadImg} from "@/utils/loadImg";
 import {getIconSrc} from "@/utils/getIcon";
-import {defineFactor} from "@/store/defineFactor";
 import {getExifData, parseExifData} from "@/utils/readExif";
 import {getImageData} from "@/utils/readFile";
 import {allCanvasConfigMap} from "@/store/defineCanvasConfig";
@@ -29,7 +28,6 @@ import {themeIdx} from "@/store/defineThemes";
 
 const {imgSrcList} = defineImgList()
 const {currentRenderUid, marshal,parameterDisable, unMarshal} = defineRender()
-const {factor} = defineFactor()
 const {iconCache} = defineIcon()
 
 let lastUid = 0
@@ -40,6 +38,7 @@ const handleRemove = (uploadFile, uploadFiles) => {
   if (allCanvasConfigMap.has(uid)) {
     allCanvasConfigMap.delete(uid)
     if (allCanvasConfigMap.size === 1) {
+      parameterDisable.value = true
     }
   }
 }
@@ -90,6 +89,7 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
   }
   if (currentRenderUid.value === 0) {
     currentRenderUid.value = uid
+    currentUid = uid
     parameterDisable.value = false
     unMarshal(uid)
   }
