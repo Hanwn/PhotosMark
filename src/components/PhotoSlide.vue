@@ -24,7 +24,7 @@ import {getExifData, parseExifData} from "@/utils/readExif";
 import {getImageData} from "@/utils/readFile";
 import {allCanvasConfigMap} from "@/store/defineCanvasConfig";
 import {PreviewRender} from "@/themes/renderReouter";
-import {themeIdx} from "@/store/defineThemes";
+import {factor, themeIdx} from "@/store/defineThemes";
 
 const {imgSrcList} = defineImgList()
 const {currentRenderUid, marshal,parameterDisable, unMarshal} = defineRender()
@@ -55,9 +55,11 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
         src: src,
         raw: raw,
         renderThemeIdx: 1,
+        renderFactor: 0.125,
       })
     }
   }
+  factor.value = 0.125
   const uid = uploadFile.uid
   if (!allCanvasConfigMap.has(uid)) {
     const imgData = await getImageData(uploadFile.raw)
@@ -75,6 +77,10 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
     } catch (e) {
       return
     }
+    if (img.height > img.width) {
+      uid2Src.get(uid).renderFactor = 0.1
+      factor.value = 0.1
+    }
     const iconName = getIconSrc(exifData)
     pushToExifCache(src, exifData)
     const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
@@ -85,12 +91,13 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
       iconImg = await loadImg(iconSrc)
       pushToIconCache(src)
     }
-    PreviewRender(uid, img, exifData, iconImg)
+    PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor)
   }
   if (currentRenderUid.value === 0) {
     currentRenderUid.value = uid
     currentUid = uid
     parameterDisable.value = false
+    factor.value = uid2Src.get(uid).renderFactor
     unMarshal(uid)
   }
 }
@@ -125,7 +132,7 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
         pushToIconCache(iconSrc, iconImg)
       }
 
-      PreviewRender(uid, img, exifData, iconImg)
+      PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor)
     }
     currentRenderUid.value = uploadFile.uid
     lastUid = currentUid
@@ -134,5 +141,6 @@ const cacheRenderData = async function(uploadFile, uploadFiles) {
     marshal(lastUid)
     unMarshal(currentUid)
     themeIdx.value = uid2Src.get(uid).renderThemeIdx
+    factor.value = uid2Src.get(uid).renderFactor
   }
 </script>

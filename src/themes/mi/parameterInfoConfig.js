@@ -1,5 +1,7 @@
 import {calcDeviceFontSize} from "@/utils/calcFontSize";
-import {defineFactor} from "@/store/defineFactor";
+
+const padding = 100
+
 
 function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
     let verticalMaxRadio = 1/2
@@ -41,12 +43,15 @@ function getTimeInfoConfig(exifData, middle, rectH, parameterInfoConfig) {
         fontSize : fontSize,
         fill: "gray",
         draggable:true,
+        name:"timeInfo",
+        scaleX: 1,
+        scaleY: 1,
     }
 }
 
 function getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH) {
     const dist = 50
-    const verticalBarWidth = 5
+    const verticalBarWidth = 6
     const radio = 0.5
     const offset = (rectH * (1 - radio))/2
     return {
@@ -56,6 +61,9 @@ function getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH) {
         width: verticalBarWidth,
         fill: "gray",
         draggable:true,
+        name:"verticalBarInfo",
+        scaleX: 1,
+        scaleY: 1,
     }
 }
 
@@ -71,6 +79,9 @@ function getIconInfoConfig(verticalBarInfoConfig, maxLensEndPos, iconImg, rectH,
         height : calcIconData.iconImgHeight,
         width : calcIconData.iconImgWidth,
         draggable:true,
+        name:"iconInfo",
+        scaleX: 1,
+        scaleY: 1,
     }
 }
 
@@ -89,6 +100,9 @@ function getParameterInfoConfig(exifData, padding, middle, rectW, rectH) {
         offsetY : textSize.height/2,
         fontSize : fontSize,
         draggable:true,
+        name:"parameterInfo",
+        scaleX: 1,
+        scaleY: 1,
     }
 }
 
@@ -106,6 +120,9 @@ function getLensInfo(exifData, padding, middle, rectH) {
         fontSize : fontSize,
         fill:"gray",
         draggable:true,
+        scaleX: 1,
+        scaleY: 1,
+        name:"lensInfo",
     }
     return {
         lensInfoConfig,
@@ -128,7 +145,10 @@ function getDeviceInfoConfig(padding, middle, exifData, rectH) {
         fontStyle:"bold",
         fontSize : fontSize,
         offsetY : textSize.height/2,
+        scaleX: 1,
+        scaleY: 1,
         draggable:true,
+        name:"deviceInfo",
     }
     return {deviceInfoConfig, textSize }
 }
@@ -167,7 +187,12 @@ function getRightInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg, ma
     }
 }
 
-function getMarkInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg) {
+function getMarkInfo(exifData, img, iconImg, factor) {
+    const rectH = img.height * factor
+    const rectW = img.width
+    const middle = img.height + rectH / 3
+    const imgH = img.height
+
     const leftInfo = getLeftInfo(padding, middle, exifData, rectH)
     const rightInfo = getRightInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg, leftInfo["maxLensEndPos"])
     return {
@@ -176,9 +201,8 @@ function getMarkInfo(exifData, padding, middle, rectW, rectH, imgH, iconImg) {
     }
 }
 
-function genRenderItem(img, genMarkInfo) {
-    const {factor} = defineFactor()
-    let imgH = img.height * ( 1 + factor.value)
+function genRenderItem(img, genMarkInfo, factor) {
+    let imgH = img.height * ( 1 + factor)
     let imgW = img.width
     const scale = imgH/imgW
     if (imgH > imgW) {
@@ -189,7 +213,7 @@ function genRenderItem(img, genMarkInfo) {
        imgH =  imgW * scale
     }
     const scaleX = imgW/img.width
-    const scaleY = imgH/(img.height * (1 + factor.value))
+    const scaleY = imgH/(img.height * (1 + factor))
     return {
         previewStageConfig:{
             width : imgW,
@@ -199,7 +223,7 @@ function genRenderItem(img, genMarkInfo) {
         },
         downloadStageConfig:{
             width : img.width,
-            height : (img.height * (1 + factor.value)),
+            height : (img.height * (1 + factor)),
             visible: true
         },
         mainImgConfig: {
@@ -207,7 +231,7 @@ function genRenderItem(img, genMarkInfo) {
         },
         iconGroupConfig: {},
         bannerRectConfig: {
-            height : img.height * factor.value,
+            height : img.height * factor,
             width : img.width,
             x: 0,
             y : img.height,

@@ -12,6 +12,7 @@ import {getImageData} from "@/utils/readFile";
 import {getExifData, parseExifData} from "@/utils/readExif";
 import {allCanvasConfigMap, defineCanvasConfig} from "@/store/defineCanvasConfig";
 import {PreviewRender} from "@/themes/renderReouter";
+import {factor} from "@/store/defineThemes";
 
 const {exifCache} = defineExifCache()
 const {iconCache} = defineIcon()
@@ -42,7 +43,7 @@ async function reset() {
       iconImg = await loadImg(iconSrc)
       pushToIconCache(src)
     }
-    PreviewRender(uid, img, exifData, iconImg)
+    PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor)
     // not best practise
     unMarshal(uid)
   }
@@ -51,7 +52,6 @@ async function reset() {
 const value = ref('')
 
 async function select() {
-  console.log(value.value)
   const uid = currentRenderUid.value
   const uploadFile = uid2Src.get(currentRenderUid.value)
   const imgData = await getImageData(uploadFile.raw)
@@ -80,7 +80,44 @@ async function select() {
     pushToIconCache(iconSrc, iconImg)
   }
 
-  PreviewRender(uid, img, exifData, iconImg)
+  PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor)
+  // not best practise
+  unMarshal(uid)
+}
+
+async function handleSlide(e) {
+  const uid = currentRenderUid.value
+  const uploadFile = uid2Src.get(currentRenderUid.value)
+  uploadFile.renderFactor = e
+  const imgData = await getImageData(uploadFile.raw)
+  let exifData = null
+  try {
+    exifData = getExifData(imgData)
+  } catch (e) {
+    exifData = parseExifData(null)
+  }
+  exifData.LEN = exifData.LEN.replace(/\u0000/g, "")
+  const src = uid2Src.get(currentRenderUid.value).src
+  let img = null
+  try {
+    img = await loadImg(src)
+  } catch (e) {
+    return
+  }
+
+  const iconName = getIconSrc(exifData)
+  pushToExifCache(src, exifData)
+  const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`
+
+  let iconImg = ""
+  if (iconCache.has(iconSrc)) {
+    iconImg = iconCache.get(iconSrc)
+  } else {
+    iconImg = await loadImg(iconSrc)
+    pushToIconCache(iconSrc, iconImg)
+  }
+
+  PreviewRender(uid, img, exifData, iconImg, e)
   // not best practise
   unMarshal(uid)
 }
@@ -187,6 +224,10 @@ const cities = ref([
         <el-image style="float:right; display: inline-block; width: 20px; height: 20px" :src="item.value" fit="contain" />
       </el-option>
     </el-select>
+
+    <div class="slider-demo-block">
+      <el-slider v-model="factor" show-input  :disabled="parameterDisable" @change="handleSlide" :max="0.5" :step="0.01"/>
+    </div>
 
     <el-button type="danger" @click="reset" :disabled="parameterDisable">
       Reset

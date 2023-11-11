@@ -3,6 +3,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import VueKonva from 'vue-konva';
+import 'default-passive-events'
 
 const app = createApp(App)
 
