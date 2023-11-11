@@ -6,18 +6,19 @@
             boxShadow: '0px 0px 10px #000'
           }"
     >
-      <v-stage :config="previewStageConfig" ref="stage" id="previewStage">
+      <v-stage :config="previewStageConfig"  ref="stage" id="previewStage" @mousedown="handleStageMouseDown">
         <v-layer>
           <v-image :config="mainImgConfig"></v-image>
           <v-group :config="{}">
             <v-rect :config="bannerRectConfig"></v-rect>
-            <v-text :config="deviceInfoConfig"></v-text>
-            <v-text :config="lensInfoConfig"></v-text>
-            <v-image :config="iconInfoConfig"></v-image>
-            <v-rect :config="verticalBarInfoConfig"></v-rect>
-            <v-text :config="parameterInfoConfig"></v-text>
-            <v-text :config="timeInfoConfig"></v-text>
+            <v-text :config="deviceInfoConfig" @dragEnd="dragDeviceInfoHook" @transformend="transformerDeviceInfoHook"></v-text>
+            <v-text :config="lensInfoConfig" @dragEnd="dragLensInfoHook" @transformend="transformerLensInfoHook"></v-text>
+            <v-image :config="iconInfoConfig" @dragEnd="dragIconInfoHook" @transformend="transformerIconInfoHook"></v-image>
+            <v-rect :config="verticalBarInfoConfig" @dragEnd="dragVerticalBarHook" @transformend="transformerVerticalBarHook"></v-rect>
+            <v-text :config="parameterInfoConfig" @dragEnd="dragParameterInfoHook" @transformend="transformerParameterInfoHook"></v-text>
+            <v-text :config="timeInfoConfig" @dragEnd="dragTimeInfoHook" @transformend="transformerTimeInfoHook"></v-text>
           </v-group>
+          <v-transformer ref="transformer" :config="transformerConfig" />
         </v-layer>
       </v-stage>
     </div>
@@ -28,11 +29,35 @@
 </template>
 
 <script setup>
+  import {ref} from 'vue'
   import {defineRender} from "@/store/defineRender";
   import {defineCanvasConfig} from "@/store/defineCanvasConfig";
   import {themeIdx} from "@/store/defineThemes";
   import {uid2Src} from "@/store/defineImg";
+  import {defineDragHooks} from "@/hooks/dragHooks";
+  import {defineTransformerHooks} from "@/hooks/transformerHooks";
   const {currentRenderUid, parameterDisable, unMarshal}= defineRender()
+
+  const {
+    dragVerticalBarHook,
+    dragLensInfoHook,
+    dragTimeInfoHook,
+    dragParameterInfoHook,
+    dragDeviceInfoHook,
+    dragIconInfoHook,
+  } = defineDragHooks()
+
+  const {
+    transformerVerticalBarHook,
+    transformerDeviceInfoHook,
+    transformerLensInfoHook,
+    transformerParameterInfoHook,
+    transformerTimeInfoHook,
+    transformerIconInfoHook,
+    handleStageMouseDown,
+    transformer
+  } = defineTransformerHooks()
+
 
   const {
     previewStageConfig,
@@ -44,6 +69,7 @@
     verticalBarInfoConfig,
     iconInfoConfig,
     bannerRectConfig,
+    transformerConfig,
   } = defineCanvasConfig()
 
   function sizeChange(e) {
