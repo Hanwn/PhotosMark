@@ -64,6 +64,7 @@
           <v-line :config="alignLineOneThirdConfig"></v-line>
           <v-line :config="alignLineMiddleConfig"></v-line>
           <v-line :config="alignLineTwoThirdConfig"></v-line>
+          <v-line :config="debugConfig"></v-line>
         </v-layer>
       </v-stage>
     </div>
@@ -89,6 +90,14 @@ import { uid2Src } from "@/store/defineImg";
 import { defineDragHooks } from "@/hooks/dragHooks";
 import { defineTransformerHooks } from "@/hooks/transformerHooks";
 const { currentRenderUid, parameterDisable, unMarshal } = defineRender();
+
+const debugConfig = ref({
+  points: [0, 0, 5000, 5000],
+  draggable: true,
+  stroke: "black",
+  strokeWidth: 10,
+  visible: false,
+});
 
 const {
   dragEndVerticalBarHook,

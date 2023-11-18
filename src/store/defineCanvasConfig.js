@@ -25,6 +25,7 @@ const iconGroupConfig = reactive({});
 const bannerRectConfig = reactive({
   height: 100,
   width: 100,
+  x: 0,
   y: 100,
   fill: "#ffffff",
   scaleX: 1,
@@ -41,6 +42,7 @@ const deviceInfoConfig = reactive({
   draggable: true,
   scaleX: 1,
   scaleY: 1,
+  name: "deviceInfo",
 });
 const lensInfoConfig = reactive({
   x: 100,
@@ -49,7 +51,6 @@ const lensInfoConfig = reactive({
   fontSize: 0,
   offsetY: 0,
   fontStyle: "normal",
-  align: "center",
   fill: "#808080",
   draggable: true,
   scaleX: 1,
@@ -64,6 +65,7 @@ const iconInfoConfig = reactive({
   scaleX: 1,
   scaleY: 1,
   draggable: true,
+  name: "iconInfo",
 });
 const verticalBarInfoConfig = reactive({
   x: 0,
@@ -74,6 +76,7 @@ const verticalBarInfoConfig = reactive({
   draggable: true,
   scaleX: 1,
   scaleY: 1,
+  name: "verticalBarInfo",
 });
 
 const parameterInfoConfig = reactive({
@@ -82,7 +85,6 @@ const parameterInfoConfig = reactive({
   text: "",
   fontSize: 0,
   fontStyle: "bold",
-  align: "center",
   offsetY: 0,
   verticalAlign: "middle",
   fill: "#000000",
@@ -96,7 +98,6 @@ const timeInfoConfig = reactive({
   text: "",
   fontSize: 0,
   fontStyle: "normal",
-  align: "center",
   verticalAlign: "middle",
   offsetY: 0,
   fill: "#808080",
