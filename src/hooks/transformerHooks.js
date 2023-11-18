@@ -43,6 +43,11 @@ function transformerParameterInfoHook(e) {
 }
 
 function transformerIconInfoHook(e) {
+  for (let key in iconInfoConfig) {
+    iconInfoConfig[key] = e.target.attrs[key];
+  }
+  iconInfoConfig.scaleX = 1;
+  iconInfoConfig.scaleY = 1;
   const transHeight = iconInfoConfig.height * e.target.attrs.scaleY;
   const transWidth = iconInfoConfig.width * e.target.attrs.scaleX;
   iconInfoConfig.height = transHeight;
