@@ -27,8 +27,6 @@ function dragEndVerticalBarHook(e) {
     verticalBarInfoConfig.y = alignLineMiddleConfig.points[1] - diff;
     alignLineMiddleConfig.visible = false;
   }
-  marshal(currentRenderUid.value);
-  alignLineMiddleConfig.visible = false;
 }
 
 function dragMoveVerticalBarHook(evt) {
@@ -60,7 +58,6 @@ function dragEndDeviceInfoHook(e) {
     deviceInfoConfig.y = alignLineOneThirdConfig.points[1];
     alignLineOneThirdConfig.visible = false;
   }
-  marshal(currentRenderUid.value);
 }
 
 function dragMoveDeviceInfoHook(evt) {
@@ -84,7 +81,6 @@ function dragEndLensInfoHook(e) {
     lensInfoConfig.y = alignLineOneThirdConfig.points[1];
     alignLineOneThirdConfig.visible = false;
   }
-  marshal(currentRenderUid.value);
 }
 
 function dragMoveLensInfoHook(evt) {
@@ -108,7 +104,6 @@ function dragEndTimeInfoHook(e) {
     timeInfoConfig.y = alignLineOneThirdConfig.points[1];
     alignLineOneThirdConfig.visible = false;
   }
-  marshal(currentRenderUid.value);
 }
 
 function dragMoveTimeInfoHook(evt) {
@@ -133,7 +128,6 @@ function dragEndParameterInfoHook(e) {
     parameterInfoConfig.y = alignLineOneThirdConfig.points[1];
     alignLineOneThirdConfig.visible = false;
   }
-  marshal(currentRenderUid.value);
 }
 
 function dragMoveParameterInfoHook(evt) {
@@ -150,8 +144,6 @@ function dragEndIconInfoHook(e) {
     iconInfoConfig.y = alignLineMiddleConfig.points[1] - diff;
     alignLineMiddleConfig.visible = false;
   }
-
-  marshal(currentRenderUid.value);
 }
 
 function dragMoveIconInfoHook(evt) {
