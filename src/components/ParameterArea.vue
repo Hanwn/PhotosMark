@@ -281,35 +281,125 @@ const options = ref([
 
 <template>
   <div class="inputContainer">
-    <el-input
-      v-model="deviceInfoConfig.text"
-      class="w-50 m-2"
-      placeholder="Device info"
-      :prefix-icon="Camera"
-      :disabled="parameterDisable"
-    />
+    <div class="color-block">
+      <el-input
+        v-model="deviceInfoConfig.text"
+        class="w-50 m-2"
+        placeholder="Device info"
+        :prefix-icon="Camera"
+        :disabled="parameterDisable"
+      />
+      <el-color-picker
+        v-model="deviceInfoConfig.fill"
+        size="small"
+        :disabled="parameterDisable"
+      />
+      <el-button
+        size="small"
+        :style="{ 'font-weight': deviceInfoConfig.fontStyle }"
+        :disabled="parameterDisable"
+        @click="
+          (evt) => {
+            deviceInfoConfig.fontStyle.includes('bold')
+              ? (deviceInfoConfig.fontStyle =
+                  deviceInfoConfig.fontStyle.replace('bold', ''))
+              : (deviceInfoConfig.fontStyle = 'bold');
+          }
+        "
+        >B</el-button
+      >
+    </div>
 
-    <el-input
-      v-model="lensInfoConfig.text"
-      class="w-50 m-2"
-      placeholder="Lens Info"
-      :prefix-icon="Aim"
-      :disabled="parameterDisable"
-    />
-    <el-input
-      v-model="parameterInfoConfig.text"
-      class="w-50 m-2"
-      placeholder="parameter Info"
-      :prefix-icon="InfoFilled"
-      :disabled="parameterDisable"
-    />
-    <el-input
-      v-model="timeInfoConfig.text"
-      class="w-50 m-2"
-      placeholder="time info"
-      :prefix-icon="Calendar"
-      :disabled="parameterDisable"
-    />
+    <div class="color-block">
+      <el-input
+        v-model="lensInfoConfig.text"
+        class="w-50 m-2"
+        placeholder="Lens Info"
+        :prefix-icon="Aim"
+        :disabled="parameterDisable"
+      />
+      <el-color-picker
+        v-model="lensInfoConfig.fill"
+        size="small"
+        :disabled="parameterDisable"
+      />
+      <el-button
+        size="small"
+        :style="{ 'font-weight': lensInfoConfig.fontStyle }"
+        :disabled="parameterDisable"
+        @click="
+          (evt) => {
+            lensInfoConfig.fontStyle.includes('bold')
+              ? (lensInfoConfig.fontStyle = lensInfoConfig.fontStyle.replace(
+                  'bold',
+                  '',
+                ))
+              : (lensInfoConfig.fontStyle = 'bold');
+          }
+        "
+        >B</el-button
+      >
+    </div>
+
+    <div class="color-block">
+      <el-input
+        v-model="parameterInfoConfig.text"
+        class="w-50 m-2"
+        placeholder="parameter Info"
+        :prefix-icon="InfoFilled"
+        :disabled="parameterDisable"
+      />
+      <el-color-picker
+        v-model="parameterInfoConfig.fill"
+        size="small"
+        :disabled="parameterDisable"
+      />
+      <el-button
+        size="small"
+        style="font-weight: bolder"
+        :disabled="parameterDisable"
+        @click="
+          (evt) => {
+            parameterInfoConfig.fontStyle.includes('bold')
+              ? (parameterInfoConfig.fontStyle =
+                  parameterInfoConfig.fontStyle.replace('bold', ''))
+              : (parameterInfoConfig.fontStyle = 'bold');
+          }
+        "
+        >B</el-button
+      >
+    </div>
+
+    <div class="color-block">
+      <el-input
+        v-model="timeInfoConfig.text"
+        class="w-50 m-2"
+        placeholder="time info"
+        :prefix-icon="Calendar"
+        :disabled="parameterDisable"
+      />
+      <el-color-picker
+        v-model="timeInfoConfig.fill"
+        size="small"
+        :disabled="parameterDisable"
+      />
+      <el-button
+        size="small"
+        style="font-weight: bolder"
+        :disabled="parameterDisable"
+        @click="
+          (evt) => {
+            timeInfoConfig.fontStyle.includes('bold')
+              ? (timeInfoConfig.fontStyle = timeInfoConfig.fontStyle.replace(
+                  'bold',
+                  '',
+                ))
+              : (timeInfoConfig.fontStyle = 'bold');
+          }
+        "
+        >B</el-button
+      >
+    </div>
 
     <el-select
       v-model="value"
@@ -377,5 +467,9 @@ const options = ref([
 }
 .inputArea {
   padding: 5px;
+}
+.color-block {
+  display: flex;
+  align-items: center;
 }
 </style>
