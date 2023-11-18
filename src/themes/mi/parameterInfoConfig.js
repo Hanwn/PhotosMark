@@ -64,6 +64,7 @@ function getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH) {
     height: rectH * radio,
     width: verticalBarWidth,
     fill: "gray",
+    stroke: "#808080",
     draggable: true,
     name: "verticalBarInfo",
     scaleX: 1,
