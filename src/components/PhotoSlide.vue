@@ -103,10 +103,10 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
   if (currentRenderUid.value === 0) {
     currentRenderUid.value = uid;
     currentUid = uid;
-    parameterDisable.value = false;
     factor.value = uid2Src.get(uid).renderFactor;
     unMarshal(uid);
   }
+  parameterDisable.value = false;
 };
 
 const handlePreview = async function (uploadFile) {
