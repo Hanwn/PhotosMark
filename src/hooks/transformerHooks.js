@@ -1,18 +1,17 @@
-import {defineCanvasConfig} from "@/store/defineCanvasConfig";
-import {defineRender} from "@/store/defineRender";
-import {ref} from "vue";
-const {currentRenderUid,marshal} = defineRender()
-const transformer = ref()
-
+import { defineCanvasConfig } from "@/store/defineCanvasConfig";
+import { defineRender } from "@/store/defineRender";
+import { ref } from "vue";
+const { currentRenderUid, marshal } = defineRender();
+const transformer = ref();
 
 const {
-    deviceInfoConfig,
-    parameterInfoConfig,
-    lensInfoConfig,
-    timeInfoConfig,
-    verticalBarInfoConfig,
-    iconInfoConfig,
-} = defineCanvasConfig()
+  deviceInfoConfig,
+  parameterInfoConfig,
+  lensInfoConfig,
+  timeInfoConfig,
+  verticalBarInfoConfig,
+  iconInfoConfig,
+} = defineCanvasConfig();
 
 function transformerVerticalBarHook(e) {
   const transHeight = verticalBarInfoConfig.height * e.target.attrs.scaleY;
@@ -21,32 +20,26 @@ function transformerVerticalBarHook(e) {
   verticalBarInfoConfig.width = transWidth;
 }
 function transformerDeviceInfoHook(e) {
-    for (let key in deviceInfoConfig) {
-        deviceInfoConfig[key] = e.target.attrs[key]
-    }
-    marshal(currentRenderUid.value)
+  for (let key in deviceInfoConfig) {
+    deviceInfoConfig[key] = e.target.attrs[key];
+  }
 }
 
 function transformerLensInfoHook(e) {
-    for (let key in lensInfoConfig) {
-        lensInfoConfig[key] = e.target.attrs[key]
-    }
-    marshal(currentRenderUid.value)
-
+  for (let key in lensInfoConfig) {
+    lensInfoConfig[key] = e.target.attrs[key];
+  }
 }
 
 function transformerTimeInfoHook(e) {
-    for (let key in timeInfoConfig) {
-        timeInfoConfig[key] = e.target.attrs[key]
-    }
-    marshal(currentRenderUid.value)
-
+  for (let key in timeInfoConfig) {
+    timeInfoConfig[key] = e.target.attrs[key];
+  }
 }
 function transformerParameterInfoHook(e) {
-    for (let key in parameterInfoConfig) {
-        parameterInfoConfig[key] = e.target.attrs[key]
-    }
-    marshal(currentRenderUid.value)
+  for (let key in parameterInfoConfig) {
+    parameterInfoConfig[key] = e.target.attrs[key];
+  }
 }
 
 function transformerIconInfoHook(e) {
@@ -65,31 +58,30 @@ function handleStageMouseDown(e) {
     ["iconInfo", ""],
   ]);
 
-    const name = e.target.name();
-    const transformerNode = transformer.value.getNode()
-    if (name.length === 0){
-        transformerNode.nodes([])
-        return
-    }
-    if (selectName.has(name)) {
-        const stage = transformerNode.getStage()
-        const selectNode = stage.findOne('.' + name)
-        transformerNode.nodes([selectNode])
-    }
+  const name = e.target.name();
+  const transformerNode = transformer.value.getNode();
+  if (name.length === 0) {
+    transformerNode.nodes([]);
+    return;
+  }
+  if (selectName.has(name)) {
+    const stage = transformerNode.getStage();
+    const selectNode = stage.findOne("." + name);
+    transformerNode.nodes([selectNode]);
+  }
 }
-
 
 function defineTransformerHooks() {
-    return {
-        transformerTimeInfoHook,
-        transformerDeviceInfoHook,
-        transformerParameterInfoHook,
-        transformerLensInfoHook,
-        transformerVerticalBarHook,
-        transformerIconInfoHook,
-        handleStageMouseDown,
-        transformer,
-    }
+  return {
+    transformerTimeInfoHook,
+    transformerDeviceInfoHook,
+    transformerParameterInfoHook,
+    transformerLensInfoHook,
+    transformerVerticalBarHook,
+    transformerIconInfoHook,
+    handleStageMouseDown,
+    transformer,
+  };
 }
 
-export {defineTransformerHooks}
+export { defineTransformerHooks };

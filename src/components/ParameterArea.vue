@@ -71,6 +71,7 @@ async function select() {
   const uploadFile = uid2Src.get(currentRenderUid.value);
   const imgData = await getImageData(uploadFile.raw);
   let exifData = null;
+
   try {
     exifData = getExifData(imgData);
   } catch (e) {
@@ -86,6 +87,7 @@ async function select() {
   }
   const iconName = getIconSrc(exifData);
   pushToExifCache(src, exifData);
+
   const iconSrc = value.value;
   let iconImg = "";
   if (iconCache.has(iconSrc)) {
@@ -159,6 +161,11 @@ const options = ref([
       {
         value:
           "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon.svg",
+        label: "Nikon",
+      },
+      {
+        value:
+          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/nikon-zf.svg",
         label: "Nikon",
       },
     ],
