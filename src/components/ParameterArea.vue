@@ -363,7 +363,7 @@ const options = ref([
       />
       <el-button
         size="small"
-        style="font-weight: bolder"
+        :style="{ 'font-weight': parameterInfoConfig.fontStyle }"
         :disabled="parameterDisable"
         @click="
           (evt) => {
@@ -392,7 +392,7 @@ const options = ref([
       />
       <el-button
         size="small"
-        style="font-weight: bolder"
+        :style="{ 'font-weight': timeInfoConfig.fontStyle }"
         :disabled="parameterDisable"
         @click="
           (evt) => {
