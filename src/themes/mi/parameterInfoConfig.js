@@ -144,7 +144,7 @@ function getLensInfo(exifData, padding, middle, rectH) {
     y: middle + rectH / 3,
     offsetY: lensTextSize.height / 2,
     fontSize: fontSize,
-    fill: "gray",
+    stroke: "#808080",
     draggable: true,
     scaleX: 1,
     scaleY: 1,
