@@ -15,10 +15,10 @@ const {
 } = defineCanvasConfig()
 
 function transformerVerticalBarHook(e) {
-    for (let key in verticalBarInfoConfig) {
-        verticalBarInfoConfig[key] = e.target.attrs[key]
-    }
-    marshal(currentRenderUid.value)
+  const transHeight = verticalBarInfoConfig.height * e.target.attrs.scaleY;
+  const transWidth = verticalBarInfoConfig.width * e.target.attrs.scaleX;
+  verticalBarInfoConfig.height = transHeight;
+  verticalBarInfoConfig.width = transWidth;
 }
 function transformerDeviceInfoHook(e) {
     for (let key in deviceInfoConfig) {
@@ -50,21 +50,20 @@ function transformerParameterInfoHook(e) {
 }
 
 function transformerIconInfoHook(e) {
-    for (let key in iconInfoConfig) {
-        iconInfoConfig[key] = e.target.attrs[key]
-    }
-    marshal(currentRenderUid.value)
+  const transHeight = iconInfoConfig.height * e.target.attrs.scaleY;
+  const transWidth = iconInfoConfig.width * e.target.attrs.scaleX;
+  iconInfoConfig.height = transHeight;
+  iconInfoConfig.width = transWidth;
 }
 
 function handleStageMouseDown(e) {
-    const selectName = new Map([
-        ["timeInfo", ""],
-        ["deviceInfo", ""],
-        ["lensInfo", ""],
-        ["parameterInfo",""],
-        ["iconInfo", ""],
-        ["verticalBarInfo", ""]
-    ])
+  const selectName = new Map([
+    ["timeInfo", ""],
+    ["deviceInfo", ""],
+    ["lensInfo", ""],
+    ["parameterInfo", ""],
+    ["iconInfo", ""],
+  ]);
 
     const name = e.target.name();
     const transformerNode = transformer.value.getNode()
