@@ -37,6 +37,8 @@ const {
   parameterInfoConfig,
   timeInfoConfig,
   lensInfoConfig,
+  verticalBarInfoConfig,
+  bannerRectConfig,
 } = defineCanvasConfig();
 
 async function reset() {
@@ -441,13 +443,22 @@ const options = ref([
 
     <div class="slider-block">
       <el-slider
+        v-model="verticalBarInfoConfig.x"
+        :disabled="parameterDisable"
+        :max="bannerRectConfig.width"
+        :step="1"
+      />
+    </div>
+
+    <div class="slider-block">
+      <el-slider
         :prefix-icon="ZoomIn"
         v-model="factor"
         show-input
         :disabled="parameterDisable"
         @change="handleSlide"
         :max="0.5"
-        :step="0.01"
+        :step="0.005"
       />
     </div>
 

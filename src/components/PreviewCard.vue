@@ -75,7 +75,7 @@
       layout="prev, pager, next"
       :total="30"
       @current-change="sizeChange"
-      :disabled="parameterDisable"
+      :disabled="true"
       :current-page="themeIdx"
     />
   </div>
