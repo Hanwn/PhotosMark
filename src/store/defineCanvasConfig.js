@@ -43,6 +43,7 @@ const deviceInfoConfig = reactive({
   scaleX: 1,
   scaleY: 1,
   name: "deviceInfo",
+  visible: true,
 });
 const lensInfoConfig = reactive({
   x: 100,
@@ -55,6 +56,7 @@ const lensInfoConfig = reactive({
   draggable: true,
   scaleX: 1,
   scaleY: 1,
+  visible: true,
 });
 const iconInfoConfig = reactive({
   image: null,
@@ -66,6 +68,7 @@ const iconInfoConfig = reactive({
   scaleY: 1,
   draggable: true,
   name: "iconInfo",
+  visible: true,
 });
 const verticalBarInfoConfig = reactive({
   x: 0,
@@ -77,6 +80,7 @@ const verticalBarInfoConfig = reactive({
   scaleX: 1,
   scaleY: 1,
   name: "verticalBarInfo",
+  visible: true,
 });
 
 const parameterInfoConfig = reactive({
@@ -91,6 +95,7 @@ const parameterInfoConfig = reactive({
   draggable: true,
   scaleX: 1,
   scaleY: 1,
+  visible: true,
 });
 const timeInfoConfig = reactive({
   x: 100,
@@ -104,6 +109,7 @@ const timeInfoConfig = reactive({
   draggable: true,
   scaleX: 1,
   scaleY: 1,
+  visible: true,
 });
 
 const transformerConfig = reactive({
