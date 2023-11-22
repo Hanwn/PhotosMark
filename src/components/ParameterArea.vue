@@ -13,6 +13,7 @@ import {
   Aim,
   Calendar,
   Camera,
+  Delete,
   InfoFilled,
   Refresh,
   ZoomIn,
@@ -447,6 +448,21 @@ const options = ref([
         :disabled="parameterDisable"
         :max="bannerRectConfig.width"
         :step="1"
+      />
+      <el-color-picker
+        v-model="verticalBarInfoConfig.fill"
+        size="small"
+        :disabled="parameterDisable"
+      />
+      <el-button
+        size="small"
+        :icon="Delete"
+        :disabled="parameterDisable && verticalBarInfoConfig.visible"
+        @click="
+          (evt) => {
+            verticalBarInfoConfig.visible = !verticalBarInfoConfig.visible;
+          }
+        "
       />
     </div>
 

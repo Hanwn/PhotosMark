@@ -50,6 +50,7 @@ function getTimeInfoConfig(exifData, middle, rectH, parameterInfoConfig) {
     name: "timeInfo",
     scaleX: 1,
     scaleY: 1,
+    visible: true,
   };
 }
 
@@ -63,12 +64,12 @@ function getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH) {
     y: imgH + offset,
     height: rectH * radio,
     width: verticalBarWidth,
-    fill: "gray",
-    stroke: "#808080",
+    fill: "#808080",
     draggable: true,
     name: "verticalBarInfo",
     scaleX: 1,
     scaleY: 1,
+    visible: true,
   };
 }
 
@@ -99,6 +100,7 @@ function getIconInfoConfig(
     name: "iconInfo",
     scaleX: 1,
     scaleY: 1,
+    visible: true,
   };
 }
 
@@ -132,6 +134,7 @@ function getParameterInfoConfig(exifData, padding, middle, rectW, rectH) {
     name: "parameterInfo",
     scaleX: 1,
     scaleY: 1,
+    visible: true,
   };
 }
 
@@ -151,6 +154,7 @@ function getLensInfo(exifData, padding, middle, rectH) {
     scaleX: 1,
     scaleY: 1,
     name: "lensInfo",
+    visible: true,
   };
   return {
     lensInfoConfig,
@@ -175,6 +179,7 @@ function getDeviceInfoConfig(padding, middle, exifData, rectH) {
     scaleY: 1,
     draggable: true,
     name: "deviceInfo",
+    visible: true,
   };
   return { deviceInfoConfig, textSize };
 }
