@@ -74,7 +74,7 @@ function getVerticalBarInfoConfig(parameterInfoConfig, rectH, imgH) {
 }
 
 function getIconInfoConfig(
-  verticalBarInfoConfig,
+  verticalBarInfoConfigX,
   maxLensEndPos,
   iconImg,
   rectH,
@@ -82,7 +82,7 @@ function getIconInfoConfig(
   imgH,
 ) {
   const dist = 50;
-  const iconMaxLen = verticalBarInfoConfig.x - dist - maxLensEndPos;
+  const iconMaxLen = verticalBarInfoConfigX - dist - maxLensEndPos;
   const calcIconData = calcIconSize(
     iconImg.width,
     iconImg.height,
@@ -91,7 +91,7 @@ function getIconInfoConfig(
     iconMaxLen,
   );
   return {
-    x: verticalBarInfoConfig.x - dist - calcIconData.iconImgWidth,
+    x: verticalBarInfoConfigX - dist - calcIconData.iconImgWidth,
     image: iconImg,
     y: imgH + (rectH - calcIconData.iconImgHeight) / 2,
     height: calcIconData.iconImgHeight,
@@ -243,7 +243,7 @@ function getRightInfo(
     imgH,
   );
   const iconInfoConfig = getIconInfoConfig(
-    verticalBarInfoConfig,
+    verticalBarInfoConfig.x,
     maxLensEndPos,
     iconImg,
     rectH,
