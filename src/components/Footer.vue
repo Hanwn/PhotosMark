@@ -33,7 +33,7 @@
         <div style="display: flex; align-items: center">
           <el-image
             style="width: 200px; height: 200px"
-            src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/WeChatQRCode.svg"
+            src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/WeChatQRCode.png"
             fit="contain"
           />
         </div>
