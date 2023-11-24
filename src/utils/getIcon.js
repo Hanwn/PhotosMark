@@ -28,9 +28,4 @@ const getIconSrc = function (exifData) {
   return iconSrc;
 };
 
-function selectIcon() {
-  const centerX = 0;
-  const centerY = 0;
-}
-
-export { getIconSrc, selectIcon };
+export { getIconSrc };

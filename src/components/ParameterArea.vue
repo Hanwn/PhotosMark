@@ -25,7 +25,7 @@ import {
   allCanvasConfigMap,
   defineCanvasConfig,
 } from "@/store/defineCanvasConfig";
-import { PreviewRender } from "@/themes/renderReouter";
+import { PreviewRender, SelectIcon } from "@/themes/renderReouter";
 import { factor } from "@/store/defineThemes";
 
 const { exifCache } = defineExifCache();
@@ -70,39 +70,7 @@ async function reset() {
 const value = ref("");
 
 async function select() {
-  const uid = currentRenderUid.value;
-  const uploadFile = uid2Src.get(currentRenderUid.value);
-  const imgData = await getImageData(uploadFile.raw);
-  let exifData = null;
-
-  try {
-    exifData = getExifData(imgData);
-  } catch (e) {
-    exifData = parseExifData(null);
-  }
-  exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
-  const src = uid2Src.get(currentRenderUid.value).src;
-  let img = null;
-  try {
-    img = await loadImg(src);
-  } catch (e) {
-    return;
-  }
-  const iconName = getIconSrc(exifData);
-  pushToExifCache(src, exifData);
-
-  const iconSrc = value.value;
-  let iconImg = "";
-  if (iconCache.has(iconSrc)) {
-    iconImg = iconCache.get(iconSrc);
-  } else {
-    iconImg = await loadImg(iconSrc);
-    pushToIconCache(iconSrc, iconImg);
-  }
-
-  PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor);
-  // not best practise
-  unMarshal(uid);
+  await SelectIcon(value.value);
 }
 
 async function handleSlide(e) {
@@ -445,6 +413,11 @@ const options = ref([
     <div class="slider-block">
       <el-slider
         v-model="verticalBarInfoConfig.x"
+        @input="
+          (value) => {
+            verticalBarInfoConfig.x = parseInt(value);
+          }
+        "
         :disabled="parameterDisable"
         :max="bannerRectConfig.width"
         :step="1"
