@@ -31,6 +31,7 @@ import { getImageData } from "@/utils/readFile";
 import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
 import { PreviewRender } from "@/themes/renderReouter";
 import { factor, themeIdx } from "@/store/defineThemes";
+import { readSettings } from "@/store/defineSettings";
 
 const { imgSrcList } = defineImgList();
 const { currentRenderUid, marshal, parameterDisable, unMarshal } =
@@ -90,7 +91,7 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
     }
     const iconName = getIconSrc(exifData);
     pushToExifCache(src, exifData);
-    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`;
+    const iconSrc = readSettings().value.iconPrefix + iconName;
     let iconImg = "";
     if (iconCache.has(iconSrc)) {
       iconImg = iconCache.get(iconSrc);
@@ -129,7 +130,7 @@ const handlePreview = async function (uploadFile) {
     }
     const iconName = getIconSrc(exifData);
     pushToExifCache(src, exifData);
-    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`;
+    const iconSrc = readSettings().value.iconPrefix + iconName;
     let iconImg = "";
     if (iconCache.has(iconSrc)) {
       iconImg = iconCache.get(iconSrc);

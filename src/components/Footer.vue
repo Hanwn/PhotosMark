@@ -1,4 +1,9 @@
-<script setup></script>
+<script setup>
+import { defineComputedSettings } from "@/store/defineSettings";
+
+const { AliPay, wechat, AliQRCodeSetting, wechatQRCodeSetting } =
+  defineComputedSettings();
+</script>
 
 <template>
   <div class="sponsorContainer">
@@ -6,7 +11,7 @@
       <el-popover placement="top-start" :width="200" trigger="hover">
         <template #reference>
           <img
-            src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/alipay.svg"
+            :src="AliPay"
             alt="Buy Me A Coffee"
             style="height: 60px !important; width: 217px !important"
           />
@@ -14,7 +19,7 @@
         <div style="display: flex; align-items: center">
           <el-image
             style="width: 200px; height: 200px"
-            src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/AliQRCode.svg"
+            :src="AliQRCodeSetting"
             fit="contain"
           />
         </div>
@@ -25,7 +30,7 @@
       <el-popover placement="top-start" :width="200" trigger="hover">
         <template #reference>
           <img
-            src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/wechat.svg"
+            :src="wechat"
             alt="Buy Me A Coffee"
             style="height: 60px !important; width: 217px !important"
           />
@@ -33,7 +38,7 @@
         <div style="display: flex; align-items: center">
           <el-image
             style="width: 200px; height: 200px"
-            src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/WeChatQRCode.png"
+            :src="wechatQRCodeSetting"
             fit="contain"
           />
         </div>
