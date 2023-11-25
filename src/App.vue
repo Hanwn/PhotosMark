@@ -3,9 +3,15 @@ import PreviewCard from "@/components/PreviewCard.vue";
 import PhotoSlide from "@/components/PhotoSlide.vue";
 import ParameterArea from "@/components/ParameterArea.vue";
 import Download from "@/components/Download.vue";
-import {Headset} from "@element-plus/icons-vue";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
+import { appOnMountedHook } from "@/hooks/defineOnMountedHook";
+import { onMounted } from "vue";
+
+// load setting firstly
+onMounted(() => {
+  appOnMountedHook();
+});
 </script>
 
 <template>

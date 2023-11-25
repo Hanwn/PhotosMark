@@ -18,7 +18,7 @@ import {
   Refresh,
   ZoomIn,
 } from "@element-plus/icons-vue";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getImageData } from "@/utils/readFile";
 import { getExifData, parseExifData } from "@/utils/readExif";
 import {
@@ -27,6 +27,8 @@ import {
 } from "@/store/defineCanvasConfig";
 import { PreviewRender, SelectIcon } from "@/themes/renderReouter";
 import { factor } from "@/store/defineThemes";
+import { parameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
+import { readSettings } from "@/store/defineSettings";
 
 const { exifCache } = defineExifCache();
 const { iconCache } = defineIcon();
@@ -53,7 +55,7 @@ async function reset() {
     const exifData = exifCache.get(src);
     pushToExifCache(src, exifData);
     const iconName = getIconSrc(exifData);
-    const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`;
+    const iconSrc = readSettings().value.iconPrefix + iconName;
     let iconImg = "";
     if (iconCache.has(iconSrc)) {
       iconImg = iconCache.get(iconSrc);
@@ -95,7 +97,7 @@ async function handleSlide(e) {
 
   const iconName = getIconSrc(exifData);
   pushToExifCache(src, exifData);
-  const iconSrc = `https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/${iconName}`;
+  const iconSrc = readSettings().value.iconPrefix + iconName;
 
   let iconImg = "";
   if (iconCache.has(iconSrc)) {
@@ -110,151 +112,13 @@ async function handleSlide(e) {
   unMarshal(uid);
 }
 
-const options = ref([
-  {
-    label: "Nikon",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon2.svg",
-        label: "Nikon",
-      },
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon100.svg",
-        label: "Nikon",
-      },
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon11.svg",
-        label: "Nikon",
-      },
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Nikon.svg",
-        label: "Nikon",
-      },
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/nikon-zf.svg",
-        label: "Nikon",
-      },
-    ],
-  },
-  {
-    label: "Sony",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Sony.svg",
-        label: "Sony",
-      },
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/alpha.svg",
-        label: "Sony",
-      },
-    ],
-  },
-  {
-    label: "Canon",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Canon.svg",
-        label: "Canon",
-      },
-    ],
-  },
-  {
-    label: "Lumix",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Lumix.svg",
-        label: "Lumix",
-      },
-    ],
-  },
-  {
-    label: "FujiFilm",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Fujifilm.svg",
-        label: "Fujifilm",
-      },
-    ],
-  },
-  {
-    label: "Zeiss",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Zeiss.svg",
-        label: "Zeiss",
-      },
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Zeiss2.svg",
-        label: "Zeiss",
-      },
-    ],
-  },
+const options = ref([]);
 
-  {
-    label: "GoPro",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/gopro.svg",
-        label: "GoPro",
-      },
-    ],
-  },
-
-  {
-    label: "Pentax",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/pentax.svg",
-        label: "Pentax",
-      },
-    ],
-  },
-
-  {
-    label: "Dji",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Dji.svg",
-        label: "Dji",
-      },
-    ],
-  },
-  {
-    label: "Hasselblad",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Hasselblad.svg",
-        label: "Hasselblad",
-      },
-    ],
-  },
-  {
-    label: "Leica",
-    options: [
-      {
-        value:
-          "https://pic-1301492519.cos.ap-shanghai.myqcloud.com/icon/Leica.svg",
-        label: "Leica",
-      },
-    ],
-  },
-]);
+onMounted(() => {
+  parameterAreaOnMountedHook().then((r) => {
+    options.value = r;
+  });
+});
 </script>
 
 <template>
