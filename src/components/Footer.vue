@@ -11,7 +11,7 @@ const { AliPay, wechat, AliQRCodeSetting, wechatQRCodeSetting } =
       <el-popover placement="top-start" :width="200" trigger="hover">
         <template #reference>
           <img
-            :src="AliPay"
+            :src="AliPay.charAt(0) !== 'h' ? '' : AliPay"
             alt="Buy Me A Coffee"
             style="height: 60px !important; width: 217px !important"
           />
@@ -19,7 +19,7 @@ const { AliPay, wechat, AliQRCodeSetting, wechatQRCodeSetting } =
         <div style="display: flex; align-items: center">
           <el-image
             style="width: 200px; height: 200px"
-            :src="AliQRCodeSetting"
+            :src="AliQRCodeSetting.charAt(0) !== 'h' ? '' : AliQRCodeSetting"
             fit="contain"
           />
         </div>
@@ -30,7 +30,7 @@ const { AliPay, wechat, AliQRCodeSetting, wechatQRCodeSetting } =
       <el-popover placement="top-start" :width="200" trigger="hover">
         <template #reference>
           <img
-            :src="wechat"
+            :src="wechat.charAt(0) !== 'h' ? '' : wechat"
             alt="Buy Me A Coffee"
             style="height: 60px !important; width: 217px !important"
           />
@@ -38,7 +38,9 @@ const { AliPay, wechat, AliQRCodeSetting, wechatQRCodeSetting } =
         <div style="display: flex; align-items: center">
           <el-image
             style="width: 200px; height: 200px"
-            :src="wechatQRCodeSetting"
+            :src="
+              wechatQRCodeSetting.charAt(0) !== 'h' ? '' : wechatQRCodeSetting
+            "
             fit="contain"
           />
         </div>
