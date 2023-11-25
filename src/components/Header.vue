@@ -10,7 +10,7 @@ const { logoSetting } = defineComputedSettings();
     <div class="container">
       <a href="https://github.com/Hanwn/PhotoMark" target="_blank">
         <img
-          :src="logoSetting"
+          :src="logoSetting.charAt(0) !== 'h' ? '' : logoSetting"
           alt=""
           style="height: 60px !important; width: 217px !important"
         />
