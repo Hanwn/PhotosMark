@@ -396,16 +396,24 @@ const options = ref([
           :label="item.label"
           :value="item.value"
         >
-          <el-image
+          <div
             style="
-              float: right;
-              display: inline-block;
-              width: 20px;
-              height: 20px;
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
             "
-            :src="item.value"
-            fit="contain"
-          />
+          >
+            <el-image
+              style="
+                float: right;
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+              "
+              :src="item.value"
+              fit="contain"
+            />
+          </div>
         </el-option>
       </el-option-group>
     </el-select>
