@@ -100,7 +100,7 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
     }
     PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor);
   }
-  if (currentRenderUid.value === 0) {
+  if (currentRenderUid.value === 0 || allCanvasConfigMap.size === 2) {
     currentRenderUid.value = uid;
     currentUid = uid;
     factor.value = uid2Src.get(uid).renderFactor;
