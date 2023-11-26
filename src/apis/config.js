@@ -1,26 +1,19 @@
 import axios from "axios";
+import { requestNotifyStatus } from "@/utils/notify";
 
-const instance = axios.create({
-  baseURL: "http://localhost:8080", // baseURL
-  timeout: 3000,
+const service = axios.create({
+  baseURL: "http://localhost:8080/", // baseURL
+  timeout: 5000,
 });
 
 // interceptors
-instance.interceptors.request.use(
-  (config) => {
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+service.interceptors.response.use((res) => {
+  if (res.status === 200) {
+    return res.data;
+  } else {
+    requestNotifyStatus("Oops, request err", "");
+    return null;
+  }
+});
 
-// 响应拦截器
-instance.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+export { service };

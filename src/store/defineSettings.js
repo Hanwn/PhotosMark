@@ -29,7 +29,6 @@ const wechat = computed(() => {
 });
 
 const logoSetting = computed(() => {
-  console.log(settings.value);
   return settings.value.logoPrefix + "logo1.png";
 });
 
