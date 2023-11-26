@@ -3,7 +3,7 @@ import { createCommentVNode, ref } from "vue";
 import { defineRender } from "@/store/defineRender";
 import { Download } from "@element-plus/icons-vue";
 import { uid2Src } from "@/store/defineImg";
-import { notify } from "@/utils/notify";
+import { downloadStatusNotify } from "@/utils/notify";
 import {
   allCanvasConfigMap,
   defineCanvasConfig,
@@ -27,7 +27,7 @@ const {
 async function download() {
   marshal();
   if (allCanvasConfigMap.size === 1) {
-    notify("请上传图片", "error");
+    downloadStatusNotify("请上传图片", "error");
     return;
   }
 
@@ -62,7 +62,7 @@ async function download() {
     a.click();
   }
   // notifyDownloadSuccess()
-  notify("下载成功", "success");
+  downloadStatusNotify("下载成功", "success");
 }
 </script>
 

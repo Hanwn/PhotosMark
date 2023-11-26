@@ -32,6 +32,8 @@ import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
 import { PreviewRender } from "@/themes/renderReouter";
 import { factor, themeIdx } from "@/store/defineThemes";
 import { readSettings } from "@/store/defineSettings";
+import { ElMessage } from "element-plus";
+import { requestNotifyStatus } from "@/utils/notify";
 
 const { imgSrcList } = defineImgList();
 const { currentRenderUid, marshal, parameterDisable, unMarshal } =
@@ -76,6 +78,11 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
       exifData = getExifData(imgData);
     } catch (e) {
       exifData = parseExifData(null);
+      // ElMessage.error("Oops, Your picture is not contain exif data");
+      requestNotifyStatus(
+        "Oops, Your picture is not contain exif data.",
+        "warning",
+      );
     }
     exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
     const src = uploadFile.url;
@@ -83,6 +90,9 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
     try {
       img = await loadImg(src);
     } catch (e) {
+      // ElMessage.warning("Oops, load img failed, please try again");
+
+      requestNotifyStatus("Oops, load img failed, please try again", "error");
       return;
     }
     if (img.height > img.width) {
@@ -119,6 +129,11 @@ const handlePreview = async function (uploadFile) {
       exifData = getExifData(imgData);
     } catch (e) {
       exifData = parseExifData(null);
+      // ElMessage.error("Oops, Your picture is not contain exif data");
+      requestNotifyStatus(
+        "Oops, Your picture is not contain exif data.",
+        "warning",
+      );
     }
     exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
     const src = uploadFile.url;
@@ -126,6 +141,8 @@ const handlePreview = async function (uploadFile) {
     try {
       img = await loadImg(src);
     } catch (e) {
+      // ElMessage.warning("Oops, load img failed, please try again");
+      requestNotifyStatus("Oops, load img failed, please try again", "error");
       return;
     }
     const iconName = getIconSrc(exifData);
