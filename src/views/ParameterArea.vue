@@ -27,7 +27,7 @@ import {
 } from "@/store/defineCanvasConfig";
 import { PreviewRender, SelectIcon } from "@/themes/renderReouter";
 import { factor } from "@/store/defineThemes";
-import { parameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
+import { useParameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
 import { readSettings } from "@/store/defineSettings";
 
 const { exifCache } = defineExifCache();
@@ -112,12 +112,10 @@ async function handleSlide(e) {
   unMarshal(uid);
 }
 
-const options = ref([]);
+const { options, fetchIconList } = useParameterAreaOnMountedHook();
 
 onMounted(() => {
-  parameterAreaOnMountedHook().then((r) => {
-    options.value = r;
-  });
+  fetchIconList();
 });
 </script>
 
@@ -343,9 +341,6 @@ onMounted(() => {
 .slider-block {
   display: flex;
   align-items: center;
-}
-.inputArea {
-  padding: 5px;
 }
 .color-block {
   display: flex;
