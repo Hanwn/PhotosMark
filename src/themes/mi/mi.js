@@ -17,6 +17,8 @@ import { loadImg } from "@/utils/loadImg";
 import { defineRender } from "@/store/defineRender";
 import { getImageData } from "@/utils/readFile";
 import { getExifData, parseExifData } from "@/utils/readExif";
+import { ElMessage } from "element-plus";
+import { requestNotifyStatus } from "@/utils/notify";
 
 const { iconInfoConfig, verticalBarInfoConfig } = defineCanvasConfig();
 const { currentRenderUid, marshal, unMarshal } = defineRender();
@@ -39,6 +41,11 @@ async function SelectIconForMiTheme(iconSrc) {
     exifData = getExifData(imgData);
   } catch (e) {
     exifData = parseExifData(null);
+    // ElMessage.error("");
+    requestNotifyStatus(
+      "Oops, Your picture is not contain exif data.",
+      "warning",
+    );
   }
   exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
   const src = uid2Src.get(currentRenderUid.value).src;
@@ -46,6 +53,8 @@ async function SelectIconForMiTheme(iconSrc) {
   try {
     img = await loadImg(src);
   } catch (e) {
+    // ElMessage.error("Oops, load img failed, please try again");
+    requestNotifyStatus("Oops, load img failed, please try again", "error");
     return;
   }
 

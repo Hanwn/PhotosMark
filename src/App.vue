@@ -5,10 +5,7 @@ import ParameterArea from "@/views/ParameterArea.vue";
 import Download from "@/views/Download.vue";
 import Header from "@/views/Header.vue";
 import Footer from "@/views/Footer.vue";
-import {
-  appOnMountedHook,
-  useAppOnMountedHook,
-} from "@/hooks/defineOnMountedHook";
+import { useAppOnMountedHook } from "@/hooks/defineOnMountedHook";
 import { onMounted } from "vue";
 
 const { fetchSettings } = useAppOnMountedHook();

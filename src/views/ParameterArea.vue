@@ -29,6 +29,8 @@ import { PreviewRender, SelectIcon } from "@/themes/renderReouter";
 import { factor } from "@/store/defineThemes";
 import { useParameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
 import { readSettings } from "@/store/defineSettings";
+import { ElMessage } from "element-plus";
+import { requestNotifyStatus } from "@/utils/notify";
 
 const { exifCache } = defineExifCache();
 const { iconCache } = defineIcon();
@@ -85,6 +87,12 @@ async function handleSlide(e) {
     exifData = getExifData(imgData);
   } catch (e) {
     exifData = parseExifData(null);
+    // ElMessage.error("Oops, Your picture is not contain exif data");
+
+    requestNotifyStatus(
+      "Oops, Your picture is not contain exif data.",
+      "warning",
+    );
   }
   exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
   const src = uid2Src.get(currentRenderUid.value).src;
@@ -92,6 +100,9 @@ async function handleSlide(e) {
   try {
     img = await loadImg(src);
   } catch (e) {
+    // ElMessage.error("Oops, load img failed, please try again");
+
+    requestNotifyStatus("Oops, load img failed, please try again", "error");
     return;
   }
 
