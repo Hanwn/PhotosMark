@@ -8,9 +8,12 @@ import Footer from "@/components/Footer.vue";
 import { appOnMountedHook } from "@/hooks/defineOnMountedHook";
 import { onMounted } from "vue";
 
+const { fetchSettings } = useAppOnMountedHook();
+
 // load setting firstly
 onMounted(() => {
-  appOnMountedHook();
+  // appOnMountedHook();
+  fetchSettings();
 });
 </script>
 
