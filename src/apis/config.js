@@ -2,7 +2,7 @@ import axios from "axios";
 import { requestNotifyStatus } from "@/utils/notify";
 
 const service = axios.create({
-  baseURL: "http://localhost:8080/", // baseURL
+  baseURL: "https://photosmark.art/",
   timeout: 5000,
 });
 
