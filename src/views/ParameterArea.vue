@@ -65,6 +65,13 @@ async function reset() {
       iconImg = await loadImg(iconSrc);
       pushToIconCache(src);
     }
+    // fix: reset not work
+    if (img.height > img.width) {
+      factor.value = 0.1;
+    } else {
+      factor.value = 0.125;
+    }
+    uid2Src.get(uid).renderFactor = factor.value;
     PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor);
     // not best practise
     unMarshal(uid);
