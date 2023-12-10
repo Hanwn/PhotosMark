@@ -8,17 +8,15 @@ import {
   Delete,
   InfoFilled,
   Refresh,
-  ZoomIn,
 } from "@element-plus/icons-vue";
 import { onMounted, ref, watch } from "vue";
 import {
   allCanvasConfigMap,
   defineCanvasConfig,
 } from "@/store/defineCanvasConfig";
-import { PreviewRender, SelectIcon } from "@/themes/renderReouter";
-import { factor } from "@/store/defineThemes";
+import { PreviewRender, SelectIcon, SlideFactor } from "@/themes/renderReouter";
+import { defineThemeParameter, factor } from "@/store/defineThemes";
 import { useParameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
-import { checkList } from "@/store/defineSettings";
 
 const { iconCache } = defineIcon();
 const { currentRenderUid, unMarshal, marshal, parameterDisable } =
@@ -44,14 +42,6 @@ async function reset() {
   ) {
     const uid = currentRenderUid.value;
     const fileObj = uid2Src.get(uid);
-    const img = fileObj.img;
-    if (img.height > img.width) {
-      factor.value = 0.1;
-    } else {
-      factor.value = 0.125;
-    }
-    // checkList.value
-    checkList.value = checkList.value.filter((item) => item !== "白边");
     PreviewRender(uid);
     unMarshal(uid);
   }
@@ -64,9 +54,7 @@ async function select() {
 
 async function handleSlide(e) {
   const uid = currentRenderUid.value;
-  const uploadFile = uid2Src.get(uid);
-  uploadFile.renderFactor = e;
-  PreviewRender(uid);
+  SlideFactor(e);
   unMarshal(uid);
 }
 
@@ -76,40 +64,50 @@ onMounted(() => {
   fetchIconList();
 });
 
+const { whiteBoard, privacyMode } = defineThemeParameter();
+
 function selectOtherBanner() {
-  const originRenderOpt = uid2Src.get(currentRenderUid.value).renderOtherBanner;
-  uid2Src.get(currentRenderUid.value).renderOtherBanner = !originRenderOpt;
-  topBannerRectConfig.visible = !topBannerRectConfig.visible;
-  leftBannerRectConfig.visible = !leftBannerRectConfig.visible;
-  rightBannerRectConfig.visible = !rightBannerRectConfig.visible;
+  if (whiteBoard.value === true) {
+    topBannerRectConfig.visible = true;
+    leftBannerRectConfig.visible = true;
+    rightBannerRectConfig.visible = true;
+  } else {
+    topBannerRectConfig.visible = false;
+    leftBannerRectConfig.visible = false;
+    rightBannerRectConfig.visible = false;
+  }
 }
 </script>
 
 <template>
   <div class="parameterContainer">
     <div>
-      <el-checkbox-group v-model="checkList">
-        <el-tooltip
-          class="box-item"
-          effect="dark"
-          content="删除照片exif信息"
-          placement="top"
-        >
-          <el-checkbox label="隐私模式" :disabled="parameterDisable" />
-        </el-tooltip>
-        <el-tooltip
-          class="box-item"
-          effect="dark"
-          content="为照片添加白边"
-          placement="top"
-        >
-          <el-checkbox
-            label="白边"
-            :disabled="parameterDisable"
-            @change="selectOtherBanner"
-          />
-        </el-tooltip>
-      </el-checkbox-group>
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="删除照片exif信息"
+        placement="top"
+      >
+        <el-checkbox
+          label="隐私模式"
+          :disabled="parameterDisable"
+          v-model="privacyMode"
+        />
+      </el-tooltip>
+
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="为照片添加白边"
+        placement="top"
+      >
+        <el-checkbox
+          label="白边"
+          :disabled="parameterDisable"
+          v-model="whiteBoard"
+          @change="selectOtherBanner"
+        />
+      </el-tooltip>
     </div>
     <div class="inputContainer">
       <div class="color-block">
@@ -336,7 +334,6 @@ function selectOtherBanner() {
 
       <div class="slider-block">
         <el-slider
-          :prefix-icon="ZoomIn"
           v-model="factor"
           show-input
           :disabled="parameterDisable"

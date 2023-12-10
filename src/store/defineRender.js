@@ -3,6 +3,7 @@ import {
   allCanvasConfigMap,
   defineCanvasConfig,
 } from "@/store/defineCanvasConfig";
+import { factor } from "@/store/defineThemes";
 
 const currentRenderUid = ref(0);
 const resetBtn = ref(false);
@@ -58,6 +59,7 @@ function marshal(oldVal) {
     currentRenderCanvasConfig.rightBannerRectConfig,
     rightBannerRectConfig,
   );
+  currentRenderCanvasConfig.factor = factor.value;
 }
 
 // load
@@ -96,6 +98,7 @@ function unMarshal(newVal) {
     rightBannerRectConfig,
     currentRenderCanvasConfig.rightBannerRectConfig,
   );
+  factor.value = currentRenderCanvasConfig.factor;
   // load alignInfo Config
 
   const middle = bannerRectConfig.height * 0.5 + bannerRectConfig.y;

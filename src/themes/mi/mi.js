@@ -13,6 +13,7 @@ import { defineRender } from "@/store/defineRender";
 import { getIconSrc } from "@/utils/getIcon";
 import { readSettings } from "@/store/defineSettings";
 import { ConvertConfig2Exif } from "@/utils/readExif";
+import { defineThemeParameter } from "@/store/defineThemes";
 
 const { iconInfoConfig, verticalBarInfoConfig } = defineCanvasConfig();
 const { currentRenderUid, marshal, unMarshal } = defineRender();
@@ -58,10 +59,13 @@ function PreviewRenderMi(uid) {
   const iconName = getIconSrc(exifData);
   const iconSrc = readSettings().value.iconPrefix + iconName;
   const iconImg = iconCache.get(iconSrc);
-  const factor = fileObj.renderFactor;
   const imgScaleInfo = getScale(img);
+  const factor = imgScaleInfo.imgH > imgScaleInfo.imgW ? 0.1 : 0.125;
   const genMarkInfo = getMarkInfo(exifData, img, iconImg, factor, imgScaleInfo);
   const renderItem = genRenderItem(img, genMarkInfo, factor, imgScaleInfo);
+
+  const { privacyMode, whiteBoard } = defineThemeParameter();
+  whiteBoard.value = false;
   allCanvasConfigMap.set(uid, renderItem);
 }
 
@@ -81,8 +85,7 @@ async function SelectIconForMiTheme(iconSrc) {
     pushToIconCache(iconSrc, iconImg);
   }
 
-  const factor = uploadFile.renderFactor;
-  const exifData = uploadFile.exif;
+  const factor = allCanvasConfigMap.get(uid).factor;
   const img = uploadFile.img;
 
   const imgScaleInfo = getScale(img);
@@ -125,4 +128,24 @@ async function SelectIconForMiTheme(iconSrc) {
   // unMarshal(uid);
 }
 
-export { PreviewRenderMi, SelectIconForMiTheme };
+function SlideFactorMi(e) {
+  const uid = currentRenderUid.value;
+  const fileObj = uid2Src.get(uid);
+  const img = fileObj.img;
+  const exifData = fileObj.exif;
+  const iconName = getIconSrc(exifData);
+  const iconSrc = readSettings().value.iconPrefix + iconName;
+  const iconImg = iconCache.get(iconSrc);
+  const imgScaleInfo = getScale(img);
+
+  const factor = e;
+
+  const genMarkInfo = getMarkInfo(exifData, img, iconImg, factor, imgScaleInfo);
+  const renderItem = genRenderItem(img, genMarkInfo, factor, imgScaleInfo);
+
+  const { privacyMode, whiteBoard } = defineThemeParameter();
+  whiteBoard.value = false;
+  allCanvasConfigMap.set(uid, renderItem);
+}
+
+export { PreviewRenderMi, SelectIconForMiTheme, SlideFactorMi };
