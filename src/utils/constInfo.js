@@ -13,8 +13,18 @@ function getInitData() {
       visible: true,
       name: "downloadStage",
     },
+    previewLayerConfig: {
+      width: 1,
+      height: 1,
+      scaleX: 1,
+      scaleY: 1,
+    },
     mainImgConfig: {
       image: null,
+      x: 0,
+      y: 0,
+      scaleX: 1,
+      scaleY: 1,
       name: "mainImg",
     },
     iconGroupConfig: {},
