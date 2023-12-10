@@ -43,6 +43,15 @@ async function reset() {
     currentRenderUid.value !== 0
   ) {
     const uid = currentRenderUid.value;
+    const fileObj = uid2Src.get(uid);
+    const img = fileObj.img;
+    if (img.height > img.width) {
+      factor.value = 0.1;
+    } else {
+      factor.value = 0.125;
+    }
+    // checkList.value
+    checkList.value = checkList.value.filter((item) => item !== "白边");
     PreviewRender(uid);
     unMarshal(uid);
   }
@@ -55,6 +64,8 @@ async function select() {
 
 async function handleSlide(e) {
   const uid = currentRenderUid.value;
+  const uploadFile = uid2Src.get(uid);
+  uploadFile.renderFactor = e;
   PreviewRender(uid);
   unMarshal(uid);
 }
@@ -108,6 +119,7 @@ function selectOtherBanner() {
           placeholder="Device info"
           :prefix-icon="Camera"
           :disabled="parameterDisable"
+          clearable
         />
         <el-color-picker
           v-model="deviceInfoConfig.fill"
@@ -142,6 +154,7 @@ function selectOtherBanner() {
           class="w-50 m-2"
           placeholder="Lens Info"
           :prefix-icon="Aim"
+          clearable
           :disabled="parameterDisable"
         />
         <el-color-picker
@@ -180,6 +193,7 @@ function selectOtherBanner() {
           placeholder="parameter Info"
           :prefix-icon="InfoFilled"
           :disabled="parameterDisable"
+          clearable
         />
         <el-color-picker
           v-model="parameterInfoConfig.fill"
@@ -215,6 +229,7 @@ function selectOtherBanner() {
           placeholder="time info"
           :prefix-icon="Calendar"
           :disabled="parameterDisable"
+          clearable
         />
         <el-color-picker
           v-model="timeInfoConfig.fill"
@@ -350,6 +365,7 @@ function selectOtherBanner() {
 }
 .inputContainer {
   display: flex;
+  width: 800px;
   flex-direction: column;
   justify-content: center;
   margin: 20px;
