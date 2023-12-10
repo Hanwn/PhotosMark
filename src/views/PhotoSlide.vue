@@ -31,14 +31,15 @@ import { getImageData } from "@/utils/readFile";
 import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
 import { PreviewRender } from "@/themes/renderReouter";
 import { factor, themeIdx } from "@/store/defineThemes";
-import { readSettings } from "@/store/defineSettings";
-import { ElMessage } from "element-plus";
+import { checkList, readSettings } from "@/store/defineSettings";
 import { requestNotifyStatus } from "@/utils/notify";
 
 const { imgSrcList } = defineImgList();
 const { currentRenderUid, marshal, parameterDisable, unMarshal } =
   defineRender();
 const { iconCache } = defineIcon();
+const { topBannerRectConfig, leftBannerRectConfig, rightBannerRectConfig } =
+  defineCanvasConfig();
 
 let lastUid = 0;
 let currentUid = 0;
@@ -166,5 +167,21 @@ const handlePreview = async function (uploadFile) {
   unMarshal(currentUid);
   themeIdx.value = uid2Src.get(uid).renderThemeIdx;
   factor.value = uid2Src.get(uid).renderFactor;
+
+  let visible = false;
+  for (let i = 0; i < checkList.value.length; i++) {
+    if (checkList.value[i].includes("白边")) {
+      topBannerRectConfig.visible = true;
+      leftBannerRectConfig.visible = true;
+      rightBannerRectConfig.visible = true;
+      visible = true;
+      break;
+    }
+  }
+  if (visible === false) {
+    topBannerRectConfig.visible = false;
+    leftBannerRectConfig.visible = false;
+    rightBannerRectConfig.visible = false;
+  }
 };
 </script>
