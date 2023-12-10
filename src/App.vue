@@ -20,15 +20,27 @@ onMounted(() => {
 <template>
   <div class="container">
     <Header></Header>
-    <preview-card></preview-card>
-    <parameter-area></parameter-area>
-    <PhotoSlide></PhotoSlide>
+    <div class="vertical-split">
+      <preview-card></preview-card>
+      <parameter-area></parameter-area>
+    </div>
+    <div class="photos-slide">
+      <PhotoSlide></PhotoSlide>
+    </div>
     <download></download>
     <Footer></Footer>
   </div>
 </template>
 
 <style scoped>
+.vertical-split {
+  display: flex;
+  flex-wrap: wrap;
+}
+.photos-slide {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 .container {
   display: flex;
   flex-direction: column;
