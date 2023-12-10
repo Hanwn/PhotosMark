@@ -145,6 +145,7 @@ const {
   leftBannerRectConfig,
   rightBannerRectConfig,
   transformerConfig,
+  borderTransformerConfig,
   alignLineMiddleConfig,
   alignLineTwoThirdConfig,
   alignLineOneThirdConfig,
@@ -177,6 +178,6 @@ function sizeChange(e) {
 }
 
 #innerContainer {
-  background: #a0cfff;
+  background: #808080;
 }
 </style>

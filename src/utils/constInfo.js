@@ -108,6 +108,7 @@ function getInitData() {
       name: "timeInfo",
       visible: true,
     },
+    factor: 0.1,
   };
 }
 

@@ -12,7 +12,6 @@ const iconCache = reactive(new Map());
  *  src: src,
  *  raw: raw,
  *  renderThemeIdx: 1,
- *  renderFactor: 0.125,
  *  img: null,
  *  exif: exifData,
  * }

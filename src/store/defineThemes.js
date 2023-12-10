@@ -1,7 +1,16 @@
-import {ref} from 'vue'
+import { ref } from "vue";
 
-const themeIdx = ref(1)
-const factor = ref(0)
+const themeIdx = ref(1);
+const factor = ref(0);
 
+const whiteBoard = ref(false);
+const privacyMode = ref(true);
 
-export {themeIdx, factor}
+function defineThemeParameter() {
+  return {
+    whiteBoard,
+    privacyMode,
+  };
+}
+
+export { defineThemeParameter, themeIdx, factor };

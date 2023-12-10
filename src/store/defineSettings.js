@@ -4,8 +4,6 @@ const settings = ref({
   iconPrefix: "",
 });
 
-const checkList = ref(["隐私模式"]);
-
 function readSettings() {
   return settings;
 }
@@ -44,4 +42,4 @@ function defineComputedSettings() {
   };
 }
 
-export { readSettings, setSettings, defineComputedSettings, checkList };
+export { readSettings, setSettings, defineComputedSettings };

@@ -1,5 +1,9 @@
 import { themeIdx } from "@/store/defineThemes";
-import { PreviewRenderMi, SelectIconForMiTheme } from "@/themes/mi/mi";
+import {
+  PreviewRenderMi,
+  SelectIconForMiTheme,
+  SlideFactorMi,
+} from "@/themes/mi/mi";
 import { PreviewRenderDefault } from "@/themes/default/default";
 
 function PreviewRender(uid) {
@@ -26,4 +30,12 @@ async function SelectIcon(iconSrc) {
   }
 }
 
-export { PreviewRender, SelectIcon };
+function SlideFactor(e) {
+  const themeIdxValue = themeIdx.value;
+  switch (themeIdxValue) {
+    case 1:
+      SlideFactorMi(e);
+  }
+}
+
+export { PreviewRender, SelectIcon, SlideFactor };

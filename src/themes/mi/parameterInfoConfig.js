@@ -385,7 +385,7 @@ function genRenderItem(img, genMarkInfo, factor, imgScale) {
   const posX = imgScale.posX;
   const posY = imgScale.posY;
 
-  const bannerRadio = factor * 0.3;
+  const bannerRadio = factor * 0.15;
 
   return {
     previewGroupConfig: {
@@ -446,6 +446,7 @@ function genRenderItem(img, genMarkInfo, factor, imgScale) {
     verticalBarInfoConfig: genMarkInfo["right"]["verticalBarInfoConfig"],
     parameterInfoConfig: genMarkInfo["right"]["parameterInfoConfig"],
     timeInfoConfig: genMarkInfo["right"]["timeInfoConfig"],
+    factor: factor,
   };
 }
 

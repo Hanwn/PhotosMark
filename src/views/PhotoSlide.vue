@@ -34,8 +34,8 @@ import {
 } from "@/store/defineCanvasConfig";
 import { PreviewRender } from "@/themes/renderReouter";
 import { factor, themeIdx } from "@/store/defineThemes";
-import { checkList, readSettings } from "@/store/defineSettings";
 import { requestNotifyStatus } from "@/utils/notify";
+import { readSettings } from "@/store/defineSettings";
 
 const { imgSrcList } = defineImgList();
 const { currentRenderUid, marshal, parameterDisable, unMarshal } =
@@ -69,13 +69,11 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
         src: src,
         raw: raw,
         renderThemeIdx: 1,
-        renderFactor: 0.125,
         img: null,
         exif: null,
       });
     }
   }
-  factor.value = 0.125;
   const uid = uploadFile.uid;
   if (!allCanvasConfigMap.has(uid)) {
     const imgData = await getImageData(uploadFile.raw);
@@ -103,10 +101,6 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
       return;
     }
 
-    if (img.height > img.width) {
-      uid2Src.get(uid).renderFactor = 0.1;
-      factor.value = 0.1;
-    }
     const iconName = getIconSrc(exifData);
     const iconSrc = readSettings().value.iconPrefix + iconName;
     let iconImg = "";
@@ -124,11 +118,9 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
   if (currentRenderUid.value === 0 || allCanvasConfigMap.size === 2) {
     currentRenderUid.value = uid;
     currentUid = uid;
-    factor.value = uid2Src.get(uid).renderFactor;
     unMarshal(uid);
   }
   parameterDisable.value = false;
-  console.log(allCanvasConfigMap.size);
 };
 
 const handlePreview = async function (uploadFile) {
@@ -149,26 +141,8 @@ const handlePreview = async function (uploadFile) {
   currentRenderUid.value = uploadFile.uid;
   lastUid = currentUid;
   currentUid = uid;
-  console.log(lastUid, currentUid);
   marshal(lastUid);
   unMarshal(currentUid);
   themeIdx.value = uid2Src.get(uid).renderThemeIdx;
-  factor.value = uid2Src.get(uid).renderFactor;
-
-  let visible = false;
-  for (let i = 0; i < checkList.value.length; i++) {
-    if (checkList.value[i].includes("白边")) {
-      topBannerRectConfig.visible = true;
-      leftBannerRectConfig.visible = true;
-      rightBannerRectConfig.visible = true;
-      visible = true;
-      break;
-    }
-  }
-  if (visible === false) {
-    topBannerRectConfig.visible = false;
-    leftBannerRectConfig.visible = false;
-    rightBannerRectConfig.visible = false;
-  }
 };
 </script>
