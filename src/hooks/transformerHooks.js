@@ -3,6 +3,7 @@ import { defineRender } from "@/store/defineRender";
 import { ref } from "vue";
 const { currentRenderUid, marshal } = defineRender();
 const transformer = ref();
+const borderTransformer = ref();
 
 const {
   deviceInfoConfig,
@@ -55,12 +56,13 @@ function transformerIconInfoHook(e) {
 }
 
 function handleStageMouseDown(e) {
-  const selectName = new Map([
+  const selectName = new Map([["iconInfo", ""]]);
+
+  const showBoard = new Map([
     ["timeInfo", ""],
     ["deviceInfo", ""],
     ["lensInfo", ""],
     ["parameterInfo", ""],
-    ["iconInfo", ""],
   ]);
 
   const name = e.target.name();
@@ -73,19 +75,22 @@ function handleStageMouseDown(e) {
     const stage = transformerNode.getStage();
     const selectNode = stage.findOne("." + name);
     transformerNode.nodes([selectNode]);
+    return;
+  }
+  const borderTransformerNode = borderTransformer.value.getNode();
+  if (showBoard.has(name)) {
+    const stage = transformerNode.getStage();
+    const selectNode = stage.findOne("." + name);
+    borderTransformerNode.nodes([selectNode]);
   }
 }
 
 function defineTransformerHooks() {
   return {
-    transformerTimeInfoHook,
-    transformerDeviceInfoHook,
-    transformerParameterInfoHook,
-    transformerLensInfoHook,
-    transformerVerticalBarHook,
     transformerIconInfoHook,
     handleStageMouseDown,
     transformer,
+    borderTransformer,
   };
 }
 

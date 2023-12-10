@@ -23,46 +23,44 @@
                   :config="deviceInfoConfig"
                   @dragmove="dragMoveDeviceInfoHook"
                   @dragEnd="dragEndDeviceInfoHook"
-                  @transformend="transformerDeviceInfoHook"
                   __useStrictMode
                 ></v-text>
                 <v-text
                   :config="lensInfoConfig"
                   @dragmove="dragMoveLensInfoHook"
                   @dragEnd="dragEndLensInfoHook"
-                  @transformend="transformerLensInfoHook"
                   __useStrictMode
                 ></v-text>
                 <v-image
                   :config="iconInfoConfig"
                   @dragEnd="dragEndIconInfoHook"
                   @dragmove="dragMoveIconInfoHook"
-                  @transformend="transformerIconInfoHook"
                   __useStrictMode
                 ></v-image>
                 <v-rect
                   :config="verticalBarInfoConfig"
                   @dragmove="dragMoveVerticalBarHook"
                   @dragEnd="dragEndVerticalBarHook"
-                  @transformend="transformerVerticalBarHook"
                   __useStrictMode
                 ></v-rect>
                 <v-text
                   :config="parameterInfoConfig"
                   @dragmove="dragMoveParameterInfoHook"
                   @dragEnd="dragEndParameterInfoHook"
-                  @transformend="transformerParameterInfoHook"
                   __useStrictMode
                 ></v-text>
                 <v-text
                   :config="timeInfoConfig"
                   @dragmove="dragMoveTimeInfoHook"
                   @dragEnd="dragEndTimeInfoHook"
-                  @transformend="transformerTimeInfoHook"
                   __useStrictMode
                 ></v-text>
               </v-group>
               <v-transformer ref="transformer" :config="transformerConfig" />
+              <v-transformer
+                ref="borderTransformer"
+                :config="borderTransformerConfig"
+              />
               <v-line :config="alignLineOneThirdConfig"></v-line>
               <v-line :config="alignLineMiddleConfig"></v-line>
               <v-line :config="alignLineTwoThirdConfig"></v-line>
