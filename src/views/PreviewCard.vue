@@ -128,6 +128,7 @@ const {
   transformerIconInfoHook,
   handleStageMouseDown,
   transformer,
+  borderTransformer,
 } = defineTransformerHooks();
 
 const {
