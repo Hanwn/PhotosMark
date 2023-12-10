@@ -1,21 +1,28 @@
-import { ref, reactive, watchEffect } from "vue";
+import { ref, reactive, computed, watchEffect } from "vue";
 import { getInitData } from "@/utils/constInfo";
 
 const previewStageConfig = reactive({
-  width: 800,
-  height: 600,
+  width: 1200,
+  height: 800,
   scaleX: 1,
   scaleY: 1,
 });
 
 const downloadStageConfig = reactive({
-  width: 100,
-  height: 200,
+  width: 1,
+  height: 1,
   visible: true,
+});
+
+const previewGroupConfig = reactive({
+  scaleX: 1,
+  scaleY: 1,
 });
 
 const mainImgConfig = reactive({
   image: null,
+  x: 0,
+  y: 0,
   scaleX: 1,
   scaleY: 1,
 });
@@ -23,6 +30,26 @@ const mainImgConfig = reactive({
 const iconGroupConfig = reactive({});
 
 const bannerRectConfig = reactive({
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 100,
+  fill: "#ffffff",
+  scaleX: 1,
+  scaleY: 1,
+});
+
+const topBannerRectConfig = reactive({
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 0,
+  fill: "#ffffff",
+  scaleX: 1,
+  scaleY: 1,
+  visible: false,
+});
+const leftBannerRectConfig = reactive({
   height: 100,
   width: 100,
   x: 0,
@@ -30,7 +57,19 @@ const bannerRectConfig = reactive({
   fill: "#ffffff",
   scaleX: 1,
   scaleY: 1,
+  visible: false,
 });
+const rightBannerRectConfig = reactive({
+  height: 100,
+  width: 100,
+  x: 0,
+  y: 100,
+  fill: "#ffffff",
+  scaleX: 1,
+  scaleY: 1,
+  visible: false,
+});
+
 const deviceInfoConfig = reactive({
   x: 100,
   y: 0,
@@ -152,10 +191,18 @@ const initData = getInitData();
 const allCanvasConfigMap = new Map();
 allCanvasConfigMap.set(0, initData);
 
+const StageCenter = computed(() => {
+  return {
+    x: previewStageConfig.width / 2,
+    y: previewStageConfig.height / 2,
+  };
+});
+
 function defineCanvasConfig() {
   return {
     previewStageConfig,
     downloadStageConfig,
+    previewGroupConfig,
     mainImgConfig,
     deviceInfoConfig,
     parameterInfoConfig,
@@ -164,10 +211,14 @@ function defineCanvasConfig() {
     verticalBarInfoConfig,
     iconInfoConfig,
     bannerRectConfig,
+    topBannerRectConfig,
+    leftBannerRectConfig,
+    rightBannerRectConfig,
     transformerConfig,
     alignLineTwoThirdConfig,
     alignLineOneThirdConfig,
     alignLineMiddleConfig,
+    StageCenter,
   };
 }
 
