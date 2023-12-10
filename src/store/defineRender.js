@@ -9,9 +9,8 @@ const resetBtn = ref(false);
 const parameterDisable = ref(true);
 
 const {
-  previewStageConfig,
-  downloadStageConfig,
   mainImgConfig,
+  previewGroupConfig,
   deviceInfoConfig,
   parameterInfoConfig,
   lensInfoConfig,
@@ -19,6 +18,9 @@ const {
   verticalBarInfoConfig,
   iconInfoConfig,
   bannerRectConfig,
+  topBannerRectConfig,
+  leftBannerRectConfig,
+  rightBannerRectConfig,
   alignLineOneThirdConfig,
   alignLineMiddleConfig,
   alignLineTwoThirdConfig,
@@ -30,14 +32,6 @@ function marshal(oldVal) {
     return;
   }
   const currentRenderCanvasConfig = allCanvasConfigMap.get(oldVal);
-  Object.assign(
-    currentRenderCanvasConfig.previewStageConfig,
-    previewStageConfig,
-  );
-  Object.assign(
-    currentRenderCanvasConfig.downloadStageConfig,
-    downloadStageConfig,
-  );
   Object.assign(currentRenderCanvasConfig.mainImgConfig, mainImgConfig);
   Object.assign(currentRenderCanvasConfig.deviceInfoConfig, deviceInfoConfig);
   Object.assign(currentRenderCanvasConfig.iconInfoConfig, iconInfoConfig);
@@ -52,6 +46,18 @@ function marshal(oldVal) {
     verticalBarInfoConfig,
   );
   Object.assign(currentRenderCanvasConfig.bannerRectConfig, bannerRectConfig);
+  Object.assign(
+    currentRenderCanvasConfig.topBannerRectConfig,
+    topBannerRectConfig,
+  );
+  Object.assign(
+    currentRenderCanvasConfig.leftBannerRectConfig,
+    leftBannerRectConfig,
+  );
+  Object.assign(
+    currentRenderCanvasConfig.rightBannerRectConfig,
+    rightBannerRectConfig,
+  );
 }
 
 // load
@@ -60,16 +66,9 @@ function unMarshal(newVal) {
     return;
   }
   const currentRenderCanvasConfig = allCanvasConfigMap.get(newVal);
-  const scaleX = currentRenderCanvasConfig.previewStageConfig.scaleX;
-  const scaleY = currentRenderCanvasConfig.previewStageConfig.scaleY;
-
   Object.assign(
-    previewStageConfig,
-    currentRenderCanvasConfig.previewStageConfig,
-  );
-  Object.assign(
-    downloadStageConfig,
-    currentRenderCanvasConfig.downloadStageConfig,
+    previewGroupConfig,
+    currentRenderCanvasConfig.previewGroupConfig,
   );
   Object.assign(mainImgConfig, currentRenderCanvasConfig.mainImgConfig);
   Object.assign(deviceInfoConfig, currentRenderCanvasConfig.deviceInfoConfig);
@@ -85,6 +84,18 @@ function unMarshal(newVal) {
     currentRenderCanvasConfig.verticalBarInfoConfig,
   );
   Object.assign(bannerRectConfig, currentRenderCanvasConfig.bannerRectConfig);
+  Object.assign(
+    topBannerRectConfig,
+    currentRenderCanvasConfig.topBannerRectConfig,
+  );
+  Object.assign(
+    leftBannerRectConfig,
+    currentRenderCanvasConfig.leftBannerRectConfig,
+  );
+  Object.assign(
+    rightBannerRectConfig,
+    currentRenderCanvasConfig.rightBannerRectConfig,
+  );
   // load alignInfo Config
 
   const middle = bannerRectConfig.height * 0.5 + bannerRectConfig.y;

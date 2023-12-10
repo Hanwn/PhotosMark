@@ -1,51 +1,38 @@
-import {ref, reactive, computed, watch} from "vue";
-import {defineRender} from "@/store/defineRender";
+import { ref, reactive, computed, watch } from "vue";
+import { defineRender } from "@/store/defineRender";
 
-const imgSrcList = ref([])
-const iconCache = reactive(new Map())
-const exifCache = reactive(new Map())
-const uid2Src = reactive(new Map())
-
-const uid2Img = reactive(new Map)
-
-
-function pushToImgList(src) {
-    imgSrcList.value.push({name:src, URL:src})
-}
-
-
-function pushToExifCache(src, exifData) {
-    exifCache.set(src, exifData)
-}
+const imgSrcList = ref([]);
+/*
+ * iconCache : {uid: iconImg}
+ * */
+const iconCache = reactive(new Map());
+/*
+ * uid2Src {
+ *  name: name,
+ *  src: src,
+ *  raw: raw,
+ *  renderThemeIdx: 1,
+ *  renderFactor: 0.125,
+ *  img: null,
+ *  exif: exifData,
+ * }
+ * */
+const uid2Src = reactive(new Map());
 
 function pushToIconCache(src, iconImg) {
-    iconCache.set(src, iconImg)
+  iconCache.set(src, iconImg);
 }
-
-function clickImg(idx) {
-    const {setRenderIdx} = defineRender()
-    setRenderIdx(idx + 1)
-}
-
 
 function defineImgList() {
-    return {
-        imgSrcList,
-        clickImg
-    }
+  return {
+    imgSrcList,
+  };
 }
 
 function defineIcon() {
-    return {
-        iconCache
-    }
+  return {
+    iconCache,
+  };
 }
 
-function defineExifCache() {
-    return {
-        exifCache
-    }
-}
-
-
-export {defineImgList, defineIcon, defineExifCache, pushToImgList, pushToIconCache, pushToExifCache, uid2Src}
+export { defineImgList, pushToIconCache, defineIcon, uid2Src };
