@@ -74,13 +74,15 @@ function handleStageMouseDown(e) {
     return;
   }
   if (selectName.has(name)) {
+    borderTransformerNode.nodes([]);
     const stage = transformerNode.getStage();
     const selectNode = stage.findOne("." + name);
     transformerNode.nodes([selectNode]);
     return;
   }
   if (showBoard.has(name)) {
-    const stage = transformerNode.getStage();
+    transformerNode.nodes([]);
+    const stage = borderTransformerNode.getStage();
     const selectNode = stage.findOne("." + name);
     borderTransformerNode.nodes([selectNode]);
   }
