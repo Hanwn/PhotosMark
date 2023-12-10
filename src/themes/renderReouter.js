@@ -5,12 +5,16 @@ import {
   SlideFactorMi,
 } from "@/themes/mi/mi";
 import { PreviewRenderDefault } from "@/themes/default/default";
+const { currentRenderUid, marshal, unMarshal } = defineRender();
+import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
+import { defineRender } from "@/store/defineRender";
 
 function PreviewRender(uid) {
   const themeIdxValue = themeIdx.value;
+  let renderItem = {};
   switch (themeIdxValue) {
     case 1:
-      PreviewRenderMi(uid);
+      renderItem = PreviewRenderMi(uid);
       break;
     case 2:
       // PreviewRenderDefault(uid, img, exifData, iconImg)
@@ -19,6 +23,7 @@ function PreviewRender(uid) {
       PreviewRenderMi(uid);
       break;
   }
+  allCanvasConfigMap.set(uid, renderItem);
 }
 
 async function SelectIcon(iconSrc) {
@@ -32,10 +37,13 @@ async function SelectIcon(iconSrc) {
 
 function SlideFactor(e) {
   const themeIdxValue = themeIdx.value;
+  let renderItem = {};
+  const uid = currentRenderUid.value;
   switch (themeIdxValue) {
     case 1:
-      SlideFactorMi(e);
+      renderItem = SlideFactorMi(e);
   }
+  allCanvasConfigMap.set(uid, renderItem);
 }
 
 export { PreviewRender, SelectIcon, SlideFactor };

@@ -66,7 +66,7 @@ function PreviewRenderMi(uid) {
 
   const { privacyMode, whiteBoard } = defineThemeParameter();
   whiteBoard.value = false;
-  allCanvasConfigMap.set(uid, renderItem);
+  return renderItem;
 }
 
 async function SelectIconForMiTheme(iconSrc) {
@@ -145,7 +145,8 @@ function SlideFactorMi(e) {
 
   const { privacyMode, whiteBoard } = defineThemeParameter();
   whiteBoard.value = false;
-  allCanvasConfigMap.set(uid, renderItem);
+
+  return renderItem;
 }
 
 export { PreviewRenderMi, SelectIconForMiTheme, SlideFactorMi };
