@@ -1,5 +1,6 @@
 <template>
   <el-upload
+    drag
     v-model:file-list="imgSrcList"
     action="#"
     list-type="picture-card"
@@ -19,7 +20,6 @@ import { Plus } from "@element-plus/icons-vue";
 import {
   defineIcon,
   defineImgList,
-  pushToExifCache,
   pushToIconCache,
   uid2Src,
 } from "@/store/defineImg";
@@ -28,7 +28,10 @@ import { loadImg } from "@/utils/loadImg";
 import { getIconSrc } from "@/utils/getIcon";
 import { getExifData, parseExifData } from "@/utils/readExif";
 import { getImageData } from "@/utils/readFile";
-import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
+import {
+  allCanvasConfigMap,
+  defineCanvasConfig,
+} from "@/store/defineCanvasConfig";
 import { PreviewRender } from "@/themes/renderReouter";
 import { factor, themeIdx } from "@/store/defineThemes";
 import { checkList, readSettings } from "@/store/defineSettings";
@@ -67,6 +70,8 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
         raw: raw,
         renderThemeIdx: 1,
         renderFactor: 0.125,
+        img: null,
+        exif: null,
       });
     }
   }
@@ -86,36 +91,40 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
       );
     }
     exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
+    uid2Src.get(uid).exif = exifData;
     const src = uploadFile.url;
     let img = null;
     try {
       img = await loadImg(src);
+      uid2Src.get(uid).img = img;
     } catch (e) {
       // ElMessage.warning("Oops, load img failed, please try again");
-
       requestNotifyStatus("Oops, load img failed, please try again", "error");
       return;
     }
+
     if (img.height > img.width) {
       uid2Src.get(uid).renderFactor = 0.1;
       factor.value = 0.1;
     }
     const iconName = getIconSrc(exifData);
-    pushToExifCache(src, exifData);
     const iconSrc = readSettings().value.iconPrefix + iconName;
     let iconImg = "";
-    if (iconCache.has(iconSrc)) {
-      iconImg = iconCache.get(iconSrc);
-    } else {
-      iconImg = await loadImg(iconSrc);
-      pushToIconCache(src);
+    if (!iconCache.has(iconSrc)) {
+      try {
+        iconImg = await loadImg(iconSrc);
+      } catch (e) {
+        requestNotifyStatus("Oops, load img failed, please try again", "error");
+      }
+      pushToIconCache(iconSrc, iconImg);
     }
-    PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor);
   }
+
   if (currentRenderUid.value === 0 || allCanvasConfigMap.size === 2) {
     currentRenderUid.value = uid;
     currentUid = uid;
     factor.value = uid2Src.get(uid).renderFactor;
+    PreviewRender(uid);
     unMarshal(uid);
   }
   parameterDisable.value = false;
@@ -124,40 +133,17 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
 const handlePreview = async function (uploadFile) {
   const uid = uploadFile.uid;
   if (!allCanvasConfigMap.has(uid)) {
-    const imgData = await getImageData(uploadFile.raw);
-    let exifData = null;
-    try {
-      exifData = getExifData(imgData);
-    } catch (e) {
-      exifData = parseExifData(null);
-      // ElMessage.error("Oops, Your picture is not contain exif data");
-      requestNotifyStatus(
-        "Oops, Your picture is not contain exif data.",
-        "warning",
-      );
-    }
-    exifData.LEN = exifData.LEN.replace(/\u0000/g, "");
-    const src = uploadFile.url;
-    let img = null;
-    try {
-      img = await loadImg(src);
-    } catch (e) {
-      // ElMessage.warning("Oops, load img failed, please try again");
-      requestNotifyStatus("Oops, load img failed, please try again", "error");
-      return;
-    }
+    const fileObj = uid2Src.get(uid);
+    const exifData = fileObj.exif;
     const iconName = getIconSrc(exifData);
-    pushToExifCache(src, exifData);
     const iconSrc = readSettings().value.iconPrefix + iconName;
+
     let iconImg = "";
-    if (iconCache.has(iconSrc)) {
-      iconImg = iconCache.get(iconSrc);
-    } else {
+    if (!iconCache.has(iconSrc)) {
       iconImg = await loadImg(iconSrc);
       pushToIconCache(iconSrc, iconImg);
     }
-
-    PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor);
+    PreviewRender(uid);
   }
   currentRenderUid.value = uploadFile.uid;
   lastUid = currentUid;

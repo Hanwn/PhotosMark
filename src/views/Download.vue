@@ -10,6 +10,8 @@ import {
 } from "@/store/defineCanvasConfig";
 const downloadStage = ref();
 const disable = ref(true);
+const downloadLayer = ref();
+const downloadGroup = ref();
 const { currentRenderUid, unMarshal, marshal } = defineRender();
 
 const {
@@ -22,6 +24,9 @@ const {
   verticalBarInfoConfig,
   iconInfoConfig,
   bannerRectConfig,
+  topBannerRectConfig,
+  leftBannerRectConfig,
+  rightBannerRectConfig,
 } = defineCanvasConfig();
 
 async function download() {
@@ -40,13 +45,15 @@ async function download() {
     }
     // currentRenderUid.value = item[0]
     const uid = item[0];
+
     const outputConfig = {
       mimeType: "image/jpeg",
-      width: downloadStage.value.width,
-      height: downloadStage.value.height,
+      quality: 1,
+      width: downloadGroup.value.width,
+      height: downloadGroup.value.height,
     };
     unMarshal(uid);
-    let node = await downloadStage.value.getNode();
+    let node = await downloadGroup.value.getNode();
     let href = node.toDataURL(outputConfig);
     let a = document.createElement("a");
     a.href = href;
@@ -80,16 +87,23 @@ async function download() {
       ref="downloadStage"
       id="previewStage"
     >
-      <v-layer>
-        <v-image :config="mainImgConfig"></v-image>
-        <v-group :config="{}">
-          <v-rect :config="bannerRectConfig"></v-rect>
-          <v-text :config="deviceInfoConfig"></v-text>
-          <v-text :config="lensInfoConfig"></v-text>
-          <v-image :config="iconInfoConfig"></v-image>
-          <v-rect :config="verticalBarInfoConfig"></v-rect>
-          <v-text :config="parameterInfoConfig"></v-text>
-          <v-text :config="timeInfoConfig"></v-text>
+      <v-layer ref="downloadLayer" :config="{}">
+        <v-group ref="downloadGroup">
+          <v-group>
+            <v-rect :config="topBannerRectConfig"></v-rect>
+            <v-rect :config="leftBannerRectConfig"></v-rect>
+            <v-rect :config="rightBannerRectConfig"></v-rect>
+          </v-group>
+          <v-image :config="mainImgConfig"></v-image>
+          <v-group :config="{}">
+            <v-rect :config="bannerRectConfig"></v-rect>
+            <v-text :config="deviceInfoConfig"></v-text>
+            <v-text :config="lensInfoConfig"></v-text>
+            <v-image :config="iconInfoConfig"></v-image>
+            <v-rect :config="verticalBarInfoConfig"></v-rect>
+            <v-text :config="parameterInfoConfig"></v-text>
+            <v-text :config="timeInfoConfig"></v-text>
+          </v-group>
         </v-group>
       </v-layer>
     </v-stage>

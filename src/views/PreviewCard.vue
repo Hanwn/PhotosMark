@@ -1,83 +1,90 @@
 <template>
-  <div id="cvsContainer">
-    <div
-      id="innerContainer"
-      class="inline-flex"
-      :style="{
-        boxShadow: '0px 0px 10px #000',
-      }"
-    >
-      <v-stage
-        :config="previewStageConfig"
-        ref="stage"
-        id="previewStage"
-        @mousedown="handleStageMouseDown"
-      >
-        <v-layer>
-          <v-image :config="mainImgConfig"></v-image>
-          <v-group :config="{}">
-            <v-rect :config="bannerRectConfig"></v-rect>
-            <v-text
-              :config="deviceInfoConfig"
-              @dragmove="dragMoveDeviceInfoHook"
-              @dragEnd="dragEndDeviceInfoHook"
-              @transformend="transformerDeviceInfoHook"
-              __useStrictMode
-            ></v-text>
-            <v-text
-              :config="lensInfoConfig"
-              @dragmove="dragMoveLensInfoHook"
-              @dragEnd="dragEndLensInfoHook"
-              @transformend="transformerLensInfoHook"
-              __useStrictMode
-            ></v-text>
-            <v-image
-              :config="iconInfoConfig"
-              @dragEnd="dragEndIconInfoHook"
-              @dragmove="dragMoveIconInfoHook"
-              @transformend="transformerIconInfoHook"
-              __useStrictMode
-            ></v-image>
-            <v-rect
-              :config="verticalBarInfoConfig"
-              @dragmove="dragMoveVerticalBarHook"
-              @dragEnd="dragEndVerticalBarHook"
-              @transformend="transformerVerticalBarHook"
-              __useStrictMode
-            ></v-rect>
-            <v-text
-              :config="parameterInfoConfig"
-              @dragmove="dragMoveParameterInfoHook"
-              @dragEnd="dragEndParameterInfoHook"
-              @transformend="transformerParameterInfoHook"
-              __useStrictMode
-            ></v-text>
-            <v-text
-              :config="timeInfoConfig"
-              @dragmove="dragMoveTimeInfoHook"
-              @dragEnd="dragEndTimeInfoHook"
-              @transformend="transformerTimeInfoHook"
-              __useStrictMode
-            ></v-text>
-          </v-group>
-          <v-transformer ref="transformer" :config="transformerConfig" />
-          <v-line :config="alignLineOneThirdConfig"></v-line>
-          <v-line :config="alignLineMiddleConfig"></v-line>
-          <v-line :config="alignLineTwoThirdConfig"></v-line>
-          <v-line :config="debugConfig"></v-line>
-        </v-layer>
-      </v-stage>
+  <div id="previewStage">
+    <div id="cvsContainer">
+      <div id="innerContainer" class="inline-flex" :style="{}">
+        <v-stage
+          :config="previewStageConfig"
+          ref="stage"
+          id="previewStage"
+          @mousedown="handleStageMouseDown"
+        >
+          <v-layer>
+            <v-group :config="previewGroupConfig">
+              <v-group>
+                <v-rect :config="topBannerRectConfig"></v-rect>
+                <v-rect :config="leftBannerRectConfig"></v-rect>
+                <v-rect :config="rightBannerRectConfig"></v-rect>
+              </v-group>
+
+              <v-image :config="mainImgConfig"></v-image>
+              <v-group :config="{}">
+                <v-rect :config="bannerRectConfig"></v-rect>
+                <v-text
+                  :config="deviceInfoConfig"
+                  @dragmove="dragMoveDeviceInfoHook"
+                  @dragEnd="dragEndDeviceInfoHook"
+                  @transformend="transformerDeviceInfoHook"
+                  __useStrictMode
+                ></v-text>
+                <v-text
+                  :config="lensInfoConfig"
+                  @dragmove="dragMoveLensInfoHook"
+                  @dragEnd="dragEndLensInfoHook"
+                  @transformend="transformerLensInfoHook"
+                  __useStrictMode
+                ></v-text>
+                <v-image
+                  :config="iconInfoConfig"
+                  @dragEnd="dragEndIconInfoHook"
+                  @dragmove="dragMoveIconInfoHook"
+                  @transformend="transformerIconInfoHook"
+                  __useStrictMode
+                ></v-image>
+                <v-rect
+                  :config="verticalBarInfoConfig"
+                  @dragmove="dragMoveVerticalBarHook"
+                  @dragEnd="dragEndVerticalBarHook"
+                  @transformend="transformerVerticalBarHook"
+                  __useStrictMode
+                ></v-rect>
+                <v-text
+                  :config="parameterInfoConfig"
+                  @dragmove="dragMoveParameterInfoHook"
+                  @dragEnd="dragEndParameterInfoHook"
+                  @transformend="transformerParameterInfoHook"
+                  __useStrictMode
+                ></v-text>
+                <v-text
+                  :config="timeInfoConfig"
+                  @dragmove="dragMoveTimeInfoHook"
+                  @dragEnd="dragEndTimeInfoHook"
+                  @transformend="transformerTimeInfoHook"
+                  __useStrictMode
+                ></v-text>
+              </v-group>
+              <v-transformer ref="transformer" :config="transformerConfig" />
+              <v-line :config="alignLineOneThirdConfig"></v-line>
+              <v-line :config="alignLineMiddleConfig"></v-line>
+              <v-line :config="alignLineTwoThirdConfig"></v-line>
+              <v-line :config="debugConfig"></v-line>
+            </v-group>
+          </v-layer>
+        </v-stage>
+      </div>
     </div>
-  </div>
-  <div>
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :total="30"
-      @current-change="sizeChange"
-      :disabled="true"
-      :current-page="themeIdx"
-    />
+    <div>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="30"
+        @current-change="sizeChange"
+        :disabled="true"
+        :current-page="themeIdx"
+      />
+    </div>
+    <!--    <div>-->
+    <!--      <el-rate v-model="value1" />-->
+    <!--    </div>-->
   </div>
 </template>
 
@@ -128,6 +135,7 @@ const {
 const {
   previewStageConfig,
   mainImgConfig,
+  previewGroupConfig,
   deviceInfoConfig,
   parameterInfoConfig,
   lensInfoConfig,
@@ -135,6 +143,9 @@ const {
   verticalBarInfoConfig,
   iconInfoConfig,
   bannerRectConfig,
+  topBannerRectConfig,
+  leftBannerRectConfig,
+  rightBannerRectConfig,
   transformerConfig,
   alignLineMiddleConfig,
   alignLineTwoThirdConfig,
@@ -154,9 +165,13 @@ function sizeChange(e) {
 </script>
 
 <style>
+#previewStage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 #cvsContainer {
   display: flex;
-  width: 800px;
   flex-direction: row;
   align-content: center;
   justify-content: center;
@@ -164,6 +179,6 @@ function sizeChange(e) {
 }
 
 #innerContainer {
-  display: inline;
+  background: #a0cfff;
 }
 </style>
