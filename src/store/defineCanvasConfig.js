@@ -160,6 +160,12 @@ const transformerConfig = reactive({
   },
 });
 
+const borderTransformerConfig = reactive({
+  rotateEnabled: false,
+  keepRadio: true,
+  enabledAnchors: [],
+});
+
 const alignLineOneThirdConfig = reactive({
   points: [0, 0, 0, 0],
   draggable: true,
@@ -215,6 +221,7 @@ function defineCanvasConfig() {
     leftBannerRectConfig,
     rightBannerRectConfig,
     transformerConfig,
+    borderTransformerConfig,
     alignLineTwoThirdConfig,
     alignLineOneThirdConfig,
     alignLineMiddleConfig,

@@ -118,16 +118,17 @@ const cacheRenderData = async function (uploadFile, uploadFiles) {
       }
       pushToIconCache(iconSrc, iconImg);
     }
+    PreviewRender(uid);
   }
 
   if (currentRenderUid.value === 0 || allCanvasConfigMap.size === 2) {
     currentRenderUid.value = uid;
     currentUid = uid;
     factor.value = uid2Src.get(uid).renderFactor;
-    PreviewRender(uid);
     unMarshal(uid);
   }
   parameterDisable.value = false;
+  console.log(allCanvasConfigMap.size);
 };
 
 const handlePreview = async function (uploadFile) {

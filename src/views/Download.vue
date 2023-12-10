@@ -30,7 +30,6 @@ const {
 } = defineCanvasConfig();
 
 async function download() {
-  marshal();
   if (allCanvasConfigMap.size === 1) {
     downloadStatusNotify("请上传图片", "error");
     return;
