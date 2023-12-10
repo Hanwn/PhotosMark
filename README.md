@@ -1,6 +1,6 @@
 # PHOTO MARK
 
-<img src="https://pic-1301492519.cos.ap-shanghai.myqcloud.com/logo/logo.svg" alt="" style="height: 60px !important;width: 217px !important;" >
+<img src="https://photosmark.art/logo/logo.svg" alt="" style="height: 60px !important;width: 217px !important;" >
 <br>
 <img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D">
 
