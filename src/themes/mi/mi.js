@@ -104,8 +104,13 @@ async function SelectIconForMiTheme(iconSrc) {
   const iconHeight = iconInfoConfig.height;
   const iconWidth = iconInfoConfig.width;
 
-  const targetIconX = iconX + iconWidth - targetIconWidth;
-  const targetIconY = iconY + iconHeight / 2 - targetIconHeight / 2;
+  let targetIconX = iconX + iconWidth - targetIconWidth;
+  let targetIconY = iconY + iconHeight / 2 - targetIconHeight / 2;
+
+  if (isNaN(targetIconX) || isNaN(targetIconY)) {
+    targetIconX = genMarkInfo.right.iconInfoConfig.x;
+    targetIconY = genMarkInfo.right.iconInfoConfig.y;
+  }
 
   iconInfoConfig.x = targetIconX;
   iconInfoConfig.y = targetIconY;

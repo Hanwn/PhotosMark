@@ -67,8 +67,10 @@ function handleStageMouseDown(e) {
 
   const name = e.target.name();
   const transformerNode = transformer.value.getNode();
+  const borderTransformerNode = borderTransformer.value.getNode();
   if (name.length === 0) {
     transformerNode.nodes([]);
+    borderTransformerNode.nodes([]);
     return;
   }
   if (selectName.has(name)) {
@@ -77,7 +79,6 @@ function handleStageMouseDown(e) {
     transformerNode.nodes([selectNode]);
     return;
   }
-  const borderTransformerNode = borderTransformer.value.getNode();
   if (showBoard.has(name)) {
     const stage = transformerNode.getStage();
     const selectNode = stage.findOne("." + name);
