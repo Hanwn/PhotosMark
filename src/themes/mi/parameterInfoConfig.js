@@ -1,8 +1,10 @@
 import { calcDeviceFontSize, calcRenderFontSize } from "@/utils/calcFontSize";
 import { defineCanvasConfig } from "@/store/defineCanvasConfig";
+import { defineThemeParameter } from "@/store/defineThemes";
 
 let padding = 100;
 let dist = 50;
+const { whiteBoard } = defineThemeParameter();
 
 function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
   let verticalMaxRadio = 1 / 2;
@@ -410,35 +412,15 @@ function genRenderItem(img, genMarkInfo, factor, imgScale) {
       scaleY: 1,
       scaleX: 1,
     },
-    topBannerRectConfig: {
-      height: imgH * bannerRadio,
-      width: imgW,
-      x: posX,
-      y: posY - imgH * bannerRadio,
-      fill: "#ffffff",
-      scaleY: 1,
-      scaleX: 1,
-      visible: false,
-    },
-    leftBannerRectConfig: {
+    backgroundRectConfig: {
       height: imgH * (1 + factor + bannerRadio),
-      width: imgH * bannerRadio,
+      width: imgW + imgH * bannerRadio * 2,
       x: posX - imgH * bannerRadio,
       y: posY - imgH * bannerRadio,
       fill: "#ffffff",
       scaleY: 1,
       scaleX: 1,
-      visible: false,
-    },
-    rightBannerRectConfig: {
-      height: imgH * (1 + factor + bannerRadio),
-      width: imgH * bannerRadio,
-      x: posX + imgW,
-      y: posY - imgH * bannerRadio,
-      fill: "#ffffff",
-      scaleY: 1,
-      scaleX: 1,
-      visible: false,
+      visible: whiteBoard.value,
     },
     deviceInfoConfig: genMarkInfo["left"]["deviceInfoConfig"],
     lensInfoConfig: genMarkInfo["left"]["lensInfoConfig"],

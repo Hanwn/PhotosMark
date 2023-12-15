@@ -21,6 +21,7 @@ import { useParameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
 const { iconCache } = defineIcon();
 const { currentRenderUid, unMarshal, marshal, parameterDisable } =
   defineRender();
+const { backgroundRectConfig } = defineCanvasConfig();
 
 const {
   deviceInfoConfig,
@@ -29,9 +30,6 @@ const {
   lensInfoConfig,
   verticalBarInfoConfig,
   bannerRectConfig,
-  topBannerRectConfig,
-  leftBannerRectConfig,
-  rightBannerRectConfig,
   mainImgConfig,
 } = defineCanvasConfig();
 
@@ -67,15 +65,7 @@ onMounted(() => {
 const { whiteBoard, privacyMode } = defineThemeParameter();
 
 function selectOtherBanner() {
-  if (whiteBoard.value === true) {
-    topBannerRectConfig.visible = true;
-    leftBannerRectConfig.visible = true;
-    rightBannerRectConfig.visible = true;
-  } else {
-    topBannerRectConfig.visible = false;
-    leftBannerRectConfig.visible = false;
-    rightBannerRectConfig.visible = false;
-  }
+  backgroundRectConfig.visible = whiteBoard.value === true;
 }
 </script>
 

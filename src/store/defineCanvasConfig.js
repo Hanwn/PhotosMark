@@ -37,9 +37,10 @@ const bannerRectConfig = reactive({
   fill: "#ffffff",
   scaleX: 1,
   scaleY: 1,
+  name: "bannerRect",
 });
 
-const topBannerRectConfig = reactive({
+const backgroundRectConfig = reactive({
   height: 0,
   width: 0,
   x: 0,
@@ -48,26 +49,7 @@ const topBannerRectConfig = reactive({
   scaleX: 1,
   scaleY: 1,
   visible: false,
-});
-const leftBannerRectConfig = reactive({
-  height: 100,
-  width: 100,
-  x: 0,
-  y: 100,
-  fill: "#ffffff",
-  scaleX: 1,
-  scaleY: 1,
-  visible: false,
-});
-const rightBannerRectConfig = reactive({
-  height: 100,
-  width: 100,
-  x: 0,
-  y: 100,
-  fill: "#ffffff",
-  scaleX: 1,
-  scaleY: 1,
-  visible: false,
+  name: "backgroundRect",
 });
 
 const deviceInfoConfig = reactive({
@@ -217,9 +199,7 @@ function defineCanvasConfig() {
     verticalBarInfoConfig,
     iconInfoConfig,
     bannerRectConfig,
-    topBannerRectConfig,
-    leftBannerRectConfig,
-    rightBannerRectConfig,
+    backgroundRectConfig,
     transformerConfig,
     borderTransformerConfig,
     alignLineTwoThirdConfig,

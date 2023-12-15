@@ -65,7 +65,7 @@ function PreviewRenderMi(uid) {
   const renderItem = genRenderItem(img, genMarkInfo, factor, imgScaleInfo);
 
   const { privacyMode, whiteBoard } = defineThemeParameter();
-  whiteBoard.value = false;
+  // whiteBoard.value = false;
   return renderItem;
 }
 

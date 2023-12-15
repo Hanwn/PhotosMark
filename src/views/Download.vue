@@ -22,11 +22,9 @@ const {
   lensInfoConfig,
   timeInfoConfig,
   verticalBarInfoConfig,
+  backgroundRectConfig,
   iconInfoConfig,
   bannerRectConfig,
-  topBannerRectConfig,
-  leftBannerRectConfig,
-  rightBannerRectConfig,
 } = defineCanvasConfig();
 
 async function download() {
@@ -89,9 +87,7 @@ async function download() {
       <v-layer ref="downloadLayer" :config="{}">
         <v-group ref="downloadGroup">
           <v-group>
-            <v-rect :config="topBannerRectConfig"></v-rect>
-            <v-rect :config="leftBannerRectConfig"></v-rect>
-            <v-rect :config="rightBannerRectConfig"></v-rect>
+            <v-rect :config="backgroundRectConfig"></v-rect>
           </v-group>
           <v-image :config="mainImgConfig"></v-image>
           <v-group :config="{}">
