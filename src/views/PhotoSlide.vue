@@ -41,8 +41,6 @@ const { imgSrcList } = defineImgList();
 const { currentRenderUid, marshal, parameterDisable, unMarshal } =
   defineRender();
 const { iconCache } = defineIcon();
-const { topBannerRectConfig, leftBannerRectConfig, rightBannerRectConfig } =
-  defineCanvasConfig();
 
 let lastUid = 0;
 let currentUid = 0;

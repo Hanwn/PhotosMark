@@ -3,11 +3,12 @@ import {
   allCanvasConfigMap,
   defineCanvasConfig,
 } from "@/store/defineCanvasConfig";
-import { factor } from "@/store/defineThemes";
+import { defineThemeParameter, factor } from "@/store/defineThemes";
 
 const currentRenderUid = ref(0);
 const resetBtn = ref(false);
 const parameterDisable = ref(true);
+const { whiteBoard } = defineThemeParameter();
 
 const {
   mainImgConfig,
@@ -19,9 +20,7 @@ const {
   verticalBarInfoConfig,
   iconInfoConfig,
   bannerRectConfig,
-  topBannerRectConfig,
-  leftBannerRectConfig,
-  rightBannerRectConfig,
+  backgroundRectConfig,
   alignLineOneThirdConfig,
   alignLineMiddleConfig,
   alignLineTwoThirdConfig,
@@ -47,17 +46,10 @@ function marshal(oldVal) {
     verticalBarInfoConfig,
   );
   Object.assign(currentRenderCanvasConfig.bannerRectConfig, bannerRectConfig);
+  backgroundRectConfig.visible = whiteBoard.value;
   Object.assign(
-    currentRenderCanvasConfig.topBannerRectConfig,
-    topBannerRectConfig,
-  );
-  Object.assign(
-    currentRenderCanvasConfig.leftBannerRectConfig,
-    leftBannerRectConfig,
-  );
-  Object.assign(
-    currentRenderCanvasConfig.rightBannerRectConfig,
-    rightBannerRectConfig,
+    currentRenderCanvasConfig.backgroundRectConfig,
+    backgroundRectConfig,
   );
   currentRenderCanvasConfig.factor = factor.value;
 }
@@ -87,19 +79,11 @@ function unMarshal(newVal) {
   );
   Object.assign(bannerRectConfig, currentRenderCanvasConfig.bannerRectConfig);
   Object.assign(
-    topBannerRectConfig,
-    currentRenderCanvasConfig.topBannerRectConfig,
+    backgroundRectConfig,
+    currentRenderCanvasConfig.backgroundRectConfig,
   );
-  Object.assign(
-    leftBannerRectConfig,
-    currentRenderCanvasConfig.leftBannerRectConfig,
-  );
-  Object.assign(
-    rightBannerRectConfig,
-    currentRenderCanvasConfig.rightBannerRectConfig,
-  );
+  backgroundRectConfig.visible = whiteBoard.value;
   factor.value = currentRenderCanvasConfig.factor;
-  // load alignInfo Config
 
   const middle = bannerRectConfig.height * 0.5 + bannerRectConfig.y;
   const oneThird = bannerRectConfig.height / 3 + bannerRectConfig.y;

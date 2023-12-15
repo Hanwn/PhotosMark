@@ -63,6 +63,7 @@ function handleStageMouseDown(e) {
     ["deviceInfo", ""],
     ["lensInfo", ""],
     ["parameterInfo", ""],
+    ["bannerRect", ""],
   ]);
 
   const name = e.target.name();

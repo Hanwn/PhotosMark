@@ -11,9 +11,7 @@
           <v-layer>
             <v-group :config="previewGroupConfig">
               <v-group>
-                <v-rect :config="topBannerRectConfig"></v-rect>
-                <v-rect :config="leftBannerRectConfig"></v-rect>
-                <v-rect :config="rightBannerRectConfig"></v-rect>
+                <v-rect :config="backgroundRectConfig"></v-rect>
               </v-group>
 
               <v-image :config="mainImgConfig"></v-image>
@@ -142,9 +140,7 @@ const {
   verticalBarInfoConfig,
   iconInfoConfig,
   bannerRectConfig,
-  topBannerRectConfig,
-  leftBannerRectConfig,
-  rightBannerRectConfig,
+  backgroundRectConfig,
   transformerConfig,
   borderTransformerConfig,
   alignLineMiddleConfig,
