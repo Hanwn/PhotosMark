@@ -1,49 +1,26 @@
 import { defineCanvasConfig } from "@/store/defineCanvasConfig";
 import { defineRender } from "@/store/defineRender";
 import { ref } from "vue";
+import { SlideFactor } from "@/themes/renderReouter";
+import { factor } from "@/store/defineThemes";
+import { uid2Src } from "@/store/defineImg";
+
 const { currentRenderUid, marshal } = defineRender();
 const transformer = ref();
 const borderTransformer = ref();
+const bannerTransformer = ref();
+const backgroundTransformer = ref();
 
 const {
-  deviceInfoConfig,
-  parameterInfoConfig,
-  lensInfoConfig,
-  timeInfoConfig,
-  verticalBarInfoConfig,
+  mainImgConfig,
   iconInfoConfig,
+  bannerRectConfig,
+  backgroundRectConfig,
 } = defineCanvasConfig();
-
-function transformerVerticalBarHook(e) {
-  const transHeight = verticalBarInfoConfig.height * e.target.attrs.scaleY;
-  const transWidth = verticalBarInfoConfig.width * e.target.attrs.scaleX;
-  verticalBarInfoConfig.height = transHeight;
-  verticalBarInfoConfig.width = transWidth;
-}
-function transformerDeviceInfoHook(e) {
-  for (let key in deviceInfoConfig) {
-    deviceInfoConfig[key] = e.target.attrs[key];
-  }
-}
-
-function transformerLensInfoHook(e) {
-  for (let key in lensInfoConfig) {
-    lensInfoConfig[key] = e.target.attrs[key];
-  }
-}
-
-function transformerTimeInfoHook(e) {
-  for (let key in timeInfoConfig) {
-    timeInfoConfig[key] = e.target.attrs[key];
-  }
-}
-function transformerParameterInfoHook(e) {
-  for (let key in parameterInfoConfig) {
-    parameterInfoConfig[key] = e.target.attrs[key];
-  }
-}
+const { unMarshal } = defineRender();
 
 function transformerIconInfoHook(e) {
+  console.log(e);
   for (let key in iconInfoConfig) {
     iconInfoConfig[key] = e.target.attrs[key];
   }
@@ -58,43 +35,117 @@ function transformerIconInfoHook(e) {
 function handleStageMouseDown(e) {
   const selectName = new Map([["iconInfo", ""]]);
 
+  const bannerName = "bannerRect";
+  const backgroundRectName = "backgroundRect";
+
   const showBoard = new Map([
     ["timeInfo", ""],
     ["deviceInfo", ""],
     ["lensInfo", ""],
     ["parameterInfo", ""],
-    ["bannerRect", ""],
   ]);
 
   const name = e.target.name();
   const transformerNode = transformer.value.getNode();
   const borderTransformerNode = borderTransformer.value.getNode();
+  const bannerTransformerNode = bannerTransformer.value.getNode();
+  const backgroundTransformerNode = backgroundTransformer.value.getNode();
   if (name.length === 0) {
     transformerNode.nodes([]);
     borderTransformerNode.nodes([]);
+    bannerTransformerNode.nodes([]);
+    backgroundTransformerNode.nodes([]);
     return;
   }
+
   if (selectName.has(name)) {
     borderTransformerNode.nodes([]);
+    bannerTransformerNode.nodes([]);
+    backgroundTransformerNode.nodes([]);
     const stage = transformerNode.getStage();
     const selectNode = stage.findOne("." + name);
     transformerNode.nodes([selectNode]);
     return;
   }
+
   if (showBoard.has(name)) {
     transformerNode.nodes([]);
+    bannerTransformerNode.nodes([]);
+    backgroundTransformerNode.nodes([]);
     const stage = borderTransformerNode.getStage();
     const selectNode = stage.findOne("." + name);
     borderTransformerNode.nodes([selectNode]);
   }
+
+  if (name === bannerName) {
+    transformerNode.nodes([]);
+    borderTransformerNode.nodes([]);
+    backgroundTransformerNode.nodes([]);
+    const stage = bannerTransformerNode.getStage();
+    const selectNode = stage.findOne("." + name);
+    bannerTransformerNode.nodes([selectNode]);
+  }
+  if (name === backgroundRectName) {
+    transformerNode.nodes([]);
+    bannerTransformerNode.nodes([]);
+    borderTransformerNode.nodes([]);
+    const stage = borderTransformerNode.getStage();
+    const selectNode = stage.findOne("." + name);
+    backgroundTransformerNode.nodes([selectNode]);
+  }
+}
+
+function transformerBannerHook(e) {
+  const scaleY = e.target.attrs.scaleY;
+  const bannerHeight = bannerRectConfig.height;
+  const uid = currentRenderUid.value;
+  const imgH = uid2Src.get(uid).img.height;
+  bannerRectConfig.height = bannerHeight * scaleY;
+  backgroundRectConfig.height =
+    backgroundRectConfig.height - bannerHeight + bannerRectConfig.height;
+  factor.value = bannerRectConfig.height / imgH;
+}
+
+function transformerBannerEnd() {
+  const uid = currentRenderUid.value;
+  SlideFactor(factor.value);
+  unMarshal(uid);
+}
+
+function transformerBackgroundRectHook(e) {
+  backgroundRectConfig.scaleY = e.target.attrs.scaleY;
+  backgroundRectConfig.scaleX = e.target.attrs.scaleX;
+}
+
+function transformerBackgroundRectEnd() {
+  const scaleX = backgroundRectConfig.scaleX;
+  const originBackgroundWidth = backgroundRectConfig.width;
+  backgroundRectConfig.scaleX = 1;
+  const halfWidth =
+    (originBackgroundWidth * scaleX - originBackgroundWidth) / 2;
+  backgroundRectConfig.width = originBackgroundWidth * scaleX;
+  backgroundRectConfig.x = backgroundRectConfig.x - halfWidth;
+
+  const scaleY = backgroundRectConfig.scaleY;
+  backgroundRectConfig.scaleY = 1;
+  const originBackgroundHeight = backgroundRectConfig.height;
+  backgroundRectConfig.height = originBackgroundHeight * scaleY;
+  const diffH = backgroundRectConfig.height - originBackgroundHeight;
+  backgroundRectConfig.y = backgroundRectConfig.y - diffH;
 }
 
 function defineTransformerHooks() {
   return {
     transformerIconInfoHook,
+    transformerBackgroundRectHook,
+    transformerBackgroundRectEnd,
+    transformerBannerHook,
+    transformerBannerEnd,
     handleStageMouseDown,
     transformer,
     borderTransformer,
+    bannerTransformer,
+    backgroundTransformer,
   };
 }
 
