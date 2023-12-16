@@ -49,13 +49,6 @@ const value = ref("");
 async function select() {
   await SelectIcon(value.value);
 }
-
-async function handleSlide(e) {
-  const uid = currentRenderUid.value;
-  SlideFactor(e);
-  unMarshal(uid);
-}
-
 const { options, fetchIconList } = useParameterAreaOnMountedHook();
 
 onMounted(() => {
@@ -319,17 +312,6 @@ function selectOtherBanner() {
               verticalBarInfoConfig.visible = !verticalBarInfoConfig.visible;
             }
           "
-        />
-      </div>
-
-      <div class="slider-block">
-        <el-slider
-          v-model="factor"
-          show-input
-          :disabled="parameterDisable"
-          @change="handleSlide"
-          :max="0.5"
-          :step="0.005"
         />
       </div>
 

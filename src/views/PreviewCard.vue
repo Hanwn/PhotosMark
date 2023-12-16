@@ -11,12 +11,21 @@
           <v-layer>
             <v-group :config="previewGroupConfig">
               <v-group>
-                <v-rect :config="backgroundRectConfig"></v-rect>
+                <v-rect
+                  :config="backgroundRectConfig"
+                  @transform="transformerBackgroundRectHook"
+                  @transformend="transformerBackgroundRectEnd"
+                ></v-rect>
               </v-group>
 
               <v-image :config="mainImgConfig"></v-image>
               <v-group :config="{}">
-                <v-rect :config="bannerRectConfig"></v-rect>
+                <v-rect
+                  :config="bannerRectConfig"
+                  @transform="transformerBannerHook"
+                  @transformend="transformerBannerEnd"
+                  __useStrictMode
+                ></v-rect>
                 <v-text
                   :config="deviceInfoConfig"
                   @dragmove="dragMoveDeviceInfoHook"
@@ -59,6 +68,16 @@
                 ref="borderTransformer"
                 :config="borderTransformerConfig"
               />
+              <v-transformer
+                ref="bannerTransformer"
+                :config="bannerTransformerConfig"
+              >
+              </v-transformer>
+              <v-transformer
+                ref="backgroundTransformer"
+                :config="backgroundTransformerConfig"
+              >
+              </v-transformer>
               <v-line :config="alignLineOneThirdConfig"></v-line>
               <v-line :config="alignLineMiddleConfig"></v-line>
               <v-line :config="alignLineTwoThirdConfig"></v-line>
@@ -118,15 +137,16 @@ const {
 } = defineDragHooks();
 
 const {
-  transformerVerticalBarHook,
-  transformerDeviceInfoHook,
-  transformerLensInfoHook,
-  transformerParameterInfoHook,
-  transformerTimeInfoHook,
   transformerIconInfoHook,
+  transformerBannerHook,
+  transformerBackgroundRectHook,
+  transformerBackgroundRectEnd,
+  transformerBannerEnd,
   handleStageMouseDown,
   transformer,
   borderTransformer,
+  bannerTransformer,
+  backgroundTransformer,
 } = defineTransformerHooks();
 
 const {
@@ -143,6 +163,8 @@ const {
   backgroundRectConfig,
   transformerConfig,
   borderTransformerConfig,
+  bannerTransformerConfig,
+  backgroundTransformerConfig,
   alignLineMiddleConfig,
   alignLineTwoThirdConfig,
   alignLineOneThirdConfig,

@@ -120,12 +120,6 @@ async function SelectIconForMiTheme(iconSrc) {
   iconInfoConfig.image = iconImg;
   iconInfoConfig.height = targetIconHeight;
   iconInfoConfig.width = targetIconWidth;
-
-  // Object.assign(iconInfoConfig, genMarkInfo.right.iconInfoConfig)
-
-  // PreviewRender(uid, img, exifData, iconImg, uid2Src.get(uid).renderFactor);
-  // not best practise
-  // unMarshal(uid);
 }
 
 function SlideFactorMi(e) {
@@ -144,7 +138,6 @@ function SlideFactorMi(e) {
   const renderItem = genRenderItem(img, genMarkInfo, factor, imgScaleInfo);
 
   const { privacyMode, whiteBoard } = defineThemeParameter();
-  whiteBoard.value = false;
 
   return renderItem;
 }
