@@ -115,24 +115,12 @@ function transformerBannerEnd() {
 function transformerBackgroundRectHook(e) {
   backgroundRectConfig.scaleY = e.target.attrs.scaleY;
   backgroundRectConfig.scaleX = e.target.attrs.scaleX;
+
+  backgroundRectConfig.x = e.target.attrs.x;
+  backgroundRectConfig.y = e.target.attrs.y;
 }
 
-function transformerBackgroundRectEnd() {
-  const scaleX = backgroundRectConfig.scaleX;
-  const originBackgroundWidth = backgroundRectConfig.width;
-  backgroundRectConfig.scaleX = 1;
-  const halfWidth =
-    (originBackgroundWidth * scaleX - originBackgroundWidth) / 2;
-  backgroundRectConfig.width = originBackgroundWidth * scaleX;
-  backgroundRectConfig.x = backgroundRectConfig.x - halfWidth;
-
-  const scaleY = backgroundRectConfig.scaleY;
-  backgroundRectConfig.scaleY = 1;
-  const originBackgroundHeight = backgroundRectConfig.height;
-  backgroundRectConfig.height = originBackgroundHeight * scaleY;
-  const diffH = backgroundRectConfig.height - originBackgroundHeight;
-  backgroundRectConfig.y = backgroundRectConfig.y - diffH;
-}
+function transformerBackgroundRectEnd() {}
 
 function defineTransformerHooks() {
   return {
