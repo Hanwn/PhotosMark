@@ -4,7 +4,10 @@ import {
   SelectIconForMiTheme,
   SlideFactorMi,
 } from "@/themes/mi/mi";
-import { PreviewRenderDefault } from "@/themes/default/default";
+import {
+  PreviewRenderDefault,
+  SelectIconForDefault,
+} from "@/themes/default/default";
 const { currentRenderUid, marshal, unMarshal } = defineRender();
 import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
 import { defineRender } from "@/store/defineRender";
@@ -17,6 +20,7 @@ function PreviewRender(uid) {
       renderItem = PreviewRenderMi(uid);
       break;
     case 2:
+      renderItem = PreviewRenderDefault(uid);
       // PreviewRenderDefault(uid, img, exifData, iconImg)
       break;
     default:
@@ -31,6 +35,9 @@ async function SelectIcon(iconSrc) {
   switch (themeIdxValue) {
     case 1:
       await SelectIconForMiTheme(iconSrc);
+      break;
+    case 2:
+      await SelectIconForDefault(iconSrc);
       break;
   }
 }

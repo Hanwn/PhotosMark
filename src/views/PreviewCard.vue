@@ -42,6 +42,7 @@
                   :config="iconInfoConfig"
                   @dragEnd="dragEndIconInfoHook"
                   @dragmove="dragMoveIconInfoHook"
+                  @transform="transformerIconInfoHook"
                   __useStrictMode
                 ></v-image>
                 <v-rect
@@ -62,6 +63,17 @@
                   @dragEnd="dragEndTimeInfoHook"
                   __useStrictMode
                 ></v-text>
+                <v-circle
+                  :config="{
+                    x: parameterInfoConfig.x,
+                    y: parameterInfoConfig.y,
+                    radius: 70,
+                    fill: 'red',
+                    stroke: 'black',
+                    strokeWidth: 4,
+                    visible: false,
+                  }"
+                ></v-circle>
               </v-group>
               <v-transformer ref="transformer" :config="transformerConfig" />
               <v-transformer
@@ -93,7 +105,7 @@
         layout="prev, pager, next"
         :total="30"
         @current-change="sizeChange"
-        :disabled="true"
+        :disabled="parameterDisable"
         :current-page="themeIdx"
       />
     </div>
@@ -111,6 +123,7 @@ import { themeIdx } from "@/store/defineThemes";
 import { uid2Src } from "@/store/defineImg";
 import { defineDragHooks } from "@/hooks/dragHooks";
 import { defineTransformerHooks } from "@/hooks/transformerHooks";
+import { PreviewRender } from "@/themes/renderReouter";
 const { currentRenderUid, parameterDisable, unMarshal } = defineRender();
 
 const debugConfig = ref({
@@ -177,7 +190,7 @@ function sizeChange(e) {
   }
   uid2Src.get(uid).renderThemeIdx = e;
   themeIdx.value = e;
-
+  PreviewRender(uid);
   unMarshal(uid);
 }
 </script>

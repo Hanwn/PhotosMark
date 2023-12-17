@@ -20,7 +20,6 @@ const {
 const { unMarshal } = defineRender();
 
 function transformerIconInfoHook(e) {
-  console.log(e);
   for (let key in iconInfoConfig) {
     iconInfoConfig[key] = e.target.attrs[key];
   }
