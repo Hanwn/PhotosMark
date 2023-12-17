@@ -13,7 +13,7 @@ import { defineRender } from "@/store/defineRender";
 import { getIconSrc } from "@/utils/getIcon";
 import { readSettings } from "@/store/defineSettings";
 import { ConvertConfig2Exif } from "@/utils/readExif";
-import { defineThemeParameter } from "@/store/defineThemes";
+import { defineThemeParameter, themeIdx } from "@/store/defineThemes";
 
 const { iconInfoConfig, verticalBarInfoConfig } = defineCanvasConfig();
 const { currentRenderUid, marshal, unMarshal } = defineRender();
@@ -31,7 +31,6 @@ function PreviewRenderMi(uid) {
   const factor = imgScaleInfo.imgH > imgScaleInfo.imgW ? 0.1 : 0.125;
   const genMarkInfo = getMarkInfo(exifData, img, iconImg, factor, imgScaleInfo);
   const renderItem = genRenderItem(img, genMarkInfo, factor, imgScaleInfo);
-
   const { privacyMode, whiteBoard } = defineThemeParameter();
   // whiteBoard.value = false;
   return renderItem;
