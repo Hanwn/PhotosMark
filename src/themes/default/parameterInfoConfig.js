@@ -19,7 +19,7 @@ function getIconInfo(iconImg, factor, imgScale) {
 
   const iconScale = iconImg.width / iconImg.height;
   let iconHRadio = 0.35;
-  if (iconImg.width > 1.5 * iconImg.height) {
+  if (iconImg.width > 2.1 * iconImg.height) {
     iconHRadio = 0.15;
   }
   const iconHeight = bannerHeight * iconHRadio;
