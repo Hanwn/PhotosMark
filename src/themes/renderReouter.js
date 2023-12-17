@@ -11,9 +11,11 @@ import {
 const { currentRenderUid, marshal, unMarshal } = defineRender();
 import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
 import { defineRender } from "@/store/defineRender";
+import { uid2Src } from "@/store/defineImg";
 
 function PreviewRender(uid) {
-  const themeIdxValue = themeIdx.value;
+  // const themeIdxValue = themeIdx.value;
+  const themeIdxValue = uid2Src.get(uid).renderThemeIdx;
   let renderItem = {};
   switch (themeIdxValue) {
     case 1:
@@ -31,7 +33,8 @@ function PreviewRender(uid) {
 }
 
 async function SelectIcon(iconSrc) {
-  const themeIdxValue = themeIdx.value;
+  // const themeIdxValue = themeIdx.value;
+  const themeIdxValue = uid2Src.get(uid).renderThemeIdx;
   switch (themeIdxValue) {
     case 1:
       await SelectIconForMiTheme(iconSrc);

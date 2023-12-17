@@ -103,7 +103,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="30"
+        :total="20"
         @current-change="sizeChange"
         :disabled="parameterDisable"
         :current-page="themeIdx"
