@@ -34,6 +34,7 @@ function PreviewRender(uid) {
 
 async function SelectIcon(iconSrc) {
   // const themeIdxValue = themeIdx.value;
+  const uid = currentRenderUid.value;
   const themeIdxValue = uid2Src.get(uid).renderThemeIdx;
   switch (themeIdxValue) {
     case 1:
