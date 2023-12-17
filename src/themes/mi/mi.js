@@ -8,7 +8,7 @@ import {
   defineCanvasConfig,
 } from "@/store/defineCanvasConfig";
 import { defineIcon, uid2Src, pushToIconCache } from "@/store/defineImg";
-import { loadImg } from "@/utils/loadImg";
+import { getScale, loadImg } from "@/utils/loadImg";
 import { defineRender } from "@/store/defineRender";
 import { getIconSrc } from "@/utils/getIcon";
 import { readSettings } from "@/store/defineSettings";
@@ -18,38 +18,6 @@ import { defineThemeParameter } from "@/store/defineThemes";
 const { iconInfoConfig, verticalBarInfoConfig } = defineCanvasConfig();
 const { currentRenderUid, marshal, unMarshal } = defineRender();
 const { iconCache } = defineIcon();
-
-function getScale(img) {
-  let imgH = img.height;
-  let imgW = img.width;
-  const scale = imgH / imgW;
-
-  if (imgH > imgW) {
-    imgH = 600;
-    imgW = imgH / scale;
-  } else {
-    imgW = 800;
-    imgH = imgW * scale;
-  }
-  const scaleX = imgW / img.width;
-  const scaleY = imgH / img.height;
-
-  const { StageCenter } = defineCanvasConfig();
-  const posX = (StageCenter.value.x - imgW / 2) / scaleX;
-  const posY = (StageCenter.value.y - imgH / 2) / scaleY;
-
-  imgH = img.height;
-  imgW = img.width;
-
-  return {
-    imgH,
-    imgW,
-    scaleX,
-    scaleY,
-    posX,
-    posY,
-  };
-}
 
 function PreviewRenderMi(uid) {
   // uid, img, exifData, iconImg, factor
