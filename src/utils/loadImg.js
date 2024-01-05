@@ -17,7 +17,8 @@ function getScale(img) {
 
   const { StageCenter } = defineCanvasConfig();
   const posX = (StageCenter.value.x - imgW / 2) / scaleX;
-  const posY = (StageCenter.value.y - imgH / 2) / scaleY;
+  const posY = (StageCenter.value.y - (imgH * (1 + 0.1)) / 2) / scaleY;
+  // const posY = (StageCenter.value.y - imgH / 2) / scaleY;
 
   imgH = img.height;
   imgW = img.width;
