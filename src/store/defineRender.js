@@ -8,7 +8,7 @@ import { defineThemeParameter, factor } from "@/store/defineThemes";
 const currentRenderUid = ref(0);
 const resetBtn = ref(false);
 const parameterDisable = ref(true);
-const { whiteBoard, radius } = defineThemeParameter();
+const { whiteBoard, radius, blurMode } = defineThemeParameter();
 
 const {
   mainImgConfig,
@@ -21,6 +21,7 @@ const {
   iconInfoConfig,
   bannerRectConfig,
   backgroundRectConfig,
+  blurRectConfig,
   alignLineOneThirdConfig,
   alignLineMiddleConfig,
   alignLineTwoThirdConfig,
@@ -51,6 +52,7 @@ function marshal(oldVal) {
     currentRenderCanvasConfig.backgroundRectConfig,
     backgroundRectConfig,
   );
+  Object.assign(currentRenderCanvasConfig.blurRectConfig, blurRectConfig);
   currentRenderCanvasConfig.factor = factor.value;
 }
 
@@ -88,6 +90,7 @@ function unMarshal(newVal) {
     currentRenderCanvasConfig.backgroundRectConfig,
   );
   backgroundRectConfig.visible = whiteBoard.value;
+  Object.assign(blurRectConfig, currentRenderCanvasConfig.blurRectConfig);
   factor.value = currentRenderCanvasConfig.factor;
 
   const middle = bannerRectConfig.height * 0.5 + bannerRectConfig.y;

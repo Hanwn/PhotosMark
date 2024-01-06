@@ -4,7 +4,7 @@ import { defineThemeParameter } from "@/store/defineThemes";
 
 let padding = 100;
 let dist = 50;
-const { whiteBoard, radius } = defineThemeParameter();
+const { whiteBoard, radius, blurMode } = defineThemeParameter();
 
 function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
   let verticalMaxRadio = 1 / 2;
@@ -400,6 +400,7 @@ function genRenderItem(img, genMarkInfo, factor, imgScale) {
       y: posY,
       scaleX: 1,
       scaleY: 1,
+      shadowBlur: blurMode.value === true ? 100 : 0,
       cornerRadius: radius.value === true ? 50 : 0,
     },
     iconGroupConfig: {},
@@ -422,6 +423,18 @@ function genRenderItem(img, genMarkInfo, factor, imgScale) {
       scaleY: 1,
       scaleX: 1,
       visible: whiteBoard.value,
+    },
+    blurRectConfig: {
+      height: imgH,
+      width: imgW,
+      x: posX,
+      y: posY,
+      fill: "#ffffff",
+      shadowBlur: blurMode.value === true ? 100 : 0,
+      cornerRadius: radius.value === true ? 50 : 0,
+      scaleY: 1,
+      scaleX: 1,
+      visible: true,
     },
     deviceInfoConfig: genMarkInfo["left"]["deviceInfoConfig"],
     lensInfoConfig: genMarkInfo["left"]["lensInfoConfig"],
