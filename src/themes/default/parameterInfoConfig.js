@@ -124,7 +124,7 @@ function genRenderDefaultItem(img, markInfo, factor, imgScale) {
   const posX = imgScale.posX;
   const posY = imgScale.posY;
   const bannerRadio = factor * 0.3;
-  const { whiteBoard, radius } = defineThemeParameter();
+  const { whiteBoard, radius, blurMode } = defineThemeParameter();
 
   return {
     previewGroupConfig: {
@@ -159,6 +159,18 @@ function genRenderDefaultItem(img, markInfo, factor, imgScale) {
       scaleY: 1,
       scaleX: 1,
       visible: whiteBoard.value,
+    },
+    blurRectConfig: {
+      height: imgH,
+      width: imgW,
+      x: posX,
+      y: posY,
+      fill: "#ffffff",
+      shadowBlur: blurMode.value === true ? 100 : 0,
+      cornerRadius: radius.value === true ? 50 : 0,
+      scaleY: 1,
+      scaleX: 1,
+      visible: true,
     },
     deviceInfoConfig: markInfo.deviceConfig,
     lensInfoConfig: markInfo.lensConfig,

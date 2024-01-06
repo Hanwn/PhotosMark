@@ -18,7 +18,6 @@
                 ></v-rect>
               </v-group>
 
-              <v-image :config="mainImgConfig"></v-image>
               <v-group :config="{}">
                 <v-rect
                   :config="bannerRectConfig"
@@ -74,6 +73,8 @@
                     visible: false,
                   }"
                 ></v-circle>
+                <v-rect :config="blurRectConfig"></v-rect>
+                <v-image :config="mainImgConfig"></v-image>
               </v-group>
               <v-transformer ref="transformer" :config="transformerConfig" />
               <v-transformer
@@ -174,6 +175,7 @@ const {
   iconInfoConfig,
   bannerRectConfig,
   backgroundRectConfig,
+  blurRectConfig,
   transformerConfig,
   borderTransformerConfig,
   bannerTransformerConfig,

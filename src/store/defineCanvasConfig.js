@@ -53,6 +53,21 @@ const backgroundRectConfig = reactive({
   name: "backgroundRect",
 });
 
+const blurRectConfig = reactive({
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 0,
+  // fillEnabled: false,
+  fill: "transparent",
+  shadowBlur: 0,
+  scaleX: 1,
+  scaleY: 1,
+  visible: true,
+  cornerRadius: 0,
+  name: "blurRectConfig",
+});
+
 const deviceInfoConfig = reactive({
   x: 100,
   y: 0,
@@ -233,6 +248,7 @@ function defineCanvasConfig() {
     iconInfoConfig,
     bannerRectConfig,
     backgroundRectConfig,
+    blurRectConfig,
     transformerConfig,
     borderTransformerConfig,
     bannerTransformerConfig,

@@ -31,6 +31,7 @@ const {
   verticalBarInfoConfig,
   bannerRectConfig,
   mainImgConfig,
+  blurRectConfig,
 } = defineCanvasConfig();
 
 async function reset() {
@@ -55,7 +56,7 @@ onMounted(() => {
   fetchIconList();
 });
 
-const { whiteBoard, privacyMode, radius } = defineThemeParameter();
+const { whiteBoard, privacyMode, radius, blurMode } = defineThemeParameter();
 
 function selectOtherBanner() {
   backgroundRectConfig.visible = whiteBoard.value === true;
@@ -64,8 +65,21 @@ function selectOtherBanner() {
 function selectImgRadius() {
   if (radius.value) {
     mainImgConfig.cornerRadius = 50;
+    blurRectConfig.cornerRadius = 50;
   } else {
     mainImgConfig.cornerRadius = 0;
+    blurRectConfig.cornerRadius = 0;
+  }
+}
+
+function selectImgBlurMode() {
+  if (blurMode.value) {
+    // mainImgConfig.shadow
+    // mainImgConfig.shadowBlur = 100;
+    blurRectConfig.shadowBlur = 100;
+  } else {
+    // mainImgConfig.shadowBlur = 0;
+    blurRectConfig.shadowBlur = 0;
   }
 }
 </script>
@@ -111,6 +125,21 @@ function selectImgRadius() {
           :disabled="parameterDisable"
           v-model="radius"
           @change="selectImgRadius"
+        >
+        </el-checkbox>
+      </el-tooltip>
+
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="设置图片阴影"
+        placement="top"
+      >
+        <el-checkbox
+          label="阴影"
+          :disabled="parameterDisable"
+          v-model="blurMode"
+          @change="selectImgBlurMode"
         >
         </el-checkbox>
       </el-tooltip>

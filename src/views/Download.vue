@@ -23,6 +23,7 @@ const {
   timeInfoConfig,
   verticalBarInfoConfig,
   backgroundRectConfig,
+  blurRectConfig,
   iconInfoConfig,
   bannerRectConfig,
 } = defineCanvasConfig();
@@ -89,7 +90,6 @@ async function download() {
           <v-group>
             <v-rect :config="backgroundRectConfig"></v-rect>
           </v-group>
-          <v-image :config="mainImgConfig"></v-image>
           <v-group :config="{}">
             <v-rect :config="bannerRectConfig"></v-rect>
             <v-text :config="deviceInfoConfig"></v-text>
@@ -98,6 +98,8 @@ async function download() {
             <v-rect :config="verticalBarInfoConfig"></v-rect>
             <v-text :config="parameterInfoConfig"></v-text>
             <v-text :config="timeInfoConfig"></v-text>
+            <v-rect :config="blurRectConfig"></v-rect>
+            <v-image :config="mainImgConfig"></v-image>
           </v-group>
         </v-group>
       </v-layer>
