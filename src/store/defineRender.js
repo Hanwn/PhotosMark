@@ -67,11 +67,6 @@ function unMarshal(newVal) {
     currentRenderCanvasConfig.previewGroupConfig,
   );
   Object.assign(mainImgConfig, currentRenderCanvasConfig.mainImgConfig);
-  if (radius.value) {
-    mainImgConfig.cornerRadius = 50;
-  } else {
-    mainImgConfig.cornerRadius = 0;
-  }
   Object.assign(deviceInfoConfig, currentRenderCanvasConfig.deviceInfoConfig);
   Object.assign(iconInfoConfig, currentRenderCanvasConfig.iconInfoConfig);
   Object.assign(
@@ -91,6 +86,18 @@ function unMarshal(newVal) {
   );
   backgroundRectConfig.visible = whiteBoard.value;
   Object.assign(blurRectConfig, currentRenderCanvasConfig.blurRectConfig);
+  if (blurMode.value) {
+    blurRectConfig.shadowBlur = 100;
+  } else {
+    blurRectConfig.shadowBlur = 0;
+  }
+  if (radius.value) {
+    mainImgConfig.cornerRadius = 50;
+    blurRectConfig.cornerRadius = 50;
+  } else {
+    mainImgConfig.cornerRadius = 0;
+    blurRectConfig.cornerRadius = 0;
+  }
   factor.value = currentRenderCanvasConfig.factor;
 
   const middle = bannerRectConfig.height * 0.5 + bannerRectConfig.y;
