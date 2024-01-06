@@ -124,7 +124,7 @@ function genRenderDefaultItem(img, markInfo, factor, imgScale) {
   const posX = imgScale.posX;
   const posY = imgScale.posY;
   const bannerRadio = factor * 0.3;
-  const { whiteBoard } = defineThemeParameter();
+  const { whiteBoard, radius } = defineThemeParameter();
 
   return {
     previewGroupConfig: {
@@ -137,6 +137,7 @@ function genRenderDefaultItem(img, markInfo, factor, imgScale) {
       y: posY,
       scaleX: 1,
       scaleY: 1,
+      cornerRadius: radius.value === true ? 50 : 0,
     },
     iconGroupConfig: {},
     bannerRectConfig: {
