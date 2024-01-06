@@ -74,11 +74,8 @@ function selectImgRadius() {
 
 function selectImgBlurMode() {
   if (blurMode.value) {
-    // mainImgConfig.shadow
-    // mainImgConfig.shadowBlur = 100;
     blurRectConfig.shadowBlur = 100;
   } else {
-    // mainImgConfig.shadowBlur = 0;
     blurRectConfig.shadowBlur = 0;
   }
 }
