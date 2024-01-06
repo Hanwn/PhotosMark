@@ -8,6 +8,8 @@ import {
   allCanvasConfigMap,
   defineCanvasConfig,
 } from "@/store/defineCanvasConfig";
+import { request } from "@/apis/request";
+
 const downloadStage = ref();
 const disable = ref(true);
 const downloadLayer = ref();
@@ -68,6 +70,7 @@ async function download() {
   }
   // notifyDownloadSuccess()
   downloadStatusNotify("下载成功", "success");
+  request.post("api/downloadCnt", { downloadCnt: allCanvasConfigMap.size - 1 });
 }
 </script>
 

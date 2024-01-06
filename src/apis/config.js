@@ -3,6 +3,8 @@ import { requestNotifyStatus } from "@/utils/notify";
 
 const service = axios.create({
   baseURL: "https://photosmark.art/",
+  // debug url
+  // baseURL: "http://localhost:8080/",
   timeout: 5000,
 });
 
