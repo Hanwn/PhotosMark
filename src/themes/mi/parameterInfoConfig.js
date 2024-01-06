@@ -4,7 +4,7 @@ import { defineThemeParameter } from "@/store/defineThemes";
 
 let padding = 100;
 let dist = 50;
-const { whiteBoard } = defineThemeParameter();
+const { whiteBoard, radius } = defineThemeParameter();
 
 function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
   let verticalMaxRadio = 1 / 2;
@@ -400,6 +400,7 @@ function genRenderItem(img, genMarkInfo, factor, imgScale) {
       y: posY,
       scaleX: 1,
       scaleY: 1,
+      cornerRadius: radius.value === true ? 50 : 0,
     },
     iconGroupConfig: {},
     bannerRectConfig: {

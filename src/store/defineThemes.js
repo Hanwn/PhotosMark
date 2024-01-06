@@ -5,11 +5,13 @@ const factor = ref(0);
 
 const whiteBoard = ref(false);
 const privacyMode = ref(true);
+const radius = ref(false);
 
 function defineThemeParameter() {
   return {
     whiteBoard,
     privacyMode,
+    radius,
   };
 }
 

@@ -55,10 +55,18 @@ onMounted(() => {
   fetchIconList();
 });
 
-const { whiteBoard, privacyMode } = defineThemeParameter();
+const { whiteBoard, privacyMode, radius } = defineThemeParameter();
 
 function selectOtherBanner() {
   backgroundRectConfig.visible = whiteBoard.value === true;
+}
+
+function selectImgRadius() {
+  if (radius.value) {
+    mainImgConfig.cornerRadius = 50;
+  } else {
+    mainImgConfig.cornerRadius = 0;
+  }
 }
 </script>
 
@@ -90,6 +98,21 @@ function selectOtherBanner() {
           v-model="whiteBoard"
           @change="selectOtherBanner"
         />
+      </el-tooltip>
+
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="设置图片圆角"
+        placement="top"
+      >
+        <el-checkbox
+          label="圆角"
+          :disabled="parameterDisable"
+          v-model="radius"
+          @change="selectImgRadius"
+        >
+        </el-checkbox>
       </el-tooltip>
     </div>
     <div class="inputContainer">

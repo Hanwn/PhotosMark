@@ -8,7 +8,7 @@ import { defineThemeParameter, factor } from "@/store/defineThemes";
 const currentRenderUid = ref(0);
 const resetBtn = ref(false);
 const parameterDisable = ref(true);
-const { whiteBoard } = defineThemeParameter();
+const { whiteBoard, radius } = defineThemeParameter();
 
 const {
   mainImgConfig,
@@ -65,6 +65,11 @@ function unMarshal(newVal) {
     currentRenderCanvasConfig.previewGroupConfig,
   );
   Object.assign(mainImgConfig, currentRenderCanvasConfig.mainImgConfig);
+  if (radius.value) {
+    mainImgConfig.cornerRadius = 50;
+  } else {
+    mainImgConfig.cornerRadius = 0;
+  }
   Object.assign(deviceInfoConfig, currentRenderCanvasConfig.deviceInfoConfig);
   Object.assign(iconInfoConfig, currentRenderCanvasConfig.iconInfoConfig);
   Object.assign(

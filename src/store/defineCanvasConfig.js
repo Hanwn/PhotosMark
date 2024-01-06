@@ -25,6 +25,7 @@ const mainImgConfig = reactive({
   y: 0,
   scaleX: 1,
   scaleY: 1,
+  cornerRadius: 0,
 });
 
 const iconGroupConfig = reactive({});
