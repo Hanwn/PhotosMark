@@ -71,6 +71,18 @@ async function SelectIconForDefault(iconSrc) {
   iconInfoConfig.width = targetIconWidth;
 }
 
-function SlideFactor(factorValue) {}
+function SlideFactorForDefault(factorValue) {
+  const uid = currentRenderUid.value;
+  const fileObj = uid2Src.get(uid);
+  const img = fileObj.img;
+  const exifData = fileObj.exif;
+  const iconName = getIconSrc(exifData);
+  const iconSrc = readSettings().value.iconPrefix + iconName;
+  const iconImg = iconCache.get(iconSrc);
+  const imgScaleInfo = getScale(img);
+  const factor = factorValue;
+  const markInfo = getDefaultMarkInfo(iconImg, factor, imgScaleInfo);
+  return genRenderDefaultItem(img, markInfo, factor, imgScaleInfo);
+}
 
-export { PreviewRenderDefault, SelectIconForDefault, SlideFactor };
+export { PreviewRenderDefault, SelectIconForDefault, SlideFactorForDefault };
