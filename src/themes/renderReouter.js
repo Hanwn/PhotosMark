@@ -9,10 +9,6 @@ import {
   SelectIconForDefault,
   SlideFactorForDefault,
 } from "@/themes/default/default";
-import {
-  PreviewRenderBgColorTheme,
-  SelectIconForBgColorTheme,
-} from "@/themes/bgColor/bgColor";
 const { currentRenderUid, marshal, unMarshal } = defineRender();
 import { allCanvasConfigMap } from "@/store/defineCanvasConfig";
 import { defineRender } from "@/store/defineRender";
@@ -29,9 +25,6 @@ function PreviewRender(uid) {
     case 2:
       renderItem = PreviewRenderDefault(uid);
       // PreviewRenderDefault(uid, img, exifData, iconImg)
-      break;
-    case 3:
-      renderItem = PreviewRenderBgColorTheme(uid);
       break;
     default:
       PreviewRenderMi(uid);
@@ -51,8 +44,6 @@ async function SelectIcon(iconSrc) {
     case 2:
       await SelectIconForDefault(iconSrc);
       break;
-    case 3:
-      await SelectIconForBgColorTheme(iconSrc);
   }
 }
 
