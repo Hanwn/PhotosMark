@@ -1,16 +1,25 @@
 <script setup>
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import PreviewCard from "@/views/PreviewCard.vue";
 import PhotoSlide from "@/views/PhotoSlide.vue";
 import ParameterArea from "@/views/ParameterArea.vue";
 import Download from "@/views/Download.vue";
 import Header from "@/views/Header.vue";
 import Footer from "@/views/Footer.vue";
+import LayoutWorkspace from "@/views/LayoutWorkspace.vue";
+
+const activeTool = ref(window.location.hash === "#/layout" ? "layout" : "watermark");
+function syncTool() {
+  activeTool.value = window.location.hash === "#/layout" ? "layout" : "watermark";
+}
+onMounted(() => window.addEventListener("hashchange", syncTool));
+onBeforeUnmount(() => window.removeEventListener("hashchange", syncTool));
 </script>
 
 <template>
   <div class="container">
-    <Header />
-    <main class="workspace">
+    <Header :active-tool="activeTool" />
+    <main v-show="activeTool === 'watermark'" class="workspace">
       <aside class="photo-panel" aria-label="照片库">
         <div class="library-heading"><div><span class="eyebrow">LIBRARY</span><h2>照片库</h2></div><span class="library-format">JPG</span></div>
         <PhotoSlide />
@@ -24,6 +33,7 @@ import Footer from "@/views/Footer.vue";
         <Download />
       </aside>
     </main>
+    <LayoutWorkspace v-show="activeTool === 'layout'" />
     <div class="footer-wrap">
       <Footer />
     </div>

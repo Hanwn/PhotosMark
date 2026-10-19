@@ -10,7 +10,7 @@
 
 **Live demo:** [hanwn.github.io/PhotosMark](https://hanwn.github.io/PhotosMark/)
 
-PhotosMark is a browser-based photo watermark editor. It reads, edits, and exports photos locally without a backend service.
+PhotosMark is a browser-based photo watermark and layout editor. It reads, edits, and exports photos locally without a backend service.
 
 ## Features
 
@@ -19,12 +19,15 @@ PhotosMark is a browser-based photo watermark editor. It reads, edits, and expor
 - Drag text, logos, and dividers on the canvas with alignment guides and snapping.
 - Adjust borders, logo size, and typography, and switch between light and dark modes.
 - Add themes through files in `src/themes`; see the [theme guide](src/themes/README.md).
+- Arrange 2–9 photos with twelve layout presets, including vertical and diagonal strips, adjustable aspect ratio, spacing, and background color, then export a high-resolution JPG sized from the source photos.
 
 ## Usage
 
 1. Click **Add photos** (添加照片) on the left and choose one or more JPG files.
 2. Choose a theme below the preview and edit settings in the Appearance, Text, and Logo tabs on the right.
 3. Drag watermark elements on the canvas, then click **Download all photos** (下载全部照片). Your browser may ask you to allow multiple downloads.
+
+To make a photo layout, choose **Photo layout** (照片排版) in the header and add 2–9 JPG, PNG, or WebP images. Choose a layout preset; drag within a cell to pan the photo or drag it to another cell to swap positions. Select a photo to adjust its zoom and crop position before downloading the finished JPG.
 
 ## Local development
 
