@@ -32,7 +32,7 @@ function getMarkInfo(exif, image, icon, factor, scale) {
     width: "auto",
     rightAligned,
     centerAligned: false,
-    offsetX: 0,
+    offsetX: rightAligned ? measureTextWidth(value || "", fontSize, style) : 0,
     fontSize,
     fill,
     fontStyle: style,

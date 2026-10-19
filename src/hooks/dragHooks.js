@@ -19,8 +19,6 @@ const {
 } = defineCanvasConfig();
 
 const editable = {
-  mainImg: mainImgConfig,
-  blurRectConfig,
   deviceInfo: deviceInfoConfig,
   lensInfo: lensInfoConfig,
   iconInfo: iconInfoConfig,

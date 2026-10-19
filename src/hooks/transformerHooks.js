@@ -45,7 +45,7 @@ function handleStageMouseDown(e) {
   const borderTransformerNode = borderTransformer.value.getNode();
   const bannerTransformerNode = bannerTransformer.value.getNode();
   const backgroundTransformerNode = backgroundTransformer.value.getNode();
-  if (name.length === 0) {
+  if (name.length === 0 || name === "mainImg" || name === "blurRectConfig") {
     transformerNode.nodes([]);
     borderTransformerNode.nodes([]);
     bannerTransformerNode.nodes([]);

@@ -69,8 +69,8 @@
                     visible: false,
                   }"
                 ></v-circle>
-                <v-rect :config="blurRectConfig" @pointermove="setDragCursor"></v-rect>
-                <v-image :config="mainImgConfig" @pointermove="setDragCursor"></v-image>
+                <v-rect :config="blurRectConfig" @pointermove="resetDragCursor"></v-rect>
+                <v-image :config="mainImgConfig" @pointermove="resetDragCursor"></v-image>
               </v-group>
               <v-transformer ref="transformer" :config="transformerConfig" />
               <v-transformer

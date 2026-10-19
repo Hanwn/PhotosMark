@@ -1,6 +1,7 @@
 import { defineThemeParameter } from "@/store/defineThemes";
 import { defineCanvasConfig } from "@/store/defineCanvasConfig";
 import { fitLogo } from "@/themes/icons";
+import { measureTextWidth } from "@/utils/textMetrics";
 
 const {
   parameterInfoConfig,
@@ -53,7 +54,7 @@ function getParameterConfig(factor, imgScale, iconConfig) {
     width: "auto",
     rightAligned: false,
     centerAligned: true,
-    offsetX: 0,
+    offsetX: measureTextWidth(label, fontSize, parameterInfoConfig.fontStyle, parameterInfoConfig.fontFamily) / 2,
     fill: parameterInfoConfig.fill,
     fontStyle: parameterInfoConfig.fontStyle,
     offsetY: parameterInfoConfig.offsetY,
