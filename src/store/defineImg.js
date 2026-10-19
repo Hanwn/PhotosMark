@@ -1,5 +1,4 @@
-import { ref, reactive, computed, watch } from "vue";
-import { defineRender } from "@/store/defineRender";
+import { ref, reactive } from "vue";
 
 const imgSrcList = ref([]);
 /*

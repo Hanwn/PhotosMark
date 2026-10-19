@@ -2,6 +2,7 @@ import { ref, watch, watchEffect } from "vue";
 import {
   allCanvasConfigMap,
   defineCanvasConfig,
+  syncBannerWidthToFrame,
 } from "@/store/defineCanvasConfig";
 import { defineThemeParameter, factor } from "@/store/defineThemes";
 
@@ -62,6 +63,9 @@ function unMarshal(newVal) {
     return;
   }
   const currentRenderCanvasConfig = allCanvasConfigMap.get(newVal);
+  whiteBoard.value = Boolean(currentRenderCanvasConfig.backgroundRectConfig.visible);
+  radius.value = Boolean(currentRenderCanvasConfig.mainImgConfig.cornerRadius);
+  blurMode.value = Boolean(currentRenderCanvasConfig.blurRectConfig.shadowBlur);
   Object.assign(
     previewGroupConfig,
     currentRenderCanvasConfig.previewGroupConfig,
@@ -85,11 +89,14 @@ function unMarshal(newVal) {
     currentRenderCanvasConfig.backgroundRectConfig,
   );
   backgroundRectConfig.visible = whiteBoard.value;
+  syncBannerWidthToFrame(whiteBoard.value);
   Object.assign(blurRectConfig, currentRenderCanvasConfig.blurRectConfig);
   if (blurMode.value) {
     blurRectConfig.shadowBlur = 100;
+    mainImgConfig.shadowBlur = 100;
   } else {
     blurRectConfig.shadowBlur = 0;
+    mainImgConfig.shadowBlur = 0;
   }
   if (radius.value) {
     mainImgConfig.cornerRadius = 50;

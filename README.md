@@ -1,8 +1,6 @@
 # PHOTO MARK
 
-<img src="https://photosmark.art/logo/logo.svg" alt="" style="height: 60px !important;width: 217px !important;" >
-<br>
-<img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D">
+Vue 3 + Konva 构建的纯前端照片水印工具。界面采用 shadcn 风格的本地组件样式。
 
 ## :wave:Introduce
 
@@ -12,8 +10,8 @@
 ## :sparkles:Feature
 
 - 多图片生成，批量下载
-- 纯前端实现，杜绝隐私泄露
-- 原图下载，无损细节
+- 纯前端实现，照片在浏览器中处理
+- 按原始尺寸导出 JPEG，导出文件不包含原图 EXIF
 - 可视化操纵，直观简单
 - 支持多种设备
   - Sony
@@ -28,7 +26,26 @@
 - [ ] 优化移动端布局
 - [ ] 支持icon替换
 - [ ] 支持更多主题
-- [ ] 支持私有化部署
+- [x] 支持静态资源私有化部署
+
+## 本地运行
+
+```bash
+npm ci
+npm run dev
+```
+
+## 部署到 Cloudflare Workers
+
+项目不需要后端。图标和界面资源都随构建产物一起部署，照片只在用户浏览器内读取和导出。
+
+```bash
+npm ci
+npm run build
+npx wrangler deploy
+```
+
+`wrangler.toml` 已配置 `dist` 为 Workers 静态资源目录。首次部署需要登录 Cloudflare 账户。
 
 
 

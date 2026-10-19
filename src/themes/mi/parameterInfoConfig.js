@@ -1,449 +1,124 @@
-import { calcDeviceFontSize, calcRenderFontSize } from "@/utils/calcFontSize";
-import { defineCanvasConfig } from "@/store/defineCanvasConfig";
 import { defineThemeParameter } from "@/store/defineThemes";
+import { measureTextWidth } from "@/utils/textMetrics";
+import { fitLogo } from "@/themes/icons";
 
-let padding = 100;
-let dist = 50;
-const { whiteBoard, radius, blurMode } = defineThemeParameter();
+// Theme positions are proportions of the source photo. Only this layout function
+// needs to know about image dimensions; dragged positions remain in canvas state.
+function getMarkInfo(exif, image, icon, factor, scale) {
+  const { imgW: width, imgH: height, posX: x, posY: y } = scale;
+  const bannerY = y + height;
+  const bannerH = height * factor;
+  const pad = width * 0.02;
+  const gap = width * 0.018;
+  const barW = 20;
+  const { width: iconW, height: iconH } = fitLogo(icon, width * 0.16, bannerH * 0.46);
+  const largeFont = Math.max(1, Math.round(bannerH * 0.2));
+  const smallFont = Math.max(1, Math.round(bannerH * 0.14));
+  const topY = bannerY + bannerH / 3 - largeFont / 2;
+  const bottomY = bannerY + bannerH * 2 / 3 - smallFont / 2;
+  const rightEdge = x + width - pad;
+  const parameterText = exif.Parameter ?? `${exif.FocalLength}mm f/${exif.F} 1/${exif.S} ISO${exif.ISO}`;
+  const rightTextWidth = Math.max(
+    measureTextWidth(parameterText, largeFont, "bold"),
+    measureTextWidth(exif.Time, smallFont),
+  );
+  const barX = Math.max(x + pad + iconW + gap, rightEdge - rightTextWidth - gap - barW);
+  const iconX = barX - gap - iconW;
 
-function calcIconSize(iconWidth, iconHeight, rectH, rectW, maxLen) {
-  let verticalMaxRadio = 1 / 2;
-  const horizonMaxRadio = 1 / 6;
-
-  if (iconWidth / iconHeight >= 3 || iconHeight / iconWidth >= 3) {
-    verticalMaxRadio = 1 / 4;
-  }
-
-  let iconImgHeight = rectH * verticalMaxRadio;
-  const scale = iconWidth / iconHeight;
-  let iconImgWidth = iconImgHeight * scale;
-  const maxIconWidth =
-    maxLen > rectW * horizonMaxRadio ? rectW * horizonMaxRadio : maxLen;
-  if (iconImgWidth > maxIconWidth) {
-    iconImgWidth = maxIconWidth;
-    iconImgHeight = maxIconWidth / scale;
-  }
-
-  return {
-    iconImgWidth: iconImgWidth,
-    iconImgHeight: iconImgHeight,
-    scaleX: iconImgWidth / iconWidth,
-    scaleY: iconImgHeight / iconHeight,
-  };
-}
-
-function getTimeInfoConfig(
-  exifData,
-  middle,
-  rectH,
-  parameterInfoConfig,
-  selectIconMode,
-) {
-  const { timeInfoConfig } = defineCanvasConfig();
-  let timeInfoConfigFontSize = timeInfoConfig.fontSize;
-  let timeInfoConfigFontBold = timeInfoConfig.fontStyle.includes("bold");
-
-  let fontInfo = {};
-  if (selectIconMode === true) {
-    fontInfo = calcRenderFontSize(exifData.Time, timeInfoConfigFontSize);
-  } else {
-    fontInfo = calcDeviceFontSize(
-      exifData.Time,
-      timeInfoConfigFontSize,
-      rectH,
-      timeInfoConfigFontBold,
-    );
-  }
-
-  const fontSize = fontInfo.fontSize;
-  const textSize = fontInfo.textSize;
-  return {
-    text: exifData.Time,
-    x: parameterInfoConfig.x,
-    y: middle + rectH / 3,
-    offsetY: textSize.height / 2,
-    fontSize: fontSize,
-    fontStyle: "",
-    fill: "gray",
-    draggable: true,
-    name: "timeInfo",
+  const text = (value, textX, textY, fontSize, fill, style, name, rightAligned = false) => ({
+    text: value || "",
+    x: textX,
+    y: textY,
+    width: "auto",
+    rightAligned,
+    centerAligned: false,
+    offsetX: 0,
+    fontSize,
+    fill,
+    fontStyle: style,
+    name,
+    draggable: false,
+    visible: true,
+    wrap: "none",
     scaleX: 1,
     scaleY: 1,
-    visible: true,
-  };
-}
-
-function getVerticalBarInfoConfig(
-  parameterInfoConfig,
-  rectH,
-  imgH,
-  imgScaleInfo,
-) {
-  dist = imgH * 0.02;
-  const posY = imgScaleInfo.posY;
-  const verticalBarWidth = imgH * 0.001;
-  const radio = 0.5;
-  const offset = (rectH * (1 - radio)) / 2;
-  return {
-    x: parameterInfoConfig.x - verticalBarWidth - dist,
-    y: posY + imgH + offset,
-    height: rectH * radio,
-    width: verticalBarWidth,
-    fill: "#808080",
-    draggable: true,
-    name: "verticalBarInfo",
-    scaleX: 1,
-    scaleY: 1,
-    visible: true,
-  };
-}
-
-function getIconInfoConfig(
-  verticalBarInfoConfigX,
-  maxLensEndPos,
-  iconImg,
-  rectH,
-  rectW,
-  imgH,
-  imgScaleInfo,
-) {
-  const posY = imgScaleInfo.posY;
-  const iconMaxLen = verticalBarInfoConfigX - dist - maxLensEndPos;
-  const calcIconData = calcIconSize(
-    iconImg.width,
-    iconImg.height,
-    rectH,
-    rectW,
-    iconMaxLen,
-  );
-  return {
-    x: verticalBarInfoConfigX - dist - calcIconData.iconImgWidth,
-    image: iconImg,
-    y: posY + imgH + (rectH - calcIconData.iconImgHeight) / 2,
-    height: calcIconData.iconImgHeight,
-    width: calcIconData.iconImgWidth,
-    draggable: true,
-    name: "iconInfo",
-    scaleX: 1,
-    scaleY: 1,
-    visible: true,
-  };
-}
-
-function getParameterInfoConfig(
-  exifData,
-  padding,
-  middle,
-  rightX,
-  rectH,
-  selectIconMode,
-) {
-  let parameterText =
-    exifData.FocalLength +
-    "mm f/" +
-    exifData.F +
-    " 1/" +
-    exifData.S +
-    " ISO" +
-    exifData.ISO;
-  if (exifData.Parameter !== null) {
-    parameterText = exifData.Parameter;
-  }
-  const { parameterInfoConfig } = defineCanvasConfig();
-  let parameterInfoConfigFontSize = parameterInfoConfig.fontSize;
-  let parameterInfoConfigFontBold =
-    parameterInfoConfig.fontStyle.includes("bold");
-
-  let fontInfo = {};
-  if (selectIconMode === true) {
-    fontInfo = calcRenderFontSize(parameterText, parameterInfoConfigFontSize);
-  } else {
-    fontInfo = calcDeviceFontSize(
-      parameterText,
-      parameterInfoConfigFontSize,
-      rectH,
-      parameterInfoConfigFontBold,
-    );
-  }
-
-  const fontSize = fontInfo.fontSize;
-  const textSize = fontInfo.textSize;
-  return {
-    text: parameterText,
-    x: rightX - textSize.width - padding,
-    y: middle,
-    fill: "#000000",
-    fontStyle: "bold",
-    offsetY: textSize.height / 2,
-    fontSize: fontSize,
-    draggable: true,
-    name: "parameterInfo",
-    scaleX: 1,
-    scaleY: 1,
-    visible: true,
-  };
-}
-
-function getLensInfo(exifData, padding, middle, rectH, selectIconMode) {
-  const { lensInfoConfig } = defineCanvasConfig();
-  let lensInfoConfigFontSize = lensInfoConfig.fontSize;
-  let lensInfoConfigFontBold = lensInfoConfig.fontStyle.includes("bold");
-
-  let fontInfo = {};
-  if (selectIconMode === true) {
-    fontInfo = calcRenderFontSize(exifData.LEN, lensInfoConfigFontSize);
-  } else {
-    fontInfo = calcDeviceFontSize(
-      exifData.LEN,
-      lensInfoConfigFontSize,
-      rectH,
-      lensInfoConfigFontBold,
-    );
-  }
-
-  const fontSize = fontInfo.fontSize;
-  const lensTextSize = fontInfo.textSize;
-
-  const LensInfoConfig = {
-    text: exifData.LEN,
-    x: padding,
-    y: middle + rectH / 3,
-    offsetY: lensTextSize.height / 2,
-    fontSize: fontSize,
-    fill: "#808080",
-    draggable: true,
-    scaleX: 1,
-    scaleY: 1,
-    name: "lensInfo",
-    visible: true,
-  };
-  return {
-    LensInfoConfig,
-    lensTextSize,
-  };
-}
-
-function getDeviceInfoConfig(padding, middle, exifData, rectH, selectIconMode) {
-  const { deviceInfoConfig } = defineCanvasConfig();
-  let deviceInfoConfigFontSize = deviceInfoConfig.fontSize;
-  let deviceInfoConfigFontBold = deviceInfoConfig.fontStyle.includes("bold");
-  let fontInfo = {};
-  if (selectIconMode === true) {
-    fontInfo = calcRenderFontSize(exifData.Model, deviceInfoConfigFontSize);
-  } else {
-    fontInfo = calcDeviceFontSize(
-      exifData.Model,
-      deviceInfoConfigFontSize,
-      rectH,
-      deviceInfoConfigFontBold,
-    );
-  }
-  let fontSize = fontInfo.fontSize;
-  let textSize = fontInfo.textSize;
-
-  const DeviceInfoConfig = {
-    text: exifData.Model,
-    x: padding,
-    y: middle,
-    fill: "#000000",
-    fontStyle: "bold",
-    fontSize: fontSize,
-    offsetY: textSize.height / 2,
-    scaleX: 1,
-    scaleY: 1,
-    draggable: true,
-    name: "deviceInfo",
-    visible: true,
-  };
-  return { DeviceInfoConfig, textSize };
-}
-
-function calcMaxLensEndPos() {}
-
-function getLeftInfo(padding, middle, exifData, rectH, selectIconMode) {
-  const { DeviceInfoConfig, textSize } = getDeviceInfoConfig(
-    padding,
-    middle,
-    exifData,
-    rectH,
-    selectIconMode,
-  );
-  const deviceInfoEndPos = DeviceInfoConfig.x + textSize.width;
-
-  const { LensInfoConfig, lensTextSize } = getLensInfo(
-    exifData,
-    padding,
-    middle,
-    rectH,
-    selectIconMode,
-  );
-  const lensInfoEndPos = LensInfoConfig.x + lensTextSize.width;
-
-  const maxLensEndPos =
-    (deviceInfoEndPos > lensInfoEndPos ? deviceInfoEndPos : lensInfoEndPos) +
-    30;
+  });
 
   return {
-    deviceInfoConfig: DeviceInfoConfig,
-    lensInfoConfig: LensInfoConfig,
-    maxLensEndPos: maxLensEndPos,
-  };
-}
-
-function getRightInfo(
-  exifData,
-  padding,
-  middle,
-  rectW,
-  rectH,
-  imgH,
-  iconImg,
-  maxLensEndPos,
-  imgScaleInfo,
-) {
-  const rightX = imgScaleInfo.posX + imgScaleInfo.imgW;
-  const parameterInfoConfig = getParameterInfoConfig(
-    exifData,
-    padding,
-    middle,
-    rightX,
-    rectH,
-    imgScaleInfo,
-  );
-  const timeInfoConfig = getTimeInfoConfig(
-    exifData,
-    middle,
-    rectH,
-    parameterInfoConfig,
-    imgScaleInfo,
-  );
-  const verticalBarInfoConfig = getVerticalBarInfoConfig(
-    parameterInfoConfig,
-    rectH,
-    imgH,
-    imgScaleInfo,
-  );
-  const iconInfoConfig = getIconInfoConfig(
-    verticalBarInfoConfig.x,
-    maxLensEndPos,
-    iconImg,
-    rectH,
-    rectW,
-    imgH,
-    imgScaleInfo,
-  );
-  return {
-    parameterInfoConfig: parameterInfoConfig,
-    timeInfoConfig: timeInfoConfig,
-    verticalBarInfoConfig: verticalBarInfoConfig,
-    iconInfoConfig: iconInfoConfig,
-  };
-}
-
-function getMarkInfo(
-  exifData,
-  img,
-  iconImg,
-  factor,
-  imgScaleInfo,
-  selectIconMode,
-) {
-  const imgH = imgScaleInfo.imgH;
-  const imgW = imgScaleInfo.imgW;
-
-  const rectH = imgH * factor;
-  const rectW = imgW;
-
-  const middle = imgScaleInfo.posY + imgH + rectH / 3;
-  // const imgH = img.height;
-  padding = imgW * 0.02;
-  const leftX = imgScaleInfo.posX + padding;
-
-  const leftInfo = getLeftInfo(leftX, middle, exifData, rectH, selectIconMode);
-  const rightInfo = getRightInfo(
-    exifData,
-    padding,
-    middle,
-    rectW,
-    rectH,
-    imgH,
-    iconImg,
-    leftInfo["maxLensEndPos"],
-    imgScaleInfo,
-    selectIconMode,
-  );
-  return {
-    left: leftInfo,
-    right: rightInfo,
-  };
-}
-
-function genRenderItem(img, genMarkInfo, factor, imgScale) {
-  const imgH = imgScale.imgH;
-  const imgW = imgScale.imgW;
-  const scaleX = imgScale.scaleX;
-  const scaleY = imgScale.scaleY;
-
-  const posX = imgScale.posX;
-  const posY = imgScale.posY;
-
-  const bannerRadio = factor * 0.15;
-
-  return {
-    previewGroupConfig: {
-      scaleY: scaleY,
-      scaleX: scaleX,
+    left: {
+      deviceInfoConfig: text(exif.Model, x + pad, topY, largeFont, "#000000", "bold", "deviceInfo"),
+      lensInfoConfig: text(exif.LEN, x + pad, bottomY, smallFont, "#808080", "normal", "lensInfo"),
     },
+    right: {
+      iconInfoConfig: {
+        image: icon,
+        x: iconX,
+        y: bannerY + (bannerH - iconH) / 2,
+        width: iconW,
+        height: iconH,
+        draggable: false,
+        name: "iconInfo",
+        visible: true,
+        scaleX: 1,
+        scaleY: 1,
+      },
+      verticalBarInfoConfig: {
+        x: barX,
+        y: bannerY + bannerH * 0.25,
+        width: barW,
+        height: bannerH * 0.5,
+        fill: "#808080",
+        name: "verticalBarInfo",
+        visible: true,
+        draggable: false,
+        scaleX: 1,
+        scaleY: 1,
+      },
+      parameterInfoConfig: text(parameterText, rightEdge, topY, largeFont, "#000000", "bold", "parameterInfo", true),
+      timeInfoConfig: text(exif.Time, rightEdge, bottomY, smallFont, "#808080", "normal", "timeInfo", true),
+    },
+  };
+}
+
+function genRenderItem(img, mark, factor, scale) {
+  const { whiteBoard, radius, blurMode } = defineThemeParameter();
+  const { imgW: width, imgH: height, posX: x, posY: y, scaleX, scaleY } = scale;
+  const bannerH = height * factor;
+  const border = bannerH * 0.15;
+  return {
+    previewGroupConfig: { scaleX, scaleY },
     mainImgConfig: {
-      image: img,
-      x: posX,
-      y: posY,
-      scaleX: 1,
-      scaleY: 1,
-      shadowBlur: blurMode.value === true ? 100 : 0,
-      cornerRadius: radius.value === true ? 50 : 0,
+      image: img, x, y, scaleX: 1, scaleY: 1,
+      name: "mainImg", draggable: false,
+      shadowBlur: blurMode.value ? 100 : 0,
+      cornerRadius: radius.value ? 50 : 0,
     },
-    iconGroupConfig: {},
     bannerRectConfig: {
-      height: imgH * factor,
-      width: imgW,
-      x: posX,
-      y: imgH + posY,
-      // fill: "#f08080",
-      fill: "#ffffff",
-      scaleY: 1,
-      scaleX: 1,
+      x: whiteBoard.value ? x - border : x, y: y + height,
+      width: whiteBoard.value ? width + border * 2 : width,
+      height: bannerH, fill: "#ffffff", scaleX: 1, scaleY: 1, name: "bannerRect", draggable: false,
     },
     backgroundRectConfig: {
-      height: imgH * (1 + factor + bannerRadio),
-      width: imgW + imgH * bannerRadio * 2,
-      x: posX - imgH * bannerRadio,
-      y: posY - imgH * bannerRadio,
-      fill: "#ffffff",
-      scaleY: 1,
-      scaleX: 1,
-      visible: whiteBoard.value,
+      x: x - border, y: y - border,
+      width: width + border * 2, height: height + border + bannerH,
+      fill: "#ffffff", visible: whiteBoard.value, scaleX: 1, scaleY: 1,
+      name: "backgroundRect", draggable: false,
     },
     blurRectConfig: {
-      height: imgH,
-      width: imgW,
-      x: posX,
-      y: posY,
-      fill: "#ffffff",
-      shadowBlur: blurMode.value === true ? 100 : 0,
-      cornerRadius: radius.value === true ? 50 : 0,
-      scaleY: 1,
-      scaleX: 1,
-      visible: true,
+      x, y, width, height, fill: "#ffffff", visible: true,
+      name: "blurRectConfig", draggable: false,
+      shadowBlur: blurMode.value ? 100 : 0,
+      cornerRadius: radius.value ? 50 : 0,
+      scaleX: 1, scaleY: 1,
     },
-    deviceInfoConfig: genMarkInfo["left"]["deviceInfoConfig"],
-    lensInfoConfig: genMarkInfo["left"]["lensInfoConfig"],
-    iconInfoConfig: genMarkInfo["right"]["iconInfoConfig"],
-    verticalBarInfoConfig: genMarkInfo["right"]["verticalBarInfoConfig"],
-    parameterInfoConfig: genMarkInfo["right"]["parameterInfoConfig"],
-    timeInfoConfig: genMarkInfo["right"]["timeInfoConfig"],
-    factor: factor,
+    deviceInfoConfig: mark.left.deviceInfoConfig,
+    lensInfoConfig: mark.left.lensInfoConfig,
+    iconInfoConfig: mark.right.iconInfoConfig,
+    verticalBarInfoConfig: mark.right.verticalBarInfoConfig,
+    parameterInfoConfig: mark.right.parameterInfoConfig,
+    timeInfoConfig: mark.right.timeInfoConfig,
+    factor,
   };
 }
 
-export { getMarkInfo, genRenderItem, getIconInfoConfig };
+export { getMarkInfo, genRenderItem };

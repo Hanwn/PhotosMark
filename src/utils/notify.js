@@ -1,19 +1,13 @@
-import "element-plus/es/components/notification/style/css";
-import "element-plus/es/components/message/style/css";
-import { ElMessage, ElNotification } from "element-plus";
+function showNotice(message, type = "info") {
+  const notice = document.createElement("div");
+  notice.className = `app-toast app-toast-${type}`;
+  notice.setAttribute("role", type === "error" ? "alert" : "status");
+  notice.textContent = message;
+  document.body.append(notice);
+  setTimeout(() => notice.remove(), 4000);
+}
 
-const downloadStatusNotify = (title, notifyType) => {
-  ElNotification({
-    title: title,
-    type: notifyType,
-  });
-};
-
-const requestNotifyStatus = (msg, notifyType) => {
-  ElMessage({
-    message: msg,
-    type: notifyType,
-  });
-};
+const downloadStatusNotify = (message, type) => showNotice(message, type);
+const requestNotifyStatus = (message, type) => showNotice(message, type);
 
 export { downloadStatusNotify, requestNotifyStatus };

@@ -28,7 +28,7 @@ function PreviewRenderDefault(uid) {
   const markInfo = getDefaultMarkInfo(iconImg, factor, imgScaleInfo);
   return genRenderDefaultItem(img, markInfo, factor, imgScaleInfo);
 }
-async function SelectIconForDefault(iconSrc) {
+async function SelectIconForDefault(iconSrc, options) {
   const uid = currentRenderUid.value;
   const uploadFile = uid2Src.get(currentRenderUid.value);
 
@@ -49,8 +49,9 @@ async function SelectIconForDefault(iconSrc) {
 
   const imgScaleInfo = getScale(img);
   const genMarkInfo = getDefaultMarkInfo(iconImg, factor, imgScaleInfo);
-  const targetIconWidth = genMarkInfo.iconConfig.width;
-  const targetIconHeight = genMarkInfo.iconConfig.height;
+  const iconSize = (options?.iconSize ?? 100) / 100;
+  const targetIconWidth = genMarkInfo.iconConfig.width * iconSize;
+  const targetIconHeight = genMarkInfo.iconConfig.height * iconSize;
 
   const iconHeight = iconInfoConfig.height;
   const iconWidth = iconInfoConfig.width;
@@ -61,8 +62,8 @@ async function SelectIconForDefault(iconSrc) {
   let targetIconY = iconCenterY - targetIconHeight / 2;
 
   if (isNaN(targetIconX) || isNaN(targetIconY)) {
-    targetIconX = genMarkInfo.iconInfoConfig.x;
-    targetIconY = genMarkInfo.iconInfoConfig.y;
+    targetIconX = genMarkInfo.iconConfig.x;
+    targetIconY = genMarkInfo.iconConfig.y;
   }
   iconInfoConfig.x = targetIconX;
   iconInfoConfig.y = targetIconY;

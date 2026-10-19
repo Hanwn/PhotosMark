@@ -1,399 +1,106 @@
 <script setup>
+import { computed, ref } from "vue";
 import { defineRender } from "@/store/defineRender";
-import { defineIcon, uid2Src, pushToIconCache } from "@/store/defineImg";
-import {
-  Aim,
-  Calendar,
-  Camera,
-  Delete,
-  InfoFilled,
-  Refresh,
-} from "@element-plus/icons-vue";
-import { onMounted, ref, watch } from "vue";
-import {
-  allCanvasConfigMap,
-  defineCanvasConfig,
-} from "@/store/defineCanvasConfig";
-import { PreviewRender, SelectIcon, SlideFactor } from "@/themes/renderReouter";
-import { defineThemeParameter, factor } from "@/store/defineThemes";
-import { useParameterAreaOnMountedHook } from "@/hooks/defineOnMountedHook";
+import { uid2Src } from "@/store/defineImg";
+import { allCanvasConfigMap, defineCanvasConfig } from "@/store/defineCanvasConfig";
+import { PreviewRender, SelectIcon } from "@/themes/renderReouter";
+import { requestNotifyStatus } from "@/utils/notify";
+import { getTheme, getThemeOptions } from "@/themes/registry";
+import { themeIdx } from "@/store/defineThemes";
+import ThemeOptionControl from "@/themes/ThemeOptionControl.vue";
 
-const { iconCache } = defineIcon();
-const { currentRenderUid, unMarshal, marshal, parameterDisable } =
-  defineRender();
-const { backgroundRectConfig } = defineCanvasConfig();
+const { currentRenderUid, unMarshal, parameterDisable } = defineRender();
+const canvasConfigs = defineCanvasConfig();
+const selectedIcon = ref("");
+const currentTheme = computed(() => getTheme(themeIdx.value));
+const visibleFields = computed(() => (currentTheme.value.fields || [])
+  .map((field) => ({ ...field, config: canvasConfigs[field.key] }))
+  .filter((field) => field.config));
+const themeOptions = computed(() => getThemeOptions(currentRenderUid.value, currentTheme.value));
+const appearanceOptions = computed(() => (currentTheme.value.options || []).filter((option) => option.section !== "icon"));
+const iconOptions = computed(() => (currentTheme.value.options || []).filter((option) => option.section === "icon"));
+const activeTab = ref("appearance");
+const tabs = computed(() => [
+  { key: "appearance", label: "外观", visible: Boolean(currentTheme.value.appearance?.length || appearanceOptions.value.length) },
+  { key: "text", label: "文字", visible: Boolean(visibleFields.value.length) },
+  { key: "icon", label: "Logo", visible: Boolean(currentTheme.value.iconPicker || iconOptions.value.length) },
+].filter((tab) => tab.visible));
+const currentTab = computed(() => tabs.value.some((tab) => tab.key === activeTab.value)
+  ? activeTab.value : tabs.value[0]?.key);
 
-const {
-  deviceInfoConfig,
-  parameterInfoConfig,
-  timeInfoConfig,
-  lensInfoConfig,
-  verticalBarInfoConfig,
-  bannerRectConfig,
-  mainImgConfig,
-  blurRectConfig,
-} = defineCanvasConfig();
-
-async function reset() {
-  if (
-    allCanvasConfigMap.has(currentRenderUid.value) &&
-    currentRenderUid.value !== 0
-  ) {
-    const uid = currentRenderUid.value;
-    const fileObj = uid2Src.get(uid);
+function reset() {
+  const uid = currentRenderUid.value;
+  if (uid !== 0 && allCanvasConfigMap.has(uid) && uid2Src.has(uid)) {
+    delete uid2Src.get(uid).themeOptions?.[currentTheme.value.id];
     PreviewRender(uid);
     unMarshal(uid);
   }
 }
-
-const value = ref("");
-async function select() {
-  await SelectIcon(value.value);
+function optionValue(option) {
+  return themeOptions.value?.[option.key]
+    ?? (option.target ? canvasConfigs[option.target]?.[option.property] : option.defaultValue);
 }
-const { options, fetchIconList } = useParameterAreaOnMountedHook();
-
-onMounted(() => {
-  fetchIconList();
-});
-
-const { whiteBoard, privacyMode, radius, blurMode } = defineThemeParameter();
-
-function selectOtherBanner() {
-  backgroundRectConfig.visible = whiteBoard.value === true;
-}
-
-function selectImgRadius() {
-  if (radius.value) {
-    mainImgConfig.cornerRadius = 50;
-    blurRectConfig.cornerRadius = 50;
+function setOption(option, value) {
+  const options = themeOptions.value;
+  if (!options) return;
+  const previousValue = options[option.key] ?? option.defaultValue;
+  if (option.type === "number") {
+    options[option.key] = Math.min(option.max ?? Infinity, Math.max(option.min ?? -Infinity, value));
   } else {
-    mainImgConfig.cornerRadius = 0;
-    blurRectConfig.cornerRadius = 0;
+    options[option.key] = value;
   }
+  if (option.target) canvasConfigs[option.target][option.property] = options[option.key];
+  option.apply?.(options[option.key], previousValue);
 }
-
-function selectImgBlurMode() {
-  if (blurMode.value) {
-    blurRectConfig.shadowBlur = 100;
-  } else {
-    blurRectConfig.shadowBlur = 0;
-  }
+async function selectIcon() {
+  if (!selectedIcon.value) return;
+  try { await SelectIcon(selectedIcon.value); }
+  catch (error) { requestNotifyStatus("图标加载失败", "error"); }
 }
+function toggleBold(config) { config.fontStyle = config.fontStyle.includes("bold") ? "normal" : "bold"; }
+function normalizeFontSize(config) { config.fontSize = Math.max(1, Math.round(Number(config.fontSize) || 1)); }
 </script>
 
 <template>
-  <div class="parameterContainer">
-    <div>
-      <el-tooltip
-        class="box-item"
-        effect="dark"
-        content="删除照片exif信息"
-        placement="top"
-      >
-        <el-checkbox
-          label="隐私模式"
-          :disabled="parameterDisable"
-          v-model="privacyMode"
-        />
-      </el-tooltip>
-
-      <el-tooltip
-        class="box-item"
-        effect="dark"
-        content="为照片添加白边"
-        placement="top"
-      >
-        <el-checkbox
-          label="白边"
-          :disabled="parameterDisable"
-          v-model="whiteBoard"
-          @change="selectOtherBanner"
-        />
-      </el-tooltip>
-
-      <el-tooltip
-        class="box-item"
-        effect="dark"
-        content="设置图片圆角"
-        placement="top"
-      >
-        <el-checkbox
-          label="圆角"
-          :disabled="parameterDisable"
-          v-model="radius"
-          @change="selectImgRadius"
-        >
-        </el-checkbox>
-      </el-tooltip>
-
-      <el-tooltip
-        class="box-item"
-        effect="dark"
-        content="设置图片阴影"
-        placement="top"
-      >
-        <el-checkbox
-          label="阴影"
-          :disabled="parameterDisable"
-          v-model="blurMode"
-          @change="selectImgBlurMode"
-        >
-        </el-checkbox>
-      </el-tooltip>
-    </div>
-    <div class="inputContainer">
-      <div class="color-block">
-        <el-input
-          v-model="deviceInfoConfig.text"
-          class="w-50 m-2"
-          placeholder="Device info"
-          :prefix-icon="Camera"
-          :disabled="parameterDisable"
-          clearable
-        />
-        <el-color-picker
-          v-model="deviceInfoConfig.fill"
-          size="small"
-          :disabled="parameterDisable"
-        />
-        <el-input-number
-          v-model="deviceInfoConfig.fontSize"
-          size="small"
-          :disabled="parameterDisable"
-          :controls="false"
-        />
-        <el-button
-          size="small"
-          :style="{ 'font-weight': deviceInfoConfig.fontStyle }"
-          :disabled="parameterDisable"
-          @click="
-            (evt) => {
-              deviceInfoConfig.fontStyle.includes('bold')
-                ? (deviceInfoConfig.fontStyle =
-                    deviceInfoConfig.fontStyle.replace('bold', ''))
-                : (deviceInfoConfig.fontStyle = 'bold');
-            }
-          "
-          >B</el-button
-        >
+  <section class="ui-card settings-panel">
+    <div class="panel-head"><div><span class="eyebrow">CUSTOMIZE</span><h2>水印设置</h2></div><button class="ui-button" :disabled="parameterDisable" @click="reset">重置</button></div>
+    <p v-if="parameterDisable" class="panel-description empty-settings">添加照片后，这里会显示对应主题的外观和参数设置。</p>
+    <template v-else>
+      <div class="settings-tabs" role="tablist" aria-label="水印设置分类"><button v-for="tab in tabs" :key="tab.key" :id="`settings-tab-${tab.key}`" type="button" role="tab" :aria-selected="currentTab === tab.key" :aria-controls="`settings-panel-${tab.key}`" :class="{ active: currentTab === tab.key }" @click="activeTab = tab.key">{{ tab.label }}</button></div>
+      <div v-if="currentTab === 'appearance'" id="settings-panel-appearance" role="tabpanel" aria-labelledby="settings-tab-appearance" class="tab-content">
+        <div v-if="currentTheme.appearance?.length" class="setting-section"><h3>外观 · {{ currentTheme.name }}</h3><ThemeOptionControl v-for="option in currentTheme.appearance" :key="option.key" id-prefix="appearance" :option="option" :value="optionValue(option)" @change="setOption(option, $event)" /></div>
+        <div v-if="currentTheme.appearance?.length && appearanceOptions.length" class="divider"></div>
+        <div v-if="appearanceOptions.length" class="setting-section"><h3>{{ currentTheme.name }}主题设置</h3><ThemeOptionControl v-for="option in appearanceOptions" :key="option.key" :option="option" :value="optionValue(option)" @change="setOption(option, $event)" /></div>
       </div>
-
-      <div class="color-block">
-        <el-input
-          v-model="lensInfoConfig.text"
-          class="w-50 m-2"
-          placeholder="Lens Info"
-          :prefix-icon="Aim"
-          clearable
-          :disabled="parameterDisable"
-        />
-        <el-color-picker
-          v-model="lensInfoConfig.fill"
-          size="small"
-          :disabled="parameterDisable"
-        />
-        <el-input-number
-          v-model="lensInfoConfig.fontSize"
-          :disabled="parameterDisable"
-          size="small"
-          :controls="false"
-        />
-        <el-button
-          size="small"
-          :style="{ 'font-weight': lensInfoConfig.fontStyle }"
-          :disabled="parameterDisable"
-          @click="
-            (evt) => {
-              lensInfoConfig.fontStyle.includes('bold')
-                ? (lensInfoConfig.fontStyle = lensInfoConfig.fontStyle.replace(
-                    'bold',
-                    '',
-                  ))
-                : (lensInfoConfig.fontStyle = 'bold');
-            }
-          "
-          >B</el-button
-        >
-      </div>
-
-      <div class="color-block">
-        <el-input
-          v-model="parameterInfoConfig.text"
-          class="w-50 m-2"
-          placeholder="parameter Info"
-          :prefix-icon="InfoFilled"
-          :disabled="parameterDisable"
-          clearable
-        />
-        <el-color-picker
-          v-model="parameterInfoConfig.fill"
-          size="small"
-          :disabled="parameterDisable"
-        />
-        <el-input-number
-          v-model="parameterInfoConfig.fontSize"
-          :disabled="parameterDisable"
-          size="small"
-          :controls="false"
-        />
-        <el-button
-          size="small"
-          :style="{ 'font-weight': parameterInfoConfig.fontStyle }"
-          :disabled="parameterDisable"
-          @click="
-            (evt) => {
-              parameterInfoConfig.fontStyle.includes('bold')
-                ? (parameterInfoConfig.fontStyle =
-                    parameterInfoConfig.fontStyle.replace('bold', ''))
-                : (parameterInfoConfig.fontStyle = 'bold');
-            }
-          "
-          >B</el-button
-        >
-      </div>
-
-      <div class="color-block">
-        <el-input
-          v-model="timeInfoConfig.text"
-          class="w-50 m-2"
-          placeholder="time info"
-          :prefix-icon="Calendar"
-          :disabled="parameterDisable"
-          clearable
-        />
-        <el-color-picker
-          v-model="timeInfoConfig.fill"
-          size="small"
-          :disabled="parameterDisable"
-        />
-        <el-input-number
-          v-model="timeInfoConfig.fontSize"
-          :disabled="parameterDisable"
-          size="small"
-          :controls="false"
-        />
-        <el-button
-          size="small"
-          :style="{ 'font-weight': timeInfoConfig.fontStyle }"
-          :disabled="parameterDisable"
-          @click="
-            (evt) => {
-              timeInfoConfig.fontStyle.includes('bold')
-                ? (timeInfoConfig.fontStyle = timeInfoConfig.fontStyle.replace(
-                    'bold',
-                    '',
-                  ))
-                : (timeInfoConfig.fontStyle = 'bold');
-            }
-          "
-          >B</el-button
-        >
-      </div>
-
-      <el-select
-        v-model="value"
-        placeholder="Icon select"
-        :disabled="parameterDisable"
-        @change="select"
-      >
-        <el-option-group
-          v-for="group in options"
-          :key="group.label"
-          :label="group.label"
-        >
-          <el-option
-            v-for="item in group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-            <div
-              style="
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-              "
-            >
-              <el-image
-                style="
-                  float: right;
-                  display: inline-block;
-                  width: 20px;
-                  height: 20px;
-                "
-                :src="item.value"
-                fit="contain"
-              />
-            </div>
-          </el-option>
-        </el-option-group>
-      </el-select>
-
-      <div class="slider-block">
-        <el-slider
-          v-model="verticalBarInfoConfig.x"
-          @input="
-            (value) => {
-              verticalBarInfoConfig.x = parseInt(value);
-            }
-          "
-          :disabled="parameterDisable"
-          :max="10000"
-          :step="1"
-        />
-        <el-color-picker
-          v-model="verticalBarInfoConfig.fill"
-          size="small"
-          :disabled="parameterDisable"
-        />
-        <el-input-number
-          v-model="verticalBarInfoConfig.width"
-          size="small"
-          :disabled="parameterDisable"
-          :controls="false"
-        />
-        <el-button
-          size="small"
-          :icon="Delete"
-          :disabled="parameterDisable && verticalBarInfoConfig.visible"
-          @click="
-            (evt) => {
-              verticalBarInfoConfig.visible = !verticalBarInfoConfig.visible;
-            }
-          "
-        />
-      </div>
-
-      <el-button type="danger" @click="reset" :disabled="parameterDisable">
-        Reset
-        <el-icon class="el-icon--left">
-          <Refresh />
-        </el-icon>
-      </el-button>
-    </div>
-  </div>
+      <div v-else-if="currentTab === 'text'" id="settings-panel-text" role="tabpanel" aria-labelledby="settings-tab-text" class="tab-content setting-section"><div v-for="field in visibleFields" :key="field.key" class="field"><label>{{ field.label }}</label><input v-model="field.config.text" class="ui-input" :disabled="parameterDisable" :placeholder="field.placeholder" /><div class="field-tools"><label class="color-tool" title="文字颜色"><input v-model="field.config.fill" type="color" :disabled="parameterDisable" /><span>颜色</span></label><label class="size-tool">字号<input v-model.number="field.config.fontSize" class="ui-input" type="number" min="1" step="1" :disabled="parameterDisable" @change="normalizeFontSize(field.config)" /></label><button class="ui-button bold-button" :aria-pressed="field.config.fontStyle.includes('bold')" :disabled="parameterDisable" @click="toggleBold(field.config)">B</button></div></div></div>
+      <div v-else-if="currentTab === 'icon'" id="settings-panel-icon" role="tabpanel" aria-labelledby="settings-tab-icon" class="tab-content setting-section"><div v-if="currentTheme.iconPicker" class="field"><label class="field-label" for="icon-select">品牌</label><select id="icon-select" v-model="selectedIcon" class="ui-input" :disabled="parameterDisable" @change="selectIcon"><option value="">选择图标</option><option v-for="icon in currentTheme.icons || []" :key="icon.src" :value="icon.src">{{ icon.label }}</option></select></div><ThemeOptionControl v-for="option in iconOptions" :key="option.key" id-prefix="icon" :option="option" :value="optionValue(option)" @change="setOption(option, $event)" /></div>
+    </template>
+  </section>
 </template>
 
 <style scoped>
-.parameterContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.inputContainer {
-  display: flex;
-  width: 800px;
-  flex-direction: column;
-  justify-content: center;
-  margin: 20px;
-}
-.slider-block {
-  display: flex;
-  align-items: center;
-}
-.color-block {
-  display: flex;
-  align-items: center;
-}
+.settings-panel { padding: 18px; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.panel-head h2 { margin: 4px 0 0; font-size: 18px; letter-spacing: -.02em; }
+.panel-description { margin: 12px 0 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.6; }
+.empty-settings { padding: 28px 0 8px; text-align: center; }
+.settings-tabs { display: flex; gap: 3px; margin-top: 16px; padding: 3px; border: 1px solid var(--border); border-radius: 8px; background: var(--muted); }
+.settings-tabs button { flex: 1; min-width: 0; height: 32px; padding: 0 6px; border: 0; border-radius: 5px; background: transparent; color: var(--muted-foreground); font-size: 12px; font-weight: 600; }
+.settings-tabs button.active { background: var(--card); color: var(--foreground); box-shadow: 0 1px 3px #00000012; }
+.settings-tabs button:focus-visible { outline: 2px solid #a1a1aa; outline-offset: 1px; }
+.tab-content { min-height: 96px; padding-top: 18px; }
+.divider { height: 1px; background: var(--border); margin: 18px 0; }
+.setting-section { display: grid; gap: 12px; }
+.setting-section h3 { margin: 0 0 2px; font-size: 13px; font-weight: 650; }
+.field { display: grid; gap: 8px; }
+.field > label, .field-label { font-size: 12px; font-weight: 600; }
+.field-tools { display: flex; gap: 8px; align-items: center; }
+.color-tool, .size-tool { display: flex; align-items: center; gap: 6px; color: var(--muted-foreground); font-size: 11px; }
+.color-tool input { width: 36px; height: 35px; padding: 3px; border: 1px solid var(--border); border-radius: 7px; background: var(--card); }
+.size-tool { margin-left: auto; }
+.size-tool input { width: 86px; min-width: 86px; padding-right: 8px; text-align: right; appearance: textfield; }
+.size-tool input::-webkit-inner-spin-button, .size-tool input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.bold-button { width: 36px; padding: 0; font-weight: 700; }
+.bold-button[aria-pressed="true"] { background: var(--muted); border-color: #a1a1aa; }
+.ui-range { margin: 0; }
 </style>

@@ -1,11 +1,7 @@
-import { defineCanvasConfig } from "@/store/defineCanvasConfig";
-import { defineRender } from "@/store/defineRender";
+import { defineCanvasConfig, syncBannerWidthToFrame } from "@/store/defineCanvasConfig";
 import { ref } from "vue";
-import { SlideFactor } from "@/themes/renderReouter";
 import { factor } from "@/store/defineThemes";
-import { uid2Src } from "@/store/defineImg";
 
-const { currentRenderUid, marshal } = defineRender();
 const transformer = ref();
 const borderTransformer = ref();
 const bannerTransformer = ref();
@@ -16,8 +12,8 @@ const {
   iconInfoConfig,
   bannerRectConfig,
   backgroundRectConfig,
+  equalGapLineConfigs,
 } = defineCanvasConfig();
-const { unMarshal } = defineRender();
 
 function transformerIconInfoHook(e) {
   for (let key in iconInfoConfig) {
@@ -94,39 +90,93 @@ function handleStageMouseDown(e) {
   }
 }
 
-function transformerBannerHook(e) {
-  const scaleY = e.target.attrs.scaleY;
-  const bannerHeight = bannerRectConfig.height;
-  const uid = currentRenderUid.value;
-  const imgH = uid2Src.get(uid).img.height;
-  bannerRectConfig.height = bannerHeight * scaleY;
-  backgroundRectConfig.height =
-    backgroundRectConfig.height - bannerHeight + bannerRectConfig.height;
-  factor.value = bannerRectConfig.height / imgH;
-}
-
-function transformerBannerEnd() {
-  const uid = currentRenderUid.value;
-  SlideFactor(factor.value);
-  unMarshal(uid);
+function transformerBannerEnd(e) {
+  const node = e.target;
+  const oldHeight = bannerRectConfig.height;
+  const height = Math.max(1, node.height() * node.scaleY());
+  node.scaleY(1);
+  node.height(height);
+  bannerRectConfig.height = height;
+  backgroundRectConfig.height += height - oldHeight;
+  factor.value = height / (mainImgConfig.image?.height || 1);
 }
 
 function transformerBackgroundRectHook(e) {
-  backgroundRectConfig.scaleY = e.target.attrs.scaleY;
-  backgroundRectConfig.scaleX = e.target.attrs.scaleX;
+  const node = e.target;
+  const anchor = backgroundTransformer.value.getNode().getActiveAnchor();
+  const stage = node.getStage();
+  const inverse = node.getParent().getAbsoluteTransform().copy().invert();
+  const stageTopLeft = inverse.point({ x: 0, y: 0 });
+  const stageBottomRight = inverse.point({ x: stage.width(), y: stage.height() });
+  const minX = Math.min(stageTopLeft.x, stageBottomRight.x);
+  const maxX = Math.max(stageTopLeft.x, stageBottomRight.x);
+  const minY = Math.min(stageTopLeft.y, stageBottomRight.y);
+  let left = node.x();
+  let right = left + node.width() * node.scaleX();
+  const bottom = node.y() + node.height() * node.scaleY();
 
-  backgroundRectConfig.x = e.target.attrs.x;
-  backgroundRectConfig.y = e.target.attrs.y;
+  if (anchor === "middle-left" && left < minX) {
+    left = minX;
+    node.x(left);
+    node.scaleX((right - left) / node.width());
+  } else if (anchor === "middle-right" && right > maxX) {
+    right = maxX;
+    node.scaleX((right - left) / node.width());
+  } else if (anchor === "top-center" && node.y() < minY) {
+    node.y(minY);
+    node.scaleY((bottom - minY) / node.height());
+  }
+
+  const photoLeft = mainImgConfig.x;
+  const photoRight = photoLeft + (mainImgConfig.image?.width || bannerRectConfig.width);
+  const leftMargin = photoLeft - left;
+  const rightMargin = right - photoRight;
+  const cssScale = stage.container().getBoundingClientRect().width / stage.width();
+  const threshold = 9 / Math.max(0.01, node.getParent().getAbsoluteScale().x * cssScale);
+  let equalSides = false;
+
+  if (node.scaleX() > 0 && leftMargin >= 0 && rightMargin >= 0 &&
+      Math.abs(leftMargin - rightMargin) <= threshold) {
+    if (anchor === "middle-left") {
+      const snappedLeft = photoLeft - rightMargin;
+      node.x(snappedLeft);
+      node.scaleX((right - snappedLeft) / node.width());
+      equalSides = true;
+    } else if (anchor === "middle-right") {
+      const snappedRight = photoRight + leftMargin;
+      node.scaleX((snappedRight - left) / node.width());
+      equalSides = true;
+    }
+  }
+
+  for (const line of equalGapLineConfigs) line.visible = equalSides;
+  if (equalSides) {
+    const outerLeft = node.x();
+    const outerRight = outerLeft + node.width() * node.scaleX();
+    const centerY = mainImgConfig.y + (mainImgConfig.image?.height || 0) / 2;
+    const outerBottom = node.y() + node.height() * node.scaleY();
+    equalGapLineConfigs[0].points = [outerLeft, centerY, photoLeft, centerY];
+    equalGapLineConfigs[1].points = [photoRight, centerY, outerRight, centerY];
+    equalGapLineConfigs[2].points = [outerLeft, node.y(), outerLeft, outerBottom];
+    equalGapLineConfigs[3].points = [outerRight, node.y(), outerRight, outerBottom];
+  }
+
+  backgroundRectConfig.scaleY = node.scaleY();
+  backgroundRectConfig.scaleX = node.scaleX();
+  backgroundRectConfig.x = node.x();
+  backgroundRectConfig.y = node.y();
+  syncBannerWidthToFrame(true);
 }
 
-function transformerBackgroundRectEnd() {}
+function transformerBackgroundRectEnd() {
+  for (const line of equalGapLineConfigs) line.visible = false;
+}
 
 function defineTransformerHooks() {
   return {
     transformerIconInfoHook,
     transformerBackgroundRectHook,
     transformerBackgroundRectEnd,
-    transformerBannerHook,
     transformerBannerEnd,
     handleStageMouseDown,
     transformer,

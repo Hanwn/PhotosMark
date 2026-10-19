@@ -4,19 +4,19 @@ const getIconSrc = function (exifData) {
 
   const deviceModel = model.toLowerCase();
   const deviceMake = make.toLowerCase();
-  let iconSrc = "Nikon100.svg";
+  let iconSrc = "Nikon2.svg";
   const deviceMap = new Map([
     ["nikon", "Nikon2.svg"],
     ["sony", "Sony.svg"],
-    ["canon", "Canon.svg"],
     ["fujifilm", "Fujifilm.svg"],
     ["dji", "Dji.svg"],
     ["hasselblad", "hasselblad.svg"],
-    ["lumix", "lumix.svg"],
-    ["gopro", "gopro.svg"],
-    ["apple", "apple.svg"],
-    ["pentax", "pentax.svg"],
-    ["ricoh", "ricoh.svg"],
+    ["leica", "leica.svg"],
+    ["olympus", "olympus.svg"],
+    ["panasonic", "panasonic.svg"],
+    ["lumix", "panasonic.svg"],
+    ["carl zeiss jena", "carl-zeiss-jena.svg"],
+    ["zeiss", "zeiss.svg"],
   ]);
 
   for (let key of deviceMap.keys()) {

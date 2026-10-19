@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhotosMark</title>
+    <meta name="description" content="纯前端照片水印工具，在浏览器中处理和导出照片。">
+    <title>PhotosMark - 照片水印工具</title>
+    <script>
+      try {
+        const savedMode = localStorage.getItem("photosmark-theme");
+        document.documentElement.dataset.theme = savedMode === "light" || savedMode === "dark"
+          ? savedMode
+          : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
   </head>
   <body>
     <div id="app"></div>

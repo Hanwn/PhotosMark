@@ -1,82 +1,16 @@
 <script setup>
-import { defineComputedSettings } from "@/store/defineSettings";
-
-const { AliPay, wechat, AliQRCodeSetting, wechatQRCodeSetting } =
-  defineComputedSettings();
+import GitHubIcon from "./GitHubIcon.vue";
 </script>
 
 <template>
-  <div class="footer">
-    <div class="sponsorContainer">
-      <div class="alipay-icon sponsorContainer">
-        <el-popover placement="top-start" :width="200" trigger="hover">
-          <template #reference>
-            <img
-              :src="AliPay.charAt(0) !== 'h' ? '' : AliPay"
-              alt="Buy Me A Coffee"
-              style="height: 60px !important; width: 217px !important"
-            />
-          </template>
-          <div style="display: flex; align-items: center">
-            <el-image
-              style="width: 200px; height: 200px"
-              :src="AliQRCodeSetting.charAt(0) !== 'h' ? '' : AliQRCodeSetting"
-              fit="contain"
-            />
-          </div>
-        </el-popover>
-      </div>
-
-      <div class="wechat-icon sponsorContainer">
-        <el-popover placement="top-start" :width="200" trigger="hover">
-          <template #reference>
-            <img
-              :src="wechat.charAt(0) !== 'h' ? '' : wechat"
-              alt="Buy Me A Coffee"
-              style="height: 60px !important; width: 217px !important"
-            />
-          </template>
-          <div style="display: flex; align-items: center">
-            <el-image
-              style="width: 200px; height: 200px"
-              :src="
-                wechatQRCodeSetting.charAt(0) !== 'h' ? '' : wechatQRCodeSetting
-              "
-              fit="contain"
-            />
-          </div>
-        </el-popover>
-      </div>
-      <div class="bmc-icon sponsorContainer">
-        <a href="https://www.buymeacoffee.com/hanwn7721n" target="_blank">
-          <img
-            src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png"
-            alt="Buy Me A Coffee"
-            style="height: 60px !important; width: 217px !important"
-          />
-        </a>
-      </div>
-    </div>
-    <div>
-      <a href="https://beian.miit.gov.cn/" target="_blank"
-        >苏ICP备2023048586案</a
-      >
-    </div>
-  </div>
+  <footer class="footer"><span>PhotosMark · 照片水印工具</span><div><a href="https://github.com/Hanwn/PhotoMark" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看项目" title="GitHub"><GitHubIcon /></a><a href="https://www.buymeacoffee.com/hanwn7721n" target="_blank" rel="noopener noreferrer">支持项目</a></div></footer>
 </template>
 
 <style scoped>
-.footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.sponsorContainer {
-  margin: 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  justify-content: center;
-  flex-wrap: nowrap;
-}
+.footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 24px 0 32px; font-size: 12px; line-height: 1.5; color: var(--muted-foreground); }
+.footer div { display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+.footer a { color: inherit; text-decoration: none; }
+.footer a:hover { color: var(--foreground); }
+.footer a:first-child { display: inline-flex; align-items: center; }
+@media (max-width: 650px) { .footer { flex-direction: column; text-align: center; gap: 10px; } .footer div { justify-content: center; } }
 </style>

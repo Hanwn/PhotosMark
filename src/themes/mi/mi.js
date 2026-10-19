@@ -1,6 +1,5 @@
 import {
   genRenderItem,
-  getIconInfoConfig,
   getMarkInfo,
 } from "@/themes/mi/parameterInfoConfig";
 import {
@@ -36,7 +35,7 @@ function PreviewRenderMi(uid) {
   return renderItem;
 }
 
-async function SelectIconForMiTheme(iconSrc) {
+async function SelectIconForMiTheme(iconSrc, options) {
   const uid = currentRenderUid.value;
   const uploadFile = uid2Src.get(currentRenderUid.value);
 
@@ -66,8 +65,9 @@ async function SelectIconForMiTheme(iconSrc) {
     imgScaleInfo,
     selectIconMode,
   );
-  const targetIconWidth = genMarkInfo.right.iconInfoConfig.width;
-  const targetIconHeight = genMarkInfo.right.iconInfoConfig.height;
+  const iconSize = (options?.iconSize ?? 100) / 100;
+  const targetIconWidth = genMarkInfo.right.iconInfoConfig.width * iconSize;
+  const targetIconHeight = genMarkInfo.right.iconInfoConfig.height * iconSize;
 
   const iconX = iconInfoConfig.x;
   const iconY = iconInfoConfig.y;
