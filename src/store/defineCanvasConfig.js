@@ -125,7 +125,7 @@ const iconInfoConfig = reactive({
 const verticalBarInfoConfig = reactive({
   x: 0,
   y: 0,
-  width: 20,
+  width: 13,
   height: 1,
   fill: "#808080",
   // Keep the separator thin on screen while giving it a usable drag target.

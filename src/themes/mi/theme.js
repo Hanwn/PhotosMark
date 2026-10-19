@@ -21,7 +21,7 @@ export default {
   options: [
     createIconSizeOption("right"),
     { key: "showTime", label: "显示拍摄时间", type: "switch", target: "timeInfoConfig", property: "visible", defaultValue: true },
-    { key: "verticalWidth", label: "分割符宽度", type: "number", min: 1, step: 1, target: "verticalBarInfoConfig", property: "width", defaultValue: 20 },
+    { key: "verticalWidth", label: "分割符宽度", type: "number", min: 1, step: 1, target: "verticalBarInfoConfig", property: "width", defaultValue: 13 },
     { key: "verticalHeight", label: "分割符高度", type: "number", min: 1, step: 1, target: "verticalBarInfoConfig", property: "height", defaultValue: null },
   ],
 };

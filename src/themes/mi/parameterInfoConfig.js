@@ -10,7 +10,7 @@ function getMarkInfo(exif, image, icon, factor, scale) {
   const bannerH = height * factor;
   const pad = width * 0.02;
   const gap = width * 0.018;
-  const barW = 20;
+  const barW = 13;
   const { width: iconW, height: iconH } = fitLogo(icon, width * 0.16, bannerH * 0.46);
   const largeFont = Math.max(1, Math.round(bannerH * 0.2));
   const smallFont = Math.max(1, Math.round(bannerH * 0.14));
