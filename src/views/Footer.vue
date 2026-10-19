@@ -3,7 +3,7 @@ import GitHubIcon from "./GitHubIcon.vue";
 </script>
 
 <template>
-  <footer class="footer"><span>PhotosMark · 照片水印工具</span><div><a href="https://github.com/Hanwn/PhotoMark" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看项目" title="GitHub"><GitHubIcon /></a><a href="https://www.buymeacoffee.com/hanwn7721n" target="_blank" rel="noopener noreferrer">支持项目</a></div></footer>
+  <footer class="footer"><span>PhotosMark · 照片水印工具</span><div><a href="https://github.com/Hanwn/PhotosMark" target="_blank" rel="noopener noreferrer" aria-label="在 GitHub 查看项目" title="GitHub"><GitHubIcon /></a><a href="https://www.buymeacoffee.com/hanwn7721n" target="_blank" rel="noopener noreferrer">支持项目</a></div></footer>
 </template>
 
 <style scoped>
